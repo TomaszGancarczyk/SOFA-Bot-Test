@@ -2,32 +2,48 @@
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 
+using System.Runtime.CompilerServices;
+[assembly: InternalsVisibleTo("BotTests")]
+
 namespace SOFA_Bot_Test
 {
     internal class Program
     {
-        private readonly DiscordSocketClient discord;
+        private readonly DiscordSocketClient Discord;
         private static readonly string Token = BotInfo.GetToken();
-        private static readonly SocketGuild Guild = BotInfo.GetGuild();
-        private static readonly IMessageChannel Channel = BotInfo.GetChannel(Guild);
-        private SocketGuildUser[] Users = BotInfo.GetMembers(Guild);
+        private SocketGuild Guild;
+        private IMessageChannel Channel;
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
+
         static Task Main()
         {
-            logger.LogInformation("{DateTime.Now} - [SOFA] Signups Bot is starting", DateTime.Now);
+            logger.LogInformation("{Time} - [SOFA] Signups Bot is starting", DateTime.Now);
             new Program().StartBotAsync().GetAwaiter().GetResult();
             return Task.CompletedTask;
         }
-        public async Task StartBotAsync()
+
+        internal Program()
         {
-            await discord.LoginAsync(TokenType.Bot, Token);
-            await discord.StartAsync();
-            discord.Ready += () =>
+            var config = new DiscordSocketConfig
             {
-                logger.LogInformation("{DateTime.Now} - [SOFA] Signups Bot is running", DateTime.Now);
-                //new CommandHandler().FirstCommandHandler(discord, DateTime.Now.Hour, DateTime.Now.Minute + 1);
+                AlwaysDownloadUsers = true,
+                MessageCacheSize = 100,
+                GatewayIntents = GatewayIntents.All
+            };
+            Discord = new DiscordSocketClient(config);
+        }
+
+        internal async Task StartBotAsync()
+        {
+            await Discord.LoginAsync(TokenType.Bot, Token);
+            await Discord.StartAsync();
+            Discord.Ready += () =>
+            {
+                logger.LogInformation("{Time} - [SOFA] Signups Bot is running", DateTime.Now);
                 return Task.CompletedTask;
             };
+            await Task.Delay(3000);
+            BotHandler.InitializeBotHandler(Discord);
             await Task.Delay(-1);
         }
     }
