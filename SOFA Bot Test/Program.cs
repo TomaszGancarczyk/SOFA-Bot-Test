@@ -2,17 +2,12 @@
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 
-using System.Runtime.CompilerServices;
-[assembly: InternalsVisibleTo("BotTests")]
-
 namespace SOFA_Bot_Test
 {
     internal class Program
     {
         private readonly DiscordSocketClient Discord;
         private static readonly string Token = BotInfo.GetToken();
-        private SocketGuild Guild;
-        private IMessageChannel Channel;
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
 
         static Task Main()
