@@ -9,7 +9,7 @@ namespace SOFA_Bot_Test
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
 
         //TODO create messages
-        internal async static Task<EmbedBuilder> CreateTournamentMessage(DayOfWeek eventDayOfWeek)
+        internal async static Task<EmbedBuilder> CreateTournamentMessage()
         {
             logger.LogInformation("{Time} - Creating tournament message", DateTime.Now);
             var embed = CreateMessageTemplate("Tournament");
@@ -20,10 +20,9 @@ namespace SOFA_Bot_Test
                 .AddField("title 3 test",
                 "field 3 test")
                 .WithFooter(footer => footer.Text = "footer test");
-            embed.Build();
             return embed;
         }
-        internal async static Task<EmbedBuilder> CreateBaseCaptureMessage(DayOfWeek eventDayOfWeek)
+        internal async static Task<EmbedBuilder> CreateBaseCaptureMessage()
         {
             logger.LogInformation("{Time} - Creating base capture message", DateTime.Now);
             var embed = CreateMessageTemplate("Base Capture");
@@ -34,10 +33,9 @@ namespace SOFA_Bot_Test
                 .AddField("title 3 test",
                 "field 3 test")
                 .WithFooter(footer => footer.Text = "footer test");
-            embed.Build();
             return embed;
         }
-        internal async static Task<EmbedBuilder> CreateGoldenDropMessage(DayOfWeek eventDayOfWeek)
+        internal async static Task<EmbedBuilder> CreateGoldenDropMessage()
         {
             logger.LogInformation("{Time} - Creating golden drop message", DateTime.Now);
             var embed = CreateMessageTemplate("Golden Drop");
@@ -48,12 +46,11 @@ namespace SOFA_Bot_Test
                 .AddField("title 3 test",
                 "field 3 test")
                 .WithFooter(footer => footer.Text = "footer test");
-            embed.Build();
             return embed;
         }
         private static EmbedBuilder CreateMessageTemplate(string eventType)
         {
-            EmbedBuilder embed = new EmbedBuilder { };
+            EmbedBuilder embed = new() { };
             DateTime eventDateTime = Timer.GetEventDateTime();
             long eventUnix = ((DateTimeOffset)eventDateTime).ToUnixTimeSeconds();
             embed

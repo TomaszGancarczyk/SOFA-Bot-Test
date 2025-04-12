@@ -23,7 +23,7 @@ namespace SOFA_Bot_Test
             TimeOnly timeChangeTime = new(1, 00);
             if (eventDateTime > cestStartDate.ToDateTime(timeChangeTime) && eventDateTime < cetStartDate.ToDateTime(timeChangeTime))
             {
-                eventTime.AddHours(1);
+                eventDateTime = eventDateTime.AddHours(1);
             }
             EventDateTime = eventDateTime;
         }

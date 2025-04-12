@@ -56,6 +56,7 @@ namespace SOFA_Bot_Test
             DateTime eventDateTime = Timer.GetEventDateTime();
             logger.LogInformation("{Time} - Event date time set for {eventDateTime}", DateTime.Now, eventDateTime);
             IMessage eventMessage = await MessageHandler.CreateMesage(clanWarChannel, GoldenDropChannel, eventDateTime.DayOfWeek);
+            await eventMessage.AddReactionAsync(new Emoji("😀"));
             //TODO Continue after message is sent
         }
     }

@@ -19,7 +19,7 @@ namespace SOFA_Bot_Test
                     doWePlayGoldenDrop = await HandleGoldenDropQuestion(clanWarChannel);
                     if (doWePlayGoldenDrop)
                     {
-                        embedMessage = await CreateMessage.CreateGoldenDropMessage(eventDayOfWeek);
+                        embedMessage = await CreateMessage.CreateGoldenDropMessage();
                         channelMessage = await goldenDropChannel.SendMessageAsync("", false, embedMessage.Build());
                     }
                     break;
@@ -30,34 +30,32 @@ namespace SOFA_Bot_Test
                     logger.LogInformation("{Time} - We don't play tomorrow", DateTime.Now);
                     break;
                 case DayOfWeek.Thursday:
-                    embedMessage = await CreateMessage.CreateTournamentMessage(eventDayOfWeek);
+                    embedMessage = await CreateMessage.CreateTournamentMessage();
                     channelMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build());
                     break;
                 case DayOfWeek.Friday:
-                    embedMessage = await CreateMessage.CreateTournamentMessage(eventDayOfWeek);
+                    embedMessage = await CreateMessage.CreateTournamentMessage();
                     channelMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build());
                     break;
                 case DayOfWeek.Saturday:
-                    embedMessage = await CreateMessage.CreateTournamentMessage(eventDayOfWeek);
+                    embedMessage = await CreateMessage.CreateTournamentMessage();
                     channelMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build());
                     break;
                 case DayOfWeek.Sunday:
                     doWePlayGoldenDrop = await HandleGoldenDropQuestion(clanWarChannel);
                     if (doWePlayGoldenDrop)
                     {
-                        embedMessage = await CreateMessage.CreateGoldenDropMessage(eventDayOfWeek);
+                        embedMessage = await CreateMessage.CreateGoldenDropMessage();
                         channelMessage = await goldenDropChannel.SendMessageAsync("", false, embedMessage.Build());
                     }
                     else
                     {
-                        embedMessage = await CreateMessage.CreateBaseCaptureMessage(eventDayOfWeek);
+                        embedMessage = await CreateMessage.CreateBaseCaptureMessage();
                         channelMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build());
                     }
                     break;
             }
-            //TODO Continue after message is created
-
-            return null;
+            return channelMessage;
         }
         private async static Task<bool> HandleGoldenDropQuestion(IMessageChannel questionChannel)
         {
