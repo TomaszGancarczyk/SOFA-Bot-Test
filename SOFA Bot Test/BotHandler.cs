@@ -7,12 +7,12 @@ namespace SOFA_Bot_Test
     internal class BotHandler
     {
         private static SocketGuild Guild;
-        private static IMessageChannel CwChannel;
+        private static IMessageChannel clanWarChannel;
         private static IMessageChannel GoldenDropChannel;
         private static SocketGuildUser[] RoleUsers;
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
 
-        public static void InitializeBotHandler(DiscordSocketClient discord)
+        internal static void InitializeBotHandler(DiscordSocketClient discord)
         {
             Guild = discord.GetGuild(BotInfo.GetGuildId());
             if (Guild == null)
@@ -22,13 +22,13 @@ namespace SOFA_Bot_Test
             }
             logger.LogInformation("{Time} - Found Guild: {Guild.Name}", DateTime.Now, Guild.Name);
 
-            CwChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetCWChannelId());
-            if (CwChannel == null)
+            clanWarChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetCWChannelId());
+            if (clanWarChannel == null)
             {
                 logger.LogError("{Time} - Channel not found", DateTime.Now);
-                throw new ArgumentNullException(nameof(CwChannel));
+                throw new ArgumentNullException(nameof(clanWarChannel));
             }
-            logger.LogInformation("{Time} - Found CW Channel: {Channel.Name}", DateTime.Now, CwChannel.Name);
+            logger.LogInformation("{Time} - Found CW Channel: {Channel.Name}", DateTime.Now, clanWarChannel.Name);
 
             GoldenDropChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetGoldenDropChannelId());
             if (GoldenDropChannel == null)
@@ -39,7 +39,7 @@ namespace SOFA_Bot_Test
             logger.LogInformation("{Time} - Found Golden Drop Channel: {Channel.Name}", DateTime.Now, GoldenDropChannel.Name);
             StartEvent();
         }
-        private static void StartEvent()
+        private async static void StartEvent()
         {
             logger.LogInformation("{Time} - Starting event", DateTime.Now);
             RoleUsers = BotInfo.GetMembers(Guild);
@@ -54,31 +54,8 @@ namespace SOFA_Bot_Test
             logger.LogInformation("{Time} - Getting event date time", DateTime.Now);
             DateTime eventDateTime = Timer.GetEventDateTime();
             logger.LogInformation("{Time} - Event date time set for {eventDateTime}", DateTime.Now, eventDateTime);
-            switch (eventDateTime.DayOfWeek)
-            {
-                //TODO sunday
-                case DayOfWeek.Monday:
-                    MessageHandler.MessageInitalizer(GoldenDropChannel, "Golden drop");
-                    break;
-                case DayOfWeek.Tuesday:
-                    MessageHandler.SkipMessage();
-                    break;
-                case DayOfWeek.Wednesday:
-                    MessageHandler.SkipMessage();
-                    break;
-                case DayOfWeek.Thursday:
-                    MessageHandler.MessageInitalizer(CwChannel, "Tournament");
-                    break;
-                case DayOfWeek.Friday:
-                    MessageHandler.MessageInitalizer(CwChannel, "Tournament");
-                    break;
-                case DayOfWeek.Saturday:
-                    MessageHandler.MessageInitalizer(CwChannel, "Tournament");
-                    break;
-                case DayOfWeek.Sunday:
-                    Console.WriteLine("BaseCap/Drop");
-                    break;
-            }
+            Task<IMessage> eventMessage = MessageHandler.CreateMesage(clanWarChannel, GoldenDropChannel, eventDateTime.DayOfWeek);
+            //TODO Continue after message is sent
         }
     }
 }

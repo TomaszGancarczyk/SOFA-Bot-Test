@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Microsoft.Extensions.Logging;
-using System;
 
 namespace SOFA_Bot_Test
 {
@@ -8,42 +7,56 @@ namespace SOFA_Bot_Test
     {
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
 
-        //TODO continue
-        public static void SkipMessage()
+        internal async static Task<IMessage> CreateMesage(IMessageChannel clanWarChannel, IMessageChannel goldenDropChannel, DayOfWeek eventDayOfWeek)
         {
-            logger.LogInformation("{Time} - We don't play tomorrow", DateTime.Now);
-            TimeSpan eventTimer = Timer.GetEventTimeSpan();
-        }
-        public static void MessageInitalizer(IMessageChannel channel, string eventType)
-        {
-            logger.LogInformation("{Time} - Initalizing message for event {eventType}", DateTime.Now, eventType);
-            switch (eventType)
+            logger.LogInformation("{Time} - Starting message creation", DateTime.Now);
+            bool doWePlayGoldenDrop;
+            string messageContent = null;
+            switch (eventDayOfWeek)
             {
-                case "Tournament":
-                    HandleTournamentMessage(channel);
+                case DayOfWeek.Monday:
+                    doWePlayGoldenDrop = await HandleGoldenDropQuestion(clanWarChannel);
+                    if (doWePlayGoldenDrop)
+                        messageContent = await CreateMessage.CreateGoldenDropMessage();
                     break;
-                case "Base Capture":
-                    HandleBaseCaptureMessage(channel);
+                case DayOfWeek.Tuesday:
+                    logger.LogInformation("{Time} - We don't play tomorrow", DateTime.Now);
                     break;
-                case "Golden drop":
-                    HandleGoldenDropMessage(channel);
+                case DayOfWeek.Wednesday:
+                    logger.LogInformation("{Time} - We don't play tomorrow", DateTime.Now);
+                    break;
+                case DayOfWeek.Thursday:
+                    messageContent = await CreateMessage.CreateTournamentMessage();
+                    break;
+                case DayOfWeek.Friday:
+                    messageContent = await CreateMessage.CreateTournamentMessage();
+                    break;
+                case DayOfWeek.Saturday:
+                    messageContent = await CreateMessage.CreateTournamentMessage();
+                    break;
+                case DayOfWeek.Sunday:
+                    doWePlayGoldenDrop = await HandleGoldenDropQuestion(clanWarChannel);
+                    if (doWePlayGoldenDrop)
+                    {
+                        messageContent = await CreateMessage.CreateGoldenDropMessage();
+                    }
+                    else
+                    {
+                        messageContent = await CreateMessage.CreateBaseCaptureMessage();
+                    }
                     break;
             }
+            //TODO Continue after message is created
+            Console.WriteLine(messageContent);
+            Console.ReadLine();
+            return null;
         }
-        private static void HandleTournamentMessage(IMessageChannel channel)
+        private async static Task<bool> HandleGoldenDropQuestion(IMessageChannel questionChannel)
         {
-            TimeSpan eventTimer = Timer.GetEventTimeSpan();
-            Console.WriteLine("tournament");
-        }
-        private static void HandleBaseCaptureMessage(IMessageChannel channel)
-        {
-            TimeSpan eventTimer = Timer.GetEventTimeSpan();
-            Console.WriteLine("base cap");
-        }
-        private static void HandleGoldenDropMessage(IMessageChannel channel)
-        {
-            TimeSpan eventTimer = Timer.GetEventTimeSpan();
-            Console.WriteLine("golden drop");
+            bool questionAnswear = false;
+            logger.LogInformation("{Time} - Sending question for base capture", DateTime.Now);
+            //TODO post question and get return
+            return await Task.FromResult(questionAnswear);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace SOFA_Bot_Test
     internal class Timer
     {
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
-        public static DateTime GetEventDateTime()
+        internal static DateTime GetEventDateTime()
         {
             DateOnly eventDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
             TimeOnly eventTime = new(19, 00);
@@ -31,7 +31,7 @@ namespace SOFA_Bot_Test
             return date;
         }
 
-        public static TimeSpan GetEventTimeSpan()
+        internal static TimeSpan GetEventTimeSpan()
         {
             DateTime eventDateTime = Timer.GetEventDateTime();
             TimeSpan eventTimeSpan = eventDateTime - DateTime.Now;
