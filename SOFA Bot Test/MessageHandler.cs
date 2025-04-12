@@ -21,6 +21,7 @@ namespace SOFA_Bot_Test
                     {
                         embedMessage = await CreateMessage.CreateGoldenDropMessage();
                         channelMessage = await goldenDropChannel.SendMessageAsync("", false, embedMessage.Build());
+                        logger.LogInformation("{Time} - Sent golden drop message", DateTime.Now);
                     }
                     break;
                 case DayOfWeek.Tuesday:
@@ -32,14 +33,17 @@ namespace SOFA_Bot_Test
                 case DayOfWeek.Thursday:
                     embedMessage = await CreateMessage.CreateTournamentMessage();
                     channelMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build());
+                    logger.LogInformation("{Time} - Sent tournament message", DateTime.Now);
                     break;
                 case DayOfWeek.Friday:
                     embedMessage = await CreateMessage.CreateTournamentMessage();
                     channelMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build());
+                    logger.LogInformation("{Time} - Sent tournament message", DateTime.Now);
                     break;
                 case DayOfWeek.Saturday:
                     embedMessage = await CreateMessage.CreateTournamentMessage();
                     channelMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build());
+                    logger.LogInformation("{Time} - Sent tournament message", DateTime.Now);
                     break;
                 case DayOfWeek.Sunday:
                     doWePlayGoldenDrop = await HandleGoldenDropQuestion(clanWarChannel);
@@ -47,11 +51,13 @@ namespace SOFA_Bot_Test
                     {
                         embedMessage = await CreateMessage.CreateGoldenDropMessage();
                         channelMessage = await goldenDropChannel.SendMessageAsync("", false, embedMessage.Build());
+                        logger.LogInformation("{Time} - Sent golden drop message", DateTime.Now);
                     }
                     else
                     {
                         embedMessage = await CreateMessage.CreateBaseCaptureMessage();
                         channelMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build());
+                        logger.LogInformation("{Time} - Sent base capture message", DateTime.Now);
                     }
                     break;
             }

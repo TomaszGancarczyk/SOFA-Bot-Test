@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SOFA_Bot_Test
 {
@@ -9,7 +10,8 @@ namespace SOFA_Bot_Test
         private static SocketGuild Guild;
         private static IMessageChannel clanWarChannel;
         private static IMessageChannel GoldenDropChannel;
-        private static SocketGuildUser[] RoleUsers;
+        private const string SofaRoleName = "SOFA";
+        private const string RofaRoleName = "SOFA";
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
 
         internal static void InitializeBotHandler(DiscordSocketClient discord)
@@ -39,25 +41,28 @@ namespace SOFA_Bot_Test
             logger.LogInformation("{Time} - Found Golden Drop Channel: {Channel.Name}", DateTime.Now, GoldenDropChannel.Name);
             StartEvent();
         }
+        internal static SocketGuildUser[] GetSofaMembers()
+        {
+            SocketRole role = Guild.Roles.FirstOrDefault(role => role.Name == SofaRoleName);
+            SocketGuildUser[] userList = Guild.Users.Where(user => user.Roles.Contains(role)).ToArray();
+            return userList;
+        }
+        internal static SocketGuildUser[] GetRofaMembers()
+        {
+            SocketRole role = Guild.Roles.FirstOrDefault(role => role.Name == RofaRoleName);
+            SocketGuildUser[] userList = Guild.Users.Where(user => user.Roles.Contains(role)).ToArray();
+            return userList;
+        }
         private async static void StartEvent()
         {
             logger.LogInformation("{Time} - Starting event", DateTime.Now);
-            RoleUsers = BotInfo.GetMembers(Guild);
-            if (RoleUsers.Length > 0)
-            {
-                logger.LogInformation("{Time} - Found {Number} users with proper role", DateTime.Now, RoleUsers.Length);
-            }
-            else
-            {
-                logger.LogWarning("{Time} - No users found with proper role", DateTime.Now);
-            }
             logger.LogInformation("{Time} - Getting event date time", DateTime.Now);
             Timer.SetEventDateTimeForNextDay();
             DateTime eventDateTime = Timer.GetEventDateTime();
             logger.LogInformation("{Time} - Event date time set for {eventDateTime}", DateTime.Now, eventDateTime);
             IMessage eventMessage = await MessageHandler.CreateMesage(clanWarChannel, GoldenDropChannel, eventDateTime.DayOfWeek);
-            await eventMessage.AddReactionAsync(new Emoji("😀"));
             //TODO Continue after message is sent
+            await eventMessage.AddReactionAsync(new Emoji("⚫"));
         }
     }
 }
