@@ -4,8 +4,13 @@ namespace SOFA_Bot_Test
 {
     internal class Timer
     {
+        private static DateTime EventDateTime;
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
         internal static DateTime GetEventDateTime()
+        {
+            return EventDateTime;
+        }
+        internal static void SetEventDateTimeForNextDay()
         {
             DateOnly eventDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
             TimeOnly eventTime = new(19, 00);
@@ -20,7 +25,7 @@ namespace SOFA_Bot_Test
             {
                 eventTime.AddHours(1);
             }
-            return eventDateTime;
+            EventDateTime = eventDateTime;
         }
         private static DateOnly GetTimeChangeDateFromLastDayOfMonth(DateOnly date)
         {

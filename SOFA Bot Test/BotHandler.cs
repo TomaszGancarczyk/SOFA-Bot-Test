@@ -52,9 +52,10 @@ namespace SOFA_Bot_Test
                 logger.LogWarning("{Time} - No users found with proper role", DateTime.Now);
             }
             logger.LogInformation("{Time} - Getting event date time", DateTime.Now);
+            Timer.SetEventDateTimeForNextDay();
             DateTime eventDateTime = Timer.GetEventDateTime();
             logger.LogInformation("{Time} - Event date time set for {eventDateTime}", DateTime.Now, eventDateTime);
-            Task<IMessage> eventMessage = MessageHandler.CreateMesage(clanWarChannel, GoldenDropChannel, eventDateTime.DayOfWeek);
+            IMessage eventMessage = await MessageHandler.CreateMesage(clanWarChannel, GoldenDropChannel, eventDateTime.DayOfWeek);
             //TODO Continue after message is sent
         }
     }

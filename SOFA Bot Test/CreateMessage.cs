@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Microsoft.Extensions.Logging;
+using System.Reflection.Metadata.Ecma335;
 
 namespace SOFA_Bot_Test
 {
@@ -8,23 +9,58 @@ namespace SOFA_Bot_Test
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
 
         //TODO create messages
-        internal async static Task<string> CreateTournamentMessage()
+        internal async static Task<EmbedBuilder> CreateTournamentMessage(DayOfWeek eventDayOfWeek)
         {
             logger.LogInformation("{Time} - Creating tournament message", DateTime.Now);
-            string messageContents = null;
-            return messageContents;
+            var embed = CreateMessageTemplate("Tournament");
+            embed.AddField("title 1 test",
+                "field 1 test")
+                .AddField("title 2 test",
+                "field 2 test")
+                .AddField("title 3 test",
+                "field 3 test")
+                .WithFooter(footer => footer.Text = "footer test");
+            embed.Build();
+            return embed;
         }
-        internal async static Task<string> CreateBaseCaptureMessage()
+        internal async static Task<EmbedBuilder> CreateBaseCaptureMessage(DayOfWeek eventDayOfWeek)
         {
             logger.LogInformation("{Time} - Creating base capture message", DateTime.Now);
-            string messageContents = null;
-            return messageContents;
+            var embed = CreateMessageTemplate("Base Capture");
+            embed.AddField("title 1 test",
+                "field 1 test")
+                .AddField("title 2 test",
+                "field 2 test")
+                .AddField("title 3 test",
+                "field 3 test")
+                .WithFooter(footer => footer.Text = "footer test");
+            embed.Build();
+            return embed;
         }
-        internal async static Task<string> CreateGoldenDropMessage()
+        internal async static Task<EmbedBuilder> CreateGoldenDropMessage(DayOfWeek eventDayOfWeek)
         {
             logger.LogInformation("{Time} - Creating golden drop message", DateTime.Now);
-            string messageContents = null;
-            return messageContents;
+            var embed = CreateMessageTemplate("Golden Drop");
+            embed.AddField("title 1 test",
+                "field 1 test")
+                .AddField("title 2 test",
+                "field 2 test")
+                .AddField("title 3 test",
+                "field 3 test")
+                .WithFooter(footer => footer.Text = "footer test");
+            embed.Build();
+            return embed;
+        }
+        private static EmbedBuilder CreateMessageTemplate(string eventType)
+        {
+            EmbedBuilder embed = new EmbedBuilder { };
+            DateTime eventDateTime = Timer.GetEventDateTime();
+            long eventUnix = ((DateTimeOffset)eventDateTime).ToUnixTimeSeconds();
+            embed
+                .WithColor(Color.DarkGreen)
+                .WithTitle($"{eventDateTime.DayOfWeek} {eventType}")
+                .WithDescription($"<t:{eventUnix}:D><t:{eventUnix}:t> - <t:{eventUnix}:R>");
+            return embed;
         }
     }
 }

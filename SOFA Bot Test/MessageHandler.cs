@@ -10,14 +10,18 @@ namespace SOFA_Bot_Test
         internal async static Task<IMessage> CreateMesage(IMessageChannel clanWarChannel, IMessageChannel goldenDropChannel, DayOfWeek eventDayOfWeek)
         {
             logger.LogInformation("{Time} - Starting message creation", DateTime.Now);
+            IMessage channelMessage = null;
+            EmbedBuilder embedMessage;
             bool doWePlayGoldenDrop;
-            string messageContent = null;
             switch (eventDayOfWeek)
             {
                 case DayOfWeek.Monday:
                     doWePlayGoldenDrop = await HandleGoldenDropQuestion(clanWarChannel);
                     if (doWePlayGoldenDrop)
-                        messageContent = await CreateMessage.CreateGoldenDropMessage();
+                    {
+                        embedMessage = await CreateMessage.CreateGoldenDropMessage(eventDayOfWeek);
+                        channelMessage = await goldenDropChannel.SendMessageAsync("", false, embedMessage.Build());
+                    }
                     break;
                 case DayOfWeek.Tuesday:
                     logger.LogInformation("{Time} - We don't play tomorrow", DateTime.Now);
@@ -26,34 +30,38 @@ namespace SOFA_Bot_Test
                     logger.LogInformation("{Time} - We don't play tomorrow", DateTime.Now);
                     break;
                 case DayOfWeek.Thursday:
-                    messageContent = await CreateMessage.CreateTournamentMessage();
+                    embedMessage = await CreateMessage.CreateTournamentMessage(eventDayOfWeek);
+                    channelMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build());
                     break;
                 case DayOfWeek.Friday:
-                    messageContent = await CreateMessage.CreateTournamentMessage();
+                    embedMessage = await CreateMessage.CreateTournamentMessage(eventDayOfWeek);
+                    channelMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build());
                     break;
                 case DayOfWeek.Saturday:
-                    messageContent = await CreateMessage.CreateTournamentMessage();
+                    embedMessage = await CreateMessage.CreateTournamentMessage(eventDayOfWeek);
+                    channelMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build());
                     break;
                 case DayOfWeek.Sunday:
                     doWePlayGoldenDrop = await HandleGoldenDropQuestion(clanWarChannel);
                     if (doWePlayGoldenDrop)
                     {
-                        messageContent = await CreateMessage.CreateGoldenDropMessage();
+                        embedMessage = await CreateMessage.CreateGoldenDropMessage(eventDayOfWeek);
+                        channelMessage = await goldenDropChannel.SendMessageAsync("", false, embedMessage.Build());
                     }
                     else
                     {
-                        messageContent = await CreateMessage.CreateBaseCaptureMessage();
+                        embedMessage = await CreateMessage.CreateBaseCaptureMessage(eventDayOfWeek);
+                        channelMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build());
                     }
                     break;
             }
             //TODO Continue after message is created
-            Console.WriteLine(messageContent);
-            Console.ReadLine();
+
             return null;
         }
         private async static Task<bool> HandleGoldenDropQuestion(IMessageChannel questionChannel)
         {
-            bool questionAnswear = false;
+            bool questionAnswear = true;
             logger.LogInformation("{Time} - Sending question for base capture", DateTime.Now);
             //TODO post question and get return
             return await Task.FromResult(questionAnswear);
