@@ -41,6 +41,10 @@ namespace SOFA_Bot_Test
             logger.LogInformation("{Time} - Found Golden Drop Channel: {Channel.Name}", DateTime.Now, GoldenDropChannel.Name);
             StartEvent();
         }
+        internal static SocketRole GetRole(string roleName)
+        {
+            return Guild.Roles.FirstOrDefault(role => role.Name == roleName);
+        }
         internal static SocketGuildUser[] GetSofaMembers()
         {
             SocketRole role = Guild.Roles.FirstOrDefault(role => role.Name == SofaRoleName);

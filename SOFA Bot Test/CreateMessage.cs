@@ -1,26 +1,30 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Data;
 
 namespace SOFA_Bot_Test
 {
     internal class CreateMessage
     {
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
-        private static readonly Emoji offEmoji = "⚫";
+        private static readonly Emoji OffEmoji = "⚫";
         //TODO create messages
         internal async static Task<EmbedBuilder> CreateTournamentMessage()
         {
             logger.LogInformation("{Time} - Creating tournament message", DateTime.Now);
             var embed = CreateMessageTemplate("Tournament");
             SocketGuildUser[] sofaMembers = BotHandler.GetSofaMembers();
-            embed.AddField("Sqquad 1",
-                "field 1 test", true)
-                .AddField("Sqquad 2",
-                "field 2 test", true)
-                .AddField("Sqquad 3",
-                "field 3 test", true)
-                .WithFooter(footer => footer.Text = "footer test");
+            for (int i = 1; i <= 7; i++)
+            {
+                string squadMembers = "";
+                SocketRole role = BotHandler.GetRole($"Squad {i}");
+                foreach (var member in sofaMembers)
+                    if (member.Roles.Contains(role))
+                        squadMembers += $"{OffEmoji} {member.DisplayName}\n";
+                embed.AddField($"Squad {i}", squadMembers, true);
+            }
             return embed;
         }
         internal async static Task<EmbedBuilder> CreateBaseCaptureMessage()
@@ -28,13 +32,15 @@ namespace SOFA_Bot_Test
             logger.LogInformation("{Time} - Creating base capture message", DateTime.Now);
             var embed = CreateMessageTemplate("Base Capture");
             SocketGuildUser[] sofaMembers = BotHandler.GetSofaMembers();
-            embed.AddField("Sqquad 1",
-                "field 1 test", true)
-                .AddField("Sqquad 2",
-                "field 2 test", true)
-                .AddField("Sqquad 3",
-                "field 3 test", true)
-                .WithFooter(footer => footer.Text = "footer test");
+            for (int i = 1; i <= 7; i++)
+            {
+                string squadMembers = "";
+                SocketRole role = BotHandler.GetRole($"Squad {i}");
+                foreach (var member in sofaMembers)
+                    if (member.Roles.Contains(role))
+                        squadMembers += $"{OffEmoji} {member.DisplayName}\n";
+                embed.AddField($"Squad {i}", squadMembers, true);
+            }
             return embed;
         }
         internal async static Task<EmbedBuilder> CreateGoldenDropMessage()
@@ -45,17 +51,17 @@ namespace SOFA_Bot_Test
             string sofaField = "";
             foreach (var member in sofaMembers)
             {
-                sofaField += $"{offEmoji} {member.DisplayName}\n";
+                sofaField += $"{OffEmoji} {member.DisplayName}\n";
             }
             SocketGuildUser[] rofaMembers = BotHandler.GetRofaMembers();
             string rofaField = "";
             foreach (var member in rofaMembers)
             {
-                rofaField += $"{offEmoji} {member.DisplayName}\n";
+                rofaField += $"{OffEmoji} {member.DisplayName}\n";
             }
-            embed.AddField("SOFA", $"{sofaField}", true)
-                .AddField("ROFA", $"{rofaField}", true)
-                .WithFooter(footer => footer.Text = "footer test");
+            embed
+                .AddField("SOFA", $"{sofaField}", true)
+                .AddField("ROFA", $"{rofaField}", true);
             return embed;
         }
         private static EmbedBuilder CreateMessageTemplate(string eventType)
