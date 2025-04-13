@@ -1,8 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Data;
 
 namespace SOFA_Bot_Test
 {
@@ -10,7 +8,6 @@ namespace SOFA_Bot_Test
     {
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
         private static readonly Emoji OffEmoji = "⚫";
-        //TODO create messages
         internal async static Task<EmbedBuilder> CreateTournamentMessage()
         {
             logger.LogInformation("{Time} - Creating tournament message", DateTime.Now);

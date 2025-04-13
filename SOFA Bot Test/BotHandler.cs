@@ -1,21 +1,23 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SOFA_Bot_Test
 {
     internal class BotHandler
     {
+        private static DiscordSocketClient Discord;
         private static SocketGuild Guild;
-        private static IMessageChannel clanWarChannel;
+        private static IMessageChannel CanWarChannel;
         private static IMessageChannel GoldenDropChannel;
         private const string SofaRoleName = "SOFA";
-        private const string RofaRoleName = "SOFA";
+        private const string RofaRoleName = "ROFA";
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
 
         internal static void InitializeBotHandler(DiscordSocketClient discord)
         {
+            Discord = discord;
+            Discord.ButtonExecuted += ButtonHandler.Handler;
             Guild = discord.GetGuild(BotInfo.GetGuildId());
             if (Guild == null)
             {
@@ -24,13 +26,13 @@ namespace SOFA_Bot_Test
             }
             logger.LogInformation("{Time} - Found Guild: {Guild.Name}", DateTime.Now, Guild.Name);
 
-            clanWarChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetCWChannelId());
-            if (clanWarChannel == null)
+            CanWarChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetCWChannelId());
+            if (CanWarChannel == null)
             {
                 logger.LogError("{Time} - Channel not found", DateTime.Now);
-                throw new ArgumentNullException(nameof(clanWarChannel));
+                throw new ArgumentNullException(nameof(CanWarChannel));
             }
-            logger.LogInformation("{Time} - Found CW Channel: {Channel.Name}", DateTime.Now, clanWarChannel.Name);
+            logger.LogInformation("{Time} - Found CW Channel: {Channel.Name}", DateTime.Now, CanWarChannel.Name);
 
             GoldenDropChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetGoldenDropChannelId());
             if (GoldenDropChannel == null)
@@ -39,8 +41,10 @@ namespace SOFA_Bot_Test
                 throw new ArgumentNullException(nameof(GoldenDropChannel));
             }
             logger.LogInformation("{Time} - Found Golden Drop Channel: {Channel.Name}", DateTime.Now, GoldenDropChannel.Name);
+
             StartEvent();
         }
+
         internal static SocketRole GetRole(string roleName)
         {
             return Guild.Roles.FirstOrDefault(role => role.Name == roleName);
@@ -57,6 +61,10 @@ namespace SOFA_Bot_Test
             SocketGuildUser[] userList = Guild.Users.Where(user => user.Roles.Contains(role)).ToArray();
             return userList;
         }
+        internal static DiscordSocketClient GetDiscord()
+        {
+            return Discord;
+        }
         private async static void StartEvent()
         {
             logger.LogInformation("{Time} - Starting event", DateTime.Now);
@@ -64,9 +72,9 @@ namespace SOFA_Bot_Test
             Timer.SetEventDateTimeForNextDay();
             DateTime eventDateTime = Timer.GetEventDateTime();
             logger.LogInformation("{Time} - Event date time set for {eventDateTime}", DateTime.Now, eventDateTime);
-            IMessage eventMessage = await MessageHandler.CreateMesage(clanWarChannel, GoldenDropChannel, eventDateTime.DayOfWeek);
+            IMessage eventMessage = await MessageHandler.CreateMesage(CanWarChannel, GoldenDropChannel, eventDateTime.DayOfWeek);
             //TODO Continue after message is sent
-            await eventMessage.AddReactionAsync(new Emoji("⚫"));
+            //await eventMessage.AddReactionAsync(new Emoji("⚫"));
         }
     }
 }
