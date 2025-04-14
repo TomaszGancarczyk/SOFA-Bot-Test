@@ -18,67 +18,17 @@ namespace SOFA_Bot_Test
             }
             else
             {
-                EmbedBuilder eventMessageBUilder = await CreateMessage.CreateAttendanceMessage(eventType);
+                EmbedBuilder embedMessage = await CreateMessage.CreateAttendanceMessage(eventType);
+                ComponentBuilder messageButton = CreateButton.CreateAttendanceButton();
+                if (eventType == "Golden Drop")
+                {
+                    eventMessage = await goldenDropChannel.SendMessageAsync("", false, embedMessage.Build(), null, null, null, messageButton.Build());
+                }
+                else
+                {
+                    eventMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build(), null, null, null, messageButton.Build());
+                }
             }
-            //IMessage eventMessage = null;
-            //EmbedBuilder embedMessage;
-            //ComponentBuilder messageButton;
-            //bool doWePlayGoldenDrop;
-            //switch (eventDayOfWeek)
-            //{
-            //    case DayOfWeek.Monday:
-            //        doWePlayGoldenDrop = await QuestionHandler.HandleGoldenDropQuestion(clanWarChannel);
-            //        if (doWePlayGoldenDrop)
-            //        {
-            //            embedMessage = await CreateMessage.CreateGoldenDropMessage();
-            //            messageButton = CreateButton.CreateAttendanceButton();
-            //            eventMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build(), null, null, null, messageButton.Build());
-            //            logger.LogInformation("{Time} - Sent golden drop message", DateTime.Now);
-            //        }
-            //        break;
-            //    case DayOfWeek.Tuesday:
-            //        logger.LogInformation("{Time} - We don't play tomorrow", DateTime.Now);
-            //        break;
-            //    case DayOfWeek.Wednesday:
-            //        logger.LogInformation("{Time} - We don't play tomorrow", DateTime.Now);
-            //        break;
-            //    case DayOfWeek.Thursday:
-            //        embedMessage = await CreateMessage.CreateTournamentMessage();
-            //        messageButton = CreateButton.CreateAttendanceButton();
-            //        eventMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build(), null, null, null, messageButton.Build());
-            //        logger.LogInformation("{Time} - Sent tournament message", DateTime.Now);
-            //        break;
-            //    case DayOfWeek.Friday:
-            //        embedMessage = await CreateMessage.CreateTournamentMessage();
-            //        messageButton = CreateButton.CreateAttendanceButton();
-            //        eventMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build(), null, null, null, messageButton.Build());
-            //        logger.LogInformation("{Time} - Sent tournament message", DateTime.Now);
-            //        break;
-            //    case DayOfWeek.Saturday:
-            //        embedMessage = await CreateMessage.CreateTournamentMessage();
-            //        messageButton = CreateButton.CreateAttendanceButton();
-            //        eventMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build(), null, null, null, messageButton.Build());
-            //        logger.LogInformation("{Time} - Sent tournament message", DateTime.Now);
-            //        break;
-            //    case DayOfWeek.Sunday:
-            //        doWePlayGoldenDrop = await QuestionHandler.HandleGoldenDropQuestion(clanWarChannel);
-            //        if (doWePlayGoldenDrop)
-            //        {
-            //            embedMessage = await CreateMessage.CreateGoldenDropMessage();
-            //            messageButton = CreateButton.CreateAttendanceButton();
-            //            eventMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build(), null, null, null, messageButton.Build());
-            //            logger.LogInformation("{Time} - Sent golden drop message", DateTime.Now);
-            //        }
-            //        else
-            //        {
-            //            embedMessage = await CreateMessage.CreateBaseCaptureMessage();
-            //            messageButton = CreateButton.CreateAttendanceButton();
-            //            eventMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build(), null, null, null, messageButton.Build());
-            //            logger.LogInformation("{Time} - Sent base capture message", DateTime.Now);
-            //        }
-            //        break;
-            //}
-
             return eventMessage;
         }
     }

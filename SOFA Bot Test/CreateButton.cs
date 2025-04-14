@@ -27,20 +27,20 @@ namespace SOFA_Bot_Test
         internal static ComponentBuilder CreateQuestionButton()
         {
             DayOfWeek eventDayOfWeek = Timer.GetEventDateTime().DayOfWeek;
-            ComponentBuilder component = new ComponentBuilder();
+            ComponentBuilder component = new();
             if (TournamentDays.Any(day => day == eventDayOfWeek))
             {
-                component.WithButton("Tournament", "tournamentButton");
+                component.WithButton("Tournament", "tournamentButton", emote: new Emoji("⚔️"));
             }
             if (GoldenDropDays.Any(day => day == eventDayOfWeek))
             {
-                component.WithButton("Golden Drop", "goldenDropButton");
+                component.WithButton("Golden Drop", "goldenDropButton", emote: new Emoji("📦"));
             }
             if (BaseCaptureDays.Any(day => day == eventDayOfWeek))
             {
-                component.WithButton("Base Capture", "baseCaptureButton");
+                component.WithButton("Base Capture", "baseCaptureButton", emote: new Emoji("👑"));
             }
-            component.WithButton("Day Off", "dayOffButton");
+            component.WithButton("Day Off", "dayOffButton", emote: new Emoji("🏖️"));
             return component;
         }
         internal static ComponentBuilder CreateAttendanceButton()

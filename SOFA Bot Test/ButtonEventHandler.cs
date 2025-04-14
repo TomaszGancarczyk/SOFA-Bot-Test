@@ -27,6 +27,12 @@ namespace SOFA_Bot_Test
                     logger.LogInformation("{Time} - Got day off response to event question", DateTime.Now);
                     QuestionHandler.SetQuestionAnswear("Day Off");
                     break;
+                case "presentButton":
+                    logger.LogInformation("{Time} - {User} clicked present", DateTime.Now, component.User.GlobalName);
+                    break;
+                case "absentButton":
+                    logger.LogInformation("{Time} - {User} clicked absent", DateTime.Now, component.User.GlobalName);
+                    break;
             }
         }
     }
