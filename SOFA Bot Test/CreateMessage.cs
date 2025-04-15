@@ -7,14 +7,19 @@ namespace SOFA_Bot_Test
     internal class CreateMessage
     {
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
-        private static readonly Emoji OffEmoji = "⚫";
+        private static string EventType;
         internal async static Task<EmbedBuilder> CreateAttendanceMessage(string eventType)
         {
-            logger.LogInformation("{Time} - Creating {eventType} message", DateTime.Now, eventType);
+            EventType = eventType;
+            return await UpdateAttendanceMessage();
+        }
+        internal async static Task<EmbedBuilder> UpdateAttendanceMessage()
+        {
+            logger.LogInformation("{Time} - Creating {eventType} message", DateTime.Now, EventType);
             EmbedBuilder embed = new() { };
             DateTime eventDateTime = Timer.GetEventDateTime();
             long eventUnix = ((DateTimeOffset)eventDateTime).ToUnixTimeSeconds();
-            switch (eventType)
+            switch (EventType)
             {
                 case "Tournament":
                     embed.WithColor(Color.Green);
@@ -27,27 +32,34 @@ namespace SOFA_Bot_Test
                     break;
             }
             embed
-            .WithTitle($"{eventDateTime.DayOfWeek} {eventType}")
-            .WithDescription($"<t:{eventUnix}:D><t:{eventUnix}:t> - <t:{eventUnix}:R>");
-            BotHandler.SetSofaMembers();
-            Dictionary<SocketGuildUser, bool?> sofaMembers = BotHandler.GetSofaMembers();
-            BotHandler.SetRofaMembers();
-            Dictionary<SocketGuildUser, bool?> rofaMembers = BotHandler.GetRofaMembers();
-            if (eventType == "Golden Drop")
+                .WithTitle($"{eventDateTime.DayOfWeek} {EventType}")
+                .WithDescription($"<t:{eventUnix}:D><t:{eventUnix}:t> - <t:{eventUnix}:R>");
+            Dictionary<SocketGuildUser, bool?> sofaMembers = MemberHandler.GetSofaMembers();
+            Dictionary<SocketGuildUser, bool?> rofaMembers = MemberHandler.GetRofaMembers();
+            Dictionary<SocketGuildUser, bool?> unassignedMembers = MemberHandler.GetUnassignedMembers();
+            if (EventType == "Golden Drop")
             {
                 string sofaField = "";
-                foreach (var member in sofaMembers.Keys)
+                foreach (var member in sofaMembers)
                 {
-                    sofaField += $"{OffEmoji} {member.DisplayName}\n";
+                    sofaField += AddMemberAndStatus(member.Value, member.Key.DisplayName);
                 }
+                embed.AddField("SOFA", $"{sofaField}", true);
                 string rofaField = "";
-                foreach (var member in rofaMembers.Keys)
+                foreach (var member in rofaMembers)
                 {
-                    rofaField += $"{OffEmoji} {member.DisplayName}\n";
+                    rofaField += AddMemberAndStatus(member.Value, member.Key.DisplayName);
                 }
-                embed
-                    .AddField("SOFA", $"{sofaField}", true)
-                    .AddField("ROFA", $"{rofaField}", true);
+                embed.AddField("ROFA", $"{rofaField}", true);
+                if (unassignedMembers.Count > 0)
+                {
+                    string unassignedField = "";
+                    foreach (var member in unassignedMembers)
+                    {
+                        unassignedField += AddMemberAndStatus(member.Value, member.Key.DisplayName);
+                    }
+                    embed.AddField("Unassigned", $"{unassignedField}", true);
+                }
             }
             else
             {
@@ -55,13 +67,30 @@ namespace SOFA_Bot_Test
                 {
                     string squadMembers = "";
                     SocketRole role = BotHandler.GetRole($"Squad {i}");
-                    foreach (var member in sofaMembers.Keys)
-                        if (member.Roles.Contains(role))
-                            squadMembers += $"{OffEmoji} {member.DisplayName}\n";
-                    embed.AddField($"Squad {i}", squadMembers, true);
+                    foreach (var member in sofaMembers)
+                        if (member.Key.Roles.Contains(role))
+                            squadMembers += AddMemberAndStatus(member.Value, member.Key.DisplayName);
+                    if (squadMembers.Count() > 0)
+                        embed.AddField($"Squad {i}", squadMembers, true);
+                }
+                if (unassignedMembers.Count > 0)
+                {
+                    string unassignedField = "";
+                    foreach (var member in rofaMembers)
+                    {
+                        unassignedField += AddMemberAndStatus(member.Value, member.Key.DisplayName);
+                    }
+                    embed.AddField("Unassigned", $"{unassignedField}", true);
                 }
             }
             return embed;
+        }
+        private static string AddMemberAndStatus(bool? status, string displayName)
+        {
+            if (status == null) return $"{new Emoji("⚫")} {displayName}\n";
+            else if (status == true) return $"{new Emoji("🟢")} {displayName}\n";
+            else if (status == false) return $"{new Emoji("🔴")} {displayName}\n";
+            return null;
         }
     }
 }

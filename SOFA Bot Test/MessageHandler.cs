@@ -7,7 +7,7 @@ namespace SOFA_Bot_Test
     {
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
 
-        internal async static Task<IMessage> CreateMesage(IMessageChannel questionChannel, IMessageChannel clanWarChannel, IMessageChannel goldenDropChannel, DayOfWeek eventDayOfWeek)
+        internal async static Task<IMessage> CreateMesage(IMessageChannel questionChannel, IMessageChannel clanWarChannel, IMessageChannel goldenDropChannel)
         {
             logger.LogInformation("{Time} - Starting message creation", DateTime.Now);
             string eventType = await QuestionHandler.HandleEventQuestion(questionChannel);
@@ -18,6 +18,7 @@ namespace SOFA_Bot_Test
             }
             else
             {
+                MemberHandler.SetMembers();
                 EmbedBuilder embedMessage = await CreateMessage.CreateAttendanceMessage(eventType);
                 ComponentBuilder messageButton = CreateButton.CreateAttendanceButton();
                 if (eventType == "Golden Drop")

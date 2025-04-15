@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 
 namespace SOFA_Bot_Test
@@ -9,6 +10,7 @@ namespace SOFA_Bot_Test
 
         public static async Task Handler(SocketMessageComponent component)
         {
+            EmbedBuilder updatedMessage;
             switch (component.Data.CustomId)
             {
                 case "tournamentButton":
@@ -29,9 +31,14 @@ namespace SOFA_Bot_Test
                     break;
                 case "presentButton":
                     logger.LogInformation("{Time} - {User} clicked present", DateTime.Now, component.User.GlobalName);
+                    updatedMessage = await CreateMessage.UpdateAttendanceMessage();
+                    await component.UpdateAsync(message => message.Embed = updatedMessage.Build());
                     break;
                 case "absentButton":
                     logger.LogInformation("{Time} - {User} clicked absent", DateTime.Now, component.User.GlobalName);
+                    MemberHandler.SetMemberStatus(component.User.Id, false);
+                    updatedMessage = await CreateMessage.UpdateAttendanceMessage();
+                    await component.UpdateAsync(message => message.Embed = updatedMessage.Build());
                     break;
             }
         }

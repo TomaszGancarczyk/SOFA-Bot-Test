@@ -25,6 +25,7 @@ namespace SOFA_Bot_Test
             {
                 eventDateTime = eventDateTime.AddHours(1);
             }
+            logger.LogInformation("{Time} - Event date time set for {eventDateTime}", DateTime.Now, eventDateTime);
             EventDateTime = eventDateTime;
         }
         private static DateOnly GetTimeChangeDateFromLastDayOfMonth(DateOnly date)
