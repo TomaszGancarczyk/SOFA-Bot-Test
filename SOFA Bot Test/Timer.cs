@@ -36,14 +36,5 @@ namespace SOFA_Bot_Test
             }
             return date;
         }
-
-        internal static TimeSpan GetEventTimeSpan()
-        {
-            DateTime eventDateTime = Timer.GetEventDateTime();
-            TimeSpan eventTimeSpan = eventDateTime - DateTime.Now;
-            logger.LogInformation("{Time} - Remaining time: {eventTimeSpan}", DateTime.Now, eventTimeSpan);
-
-            return eventTimeSpan;
-        }
     }
 }

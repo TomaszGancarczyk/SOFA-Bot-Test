@@ -56,11 +56,6 @@ namespace SOFA_Bot_Test
         {
             return Guild.Roles.FirstOrDefault(role => role.Name == roleName);
         }
-        //TODO Remove if unused
-        internal static DiscordSocketClient GetDiscord()
-        {
-            return Discord;
-        }
         internal static SocketGuild GetGuild()
         {
             return Guild;
@@ -70,9 +65,11 @@ namespace SOFA_Bot_Test
             logger.LogInformation("{Time} - Starting event", DateTime.Now);
             logger.LogInformation("{Time} - Getting event date time", DateTime.Now);
             Timer.SetEventDateTimeForNextDay();
+            var eventDateTime = Timer.GetEventDateTime();
             IMessage eventMessage = await MessageHandler.CreateMesage(QuestionChannel, SignupsChannel, GoldenDropChannel);
-            //TODO Continue after message is sent
-            //await eventMessage.AddReactionAsync(new Emoji("⚫"));
+            TimeSpan reminderTimeSpan = eventDateTime - DateTime.Now.AddHours(1);
+            if (reminderTimeSpan > TimeSpan.Zero) Reminder.Handle(reminderTimeSpan);
+            //TODO Continue after reminder is handled
         }
     }
 }

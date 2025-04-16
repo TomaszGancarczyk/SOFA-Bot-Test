@@ -8,10 +8,9 @@ namespace SOFA_Bot_Test
     {
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
         private static string EventType;
-        internal async static Task<EmbedBuilder> CreateAttendanceMessage(string eventType)
+        internal async static Task<EmbedBuilder> CreateAttendanceMessage()
         {
-            logger.LogInformation("{Time} - Creating {eventType} message", DateTime.Now, eventType);
-            EventType = eventType;
+            logger.LogInformation("{Time} - Creating {eventType} message", DateTime.Now, EventType);
             return await UpdateAttendanceMessage();
         }
         internal async static Task<EmbedBuilder> UpdateAttendanceMessage()
@@ -63,16 +62,25 @@ namespace SOFA_Bot_Test
             }
             else
             {
+                SocketRole role;
+                string squadMembers;
                 for (int i = 1; i <= 7; i++)
                 {
-                    string squadMembers = "";
-                    SocketRole role = BotHandler.GetRole($"Squad {i}");
+                    squadMembers = "";
+                    role = BotHandler.GetRole($"Squad {i}");
                     foreach (var member in sofaMembers)
                         if (member.Key.Roles.Contains(role))
                             squadMembers += AddMemberAndStatus(member.Value, member.Key.DisplayName);
                     if (squadMembers.Count() > 0)
                         embed.AddField($"Squad {i}", squadMembers, true);
                 }
+                role = BotHandler.GetRole($"SOFA Reserve");
+                squadMembers = "";
+                foreach (var member in sofaMembers)
+                    if (member.Key.Roles.Contains(role))
+                        squadMembers += AddMemberAndStatus(member.Value, member.Key.DisplayName);
+                if (squadMembers.Count() > 0)
+                    embed.AddField($"Reserve", squadMembers, true);
                 if (unassignedMembers.Count > 0)
                 {
                     string unassignedField = "";
@@ -91,6 +99,14 @@ namespace SOFA_Bot_Test
             else if (status == true) return $"{new Emoji("🟢")} {displayName}\n";
             else if (status == false) return $"{new Emoji("🔴")} {displayName}\n";
             return null;
+        }
+        internal static void SetEventType(string eventType)
+        {
+            EventType = eventType;
+        }
+        internal static string GetEventType()
+        {
+            return EventType;
         }
     }
 }
