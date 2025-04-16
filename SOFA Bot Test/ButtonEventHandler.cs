@@ -31,6 +31,7 @@ namespace SOFA_Bot_Test
                     break;
                 case "presentButton":
                     logger.LogInformation("{Time} - {User} clicked present", DateTime.Now, component.User.GlobalName);
+                    MemberHandler.SetMemberStatus(component.User.Id, true);
                     updatedMessage = await CreateMessage.UpdateAttendanceMessage();
                     await component.UpdateAsync(message => message.Embed = updatedMessage.Build());
                     break;

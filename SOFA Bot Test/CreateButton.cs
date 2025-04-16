@@ -14,29 +14,26 @@ namespace SOFA_Bot_Test
         ];
         private static readonly List<DayOfWeek> GoldenDropDays =
         [
-            DayOfWeek.Thursday,
-            DayOfWeek.Friday,
-            DayOfWeek.Saturday
+            DayOfWeek.Monday,
+            DayOfWeek.Sunday
         ];
         private static readonly List<DayOfWeek> BaseCaptureDays =
         [
-            DayOfWeek.Thursday,
-            DayOfWeek.Friday,
-            DayOfWeek.Saturday
+            DayOfWeek.Sunday
         ];
         internal static ComponentBuilder CreateQuestionButton()
         {
             DayOfWeek eventDayOfWeek = Timer.GetEventDateTime().DayOfWeek;
             ComponentBuilder component = new();
-            if (TournamentDays.Any(day => day == eventDayOfWeek))
+            if (TournamentDays.Contains(eventDayOfWeek))
             {
                 component.WithButton("Tournament", "tournamentButton", emote: new Emoji("⚔️"));
             }
-            if (GoldenDropDays.Any(day => day == eventDayOfWeek))
+            if (GoldenDropDays.Contains(eventDayOfWeek))
             {
                 component.WithButton("Golden Drop", "goldenDropButton", emote: new Emoji("📦"));
             }
-            if (BaseCaptureDays.Any(day => day == eventDayOfWeek))
+            if (BaseCaptureDays.Contains(eventDayOfWeek))
             {
                 component.WithButton("Base Capture", "baseCaptureButton", emote: new Emoji("👑"));
             }

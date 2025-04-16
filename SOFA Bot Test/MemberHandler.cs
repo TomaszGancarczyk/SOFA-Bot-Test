@@ -48,22 +48,20 @@ namespace SOFA_Bot_Test
         }
         internal static void SetMemberStatus(ulong memberId, bool status)
         {
-            SocketGuildUser member = SofaMembers.Keys.FirstOrDefault(user => user.Id == memberId);
-            if (member == null)
-                member = RofaMembers.Keys.FirstOrDefault(user => user.Id == memberId);
-
-            if (member == null)
+            SocketGuildUser member = Guild.Users.FirstOrDefault(user => user.Id == memberId);
+            if (SofaMembers.Keys.Where(user => user.Id == memberId) != null)
             {
-                member = Guild.Users.FirstOrDefault(user => user.Id == memberId);
-                foreach (var role in member.Roles)
-                {
-                    if (role.Name == SofaRoleName)
-                        SofaMembers.Add(member, status);
-                    else if (role.Name == RofaRoleName)
-                        RofaMembers.Add(member, status);
-                    else
-                        UnassignedMembers.Add(member, status);
-                }
+                SocketGuildUser key = SofaMembers.Keys.FirstOrDefault(user => user.Id == memberId);
+                SofaMembers[key] = status;
+            }
+            else if (RofaMembers.Keys.Where(user => user.Id == memberId) != null)
+            {
+                SocketGuildUser key = RofaMembers.Keys.FirstOrDefault(user => user.Id == memberId);
+                RofaMembers[key] = status;
+            }
+            else
+            {
+                UnassignedMembers.Add(member, status);
             }
 
             logger.LogInformation("{Time} - Setting status {status} for {member}", DateTime.Now, status, member.DisplayName);

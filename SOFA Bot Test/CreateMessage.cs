@@ -10,12 +10,12 @@ namespace SOFA_Bot_Test
         private static string EventType;
         internal async static Task<EmbedBuilder> CreateAttendanceMessage(string eventType)
         {
+            logger.LogInformation("{Time} - Creating {eventType} message", DateTime.Now, eventType);
             EventType = eventType;
             return await UpdateAttendanceMessage();
         }
         internal async static Task<EmbedBuilder> UpdateAttendanceMessage()
         {
-            logger.LogInformation("{Time} - Creating {eventType} message", DateTime.Now, EventType);
             EmbedBuilder embed = new() { };
             DateTime eventDateTime = Timer.GetEventDateTime();
             long eventUnix = ((DateTimeOffset)eventDateTime).ToUnixTimeSeconds();
