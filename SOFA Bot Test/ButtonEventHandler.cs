@@ -12,6 +12,7 @@ namespace SOFA_Bot_Test
         {
             EmbedBuilder updatedMessage;
             EmbedBuilder confirmationMessage;
+            IMessage currentMessage;
             switch (component.Data.CustomId)
             {
                 case "tournamentButton":
@@ -36,20 +37,39 @@ namespace SOFA_Bot_Test
                     break;
                 case "presentButton":
                     logger.LogInformation("{Time} - {User} clicked present", DateTime.Now, component.User.GlobalName);
-                    MemberHandler.SetMemberStatus(component.User.Id, true);
-                    updatedMessage = await CreateMessage.UpdateAttendanceMessage();
-                    confirmationMessage = await CreateMessage.CreateConfirmationMesasage("Present");
-                    await component.RespondAsync(embed: confirmationMessage.Build(), ephemeral: true);
-                    await component.RespondAsync("e");
-                    await component.UpdateAsync(message => message.Embed = updatedMessage.Build());
+                    currentMessage = BotHandler.GetCurrentMessage();
+                    if (component.Message.Id == currentMessage.Id)
+                    {
+                        MemberHandler.SetMemberStatus(component.User.Id, true);
+                        updatedMessage = await CreateMessage.UpdateAttendanceMessage();
+                        confirmationMessage = await CreateMessage.CreateConfirmationMesasage("Present");
+                        await component.UpdateAsync(message => message.Embed = updatedMessage.Build());
+                        await component.FollowupAsync(embed: confirmationMessage.Build(), ephemeral: true);
+                        BotHandler.SetCurrentMessage(component.Message);
+                    }
+                    else
+                    {
+                        confirmationMessage = await CreateMessage.CreateWrongSignupMesasage();
+                        await component.RespondAsync(embed: confirmationMessage.Build(), ephemeral: true);
+                    }
                     break;
                 case "absentButton":
                     logger.LogInformation("{Time} - {User} clicked absent", DateTime.Now, component.User.GlobalName);
-                    MemberHandler.SetMemberStatus(component.User.Id, false);
-                    updatedMessage = await CreateMessage.UpdateAttendanceMessage();
-                    confirmationMessage = await CreateMessage.CreateConfirmationMesasage("Absent");
-                    await component.RespondAsync(embed: confirmationMessage.Build(), ephemeral: true);
-                    await component.UpdateAsync(message => message.Embed = updatedMessage.Build());
+                    currentMessage = BotHandler.GetCurrentMessage();
+                    if (component.Message.Id == currentMessage.Id)
+                    {
+                        MemberHandler.SetMemberStatus(component.User.Id, false);
+                        updatedMessage = await CreateMessage.UpdateAttendanceMessage();
+                        confirmationMessage = await CreateMessage.CreateConfirmationMesasage("Absent");
+                        await component.UpdateAsync(message => message.Embed = updatedMessage.Build());
+                        await component.FollowupAsync(embed: confirmationMessage.Build(), ephemeral: true);
+                        BotHandler.SetCurrentMessage(component.Message);
+                    }
+                    else
+                    {
+                        confirmationMessage = await CreateMessage.CreateWrongSignupMesasage();
+                        await component.RespondAsync(embed: confirmationMessage.Build(), ephemeral: true);
+                    }
                     break;
             }
         }

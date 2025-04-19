@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace SOFA_Bot_Test
 {

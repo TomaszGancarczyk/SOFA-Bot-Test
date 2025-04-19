@@ -12,6 +12,7 @@ namespace SOFA_Bot_Test
         private static IMessageChannel QuestionChannel;
         private static IMessageChannel SignupsChannel;
         private static IMessageChannel GoldenDropChannel;
+        private static IMessage CurrentMessage;
 
         internal static void InitializeBotHandler(DiscordSocketClient discord)
         {
@@ -60,13 +61,21 @@ namespace SOFA_Bot_Test
         {
             return Guild;
         }
+        internal static void SetCurrentMessage(IMessage message)
+        {
+            CurrentMessage = message;
+        }
+        internal static IMessage GetCurrentMessage()
+        {
+            return CurrentMessage;
+        }
         private async static void StartEvent()
         {
             logger.LogInformation("{Time} - Starting event", DateTime.Now);
             logger.LogInformation("{Time} - Getting event date time", DateTime.Now);
             Timer.SetEventDateTimeForNextDay();
             var eventDateTime = Timer.GetEventDateTime();
-            IMessage eventMessage = await MessageHandler.CreateMesage(QuestionChannel, SignupsChannel, GoldenDropChannel);
+            CurrentMessage = await MessageHandler.CreateMesage(QuestionChannel, SignupsChannel, GoldenDropChannel);
             TimeSpan reminderTimeSpan = eventDateTime - DateTime.Now.AddHours(1);
             if (reminderTimeSpan > TimeSpan.Zero) Reminder.Handle(reminderTimeSpan);
             //TODO Continue after reminder is handled

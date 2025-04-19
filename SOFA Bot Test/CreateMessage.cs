@@ -110,6 +110,13 @@ namespace SOFA_Bot_Test
             }
             return embed;
         }
+        internal async static Task<EmbedBuilder> CreateWrongSignupMesasage()
+        {
+            EmbedBuilder embed = new();
+            embed.WithColor(Color.DarkGrey);
+            embed.WithTitle($"This is an old signup");
+            return embed;
+        }
         private static string AddMemberAndStatus(bool? status, string displayName)
         {
             if (status == null) return $"{new Emoji("⚫")} {displayName}\n";
