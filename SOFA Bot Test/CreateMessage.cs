@@ -8,6 +8,7 @@ namespace SOFA_Bot_Test
     {
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
         private static string EventType;
+        private static string EventMessageTitle;
         internal async static Task<EmbedBuilder> CreateAttendanceMessage()
         {
             logger.LogInformation("{Time} - Creating {eventType} message", DateTime.Now, EventType);
@@ -30,8 +31,9 @@ namespace SOFA_Bot_Test
                     embed.WithColor(Color.DarkGreen);
                     break;
             }
+            EventMessageTitle = $"{eventDateTime.DayOfWeek} {EventType}";
             embed
-                .WithTitle($"{eventDateTime.DayOfWeek} {EventType}")
+                .WithTitle(EventMessageTitle)
                 .WithDescription($"<t:{eventUnix}:D><t:{eventUnix}:t> - <t:{eventUnix}:R>");
             Dictionary<SocketGuildUser, bool?> sofaMembers = MemberHandler.GetSofaMembers();
             Dictionary<SocketGuildUser, bool?> rofaMembers = MemberHandler.GetRofaMembers();
@@ -90,6 +92,21 @@ namespace SOFA_Bot_Test
                     }
                     embed.AddField("Unassigned", $"{unassignedField}", true);
                 }
+            }
+            return embed;
+        }
+        internal async static Task<EmbedBuilder> CreateConfirmationMesasage(string status)
+        {
+            EmbedBuilder embed = new();
+            if (status == "Present")
+            {
+                embed.WithColor(Color.Green);
+                embed.WithTitle($"Signed Up for {EventMessageTitle}");
+            }
+            if (status == "Absent")
+            {
+                embed.WithColor(Color.Red);
+                embed.WithTitle($"Signed Off for {EventMessageTitle}");
             }
             return embed;
         }

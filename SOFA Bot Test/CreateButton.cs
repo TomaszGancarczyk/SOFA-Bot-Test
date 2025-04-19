@@ -37,6 +37,7 @@ namespace SOFA_Bot_Test
             {
                 component.WithButton("Base Capture", "baseCaptureButton", emote: new Emoji("👑"));
             }
+            component.WithButton("Brawl", "brawlButton", emote: new Emoji("💵"));
             component.WithButton("Day Off", "dayOffButton", emote: new Emoji("🏖️"));
             return component;
         }

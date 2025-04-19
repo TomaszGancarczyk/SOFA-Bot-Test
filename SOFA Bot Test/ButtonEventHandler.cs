@@ -11,6 +11,7 @@ namespace SOFA_Bot_Test
         public static async Task Handler(SocketMessageComponent component)
         {
             EmbedBuilder updatedMessage;
+            EmbedBuilder confirmationMessage;
             switch (component.Data.CustomId)
             {
                 case "tournamentButton":
@@ -29,16 +30,25 @@ namespace SOFA_Bot_Test
                     logger.LogInformation("{Time} - Got day off response to event question", DateTime.Now);
                     QuestionHandler.SetQuestionAnswear("Day Off");
                     break;
+                case "brawlButton":
+                    logger.LogInformation("{Time} - Got brawl response to event question", DateTime.Now);
+                    QuestionHandler.SetQuestionAnswear("Brawl");
+                    break;
                 case "presentButton":
                     logger.LogInformation("{Time} - {User} clicked present", DateTime.Now, component.User.GlobalName);
                     MemberHandler.SetMemberStatus(component.User.Id, true);
                     updatedMessage = await CreateMessage.UpdateAttendanceMessage();
+                    confirmationMessage = await CreateMessage.CreateConfirmationMesasage("Present");
+                    await component.RespondAsync(embed: confirmationMessage.Build(), ephemeral: true);
+                    await component.RespondAsync("e");
                     await component.UpdateAsync(message => message.Embed = updatedMessage.Build());
                     break;
                 case "absentButton":
                     logger.LogInformation("{Time} - {User} clicked absent", DateTime.Now, component.User.GlobalName);
                     MemberHandler.SetMemberStatus(component.User.Id, false);
                     updatedMessage = await CreateMessage.UpdateAttendanceMessage();
+                    confirmationMessage = await CreateMessage.CreateConfirmationMesasage("Absent");
+                    await component.RespondAsync(embed: confirmationMessage.Build(), ephemeral: true);
                     await component.UpdateAsync(message => message.Embed = updatedMessage.Build());
                     break;
             }

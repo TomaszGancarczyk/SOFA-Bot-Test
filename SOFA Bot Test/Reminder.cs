@@ -1,5 +1,7 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace SOFA_Bot_Test
 {
@@ -14,16 +16,20 @@ namespace SOFA_Bot_Test
             if (eventType != "Day Off" && eventType != "Golden Drop")
             {
                 foreach (var member in MemberHandler.GetSofaMembers())
-                    if (member.Value == null) offMembers.Add(member.Key);
+                    if (member.Value == null)
+                        offMembers.Add(member.Key);
                 foreach (var member in MemberHandler.GetUnassignedMembers())
-                    offMembers.Add(member.Key);
+                    if (member.Value == null)
+                        offMembers.Add(member.Key);
             }
             foreach (var member in offMembers)
-                SendReminder(member.Id);
+                await SendReminder(member);
         }
-        private static void SendReminder(ulong userId)
+        private static async Task SendReminder(SocketGuildUser member)
         {
-            //TODO continue here
+            logger.LogInformation("{Time} - Sending reminder to {member}", DateTime.Now, member.DisplayName);
+            string message = "Don't forget to signup";
+            await member.SendMessageAsync(message);
         }
     }
 }
