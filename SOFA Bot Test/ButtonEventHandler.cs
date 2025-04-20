@@ -40,7 +40,7 @@ namespace SOFA_Bot_Test
                     if (component.Message.Id == currentMessageId)
                     {
                         logger.LogInformation("{Time} - {User} clicked present", DateTime.Now, component.User.GlobalName);
-                        MemberHandler.SetMemberStatus(component.User.Id, true);
+                        MemberHandler.SetMemberStatus(component.User, true);
                         updatedMessage = await CreateMessage.UpdateAttendanceMessage();
                         confirmationMessage = await CreateMessage.CreateConfirmationMesasage("Present");
                         await component.UpdateAsync(message => message.Embed = updatedMessage.Build());
@@ -59,7 +59,7 @@ namespace SOFA_Bot_Test
                     if (component.Message.Id == currentMessageId)
                     {
                         logger.LogInformation("{Time} - {User} clicked absent", DateTime.Now, component.User.GlobalName);
-                        MemberHandler.SetMemberStatus(component.User.Id, false);
+                        MemberHandler.SetMemberStatus(component.User, false);
                         updatedMessage = await CreateMessage.UpdateAttendanceMessage();
                         confirmationMessage = await CreateMessage.CreateConfirmationMesasage("Absent");
                         await component.UpdateAsync(message => message.Embed = updatedMessage.Build());

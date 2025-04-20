@@ -22,13 +22,16 @@ namespace SOFA_Bot_Test
             switch (EventType)
             {
                 case "Tournament":
-                    embed.WithColor(Color.Green);
+                    embed.WithColor(Color.DarkGreen);
                     break;
                 case "Golden Drop":
                     embed.WithColor(Color.Gold);
                     break;
                 case "Base Capture":
-                    embed.WithColor(Color.DarkGreen);
+                    embed.WithColor(Color.LightOrange);
+                    break;
+                case "Brawl":
+                    embed.WithColor(Color.Green);
                     break;
             }
             EventMessageTitle = $"{eventDateTime.DayOfWeek} {EventType}";
@@ -38,7 +41,7 @@ namespace SOFA_Bot_Test
             Dictionary<SocketGuildUser, bool?> sofaMembers = MemberHandler.GetSofaMembers();
             Dictionary<SocketGuildUser, bool?> rofaMembers = MemberHandler.GetRofaMembers();
             Dictionary<SocketGuildUser, bool?> unassignedMembers = MemberHandler.GetUnassignedMembers();
-            int[] totalPresentAbsentUnsigned = {0, 0, 0};
+            int[] totalPresentAbsentUnsigned = { 0, 0, 0 };
             AddPresentAbsentUnsigned(totalPresentAbsentUnsigned, sofaMembers);
             AddPresentAbsentUnsigned(totalPresentAbsentUnsigned, unassignedMembers);
             if (EventType == "Golden Drop")
@@ -49,13 +52,15 @@ namespace SOFA_Bot_Test
                 {
                     sofaField += AddMemberAndStatus(member.Value, member.Key.DisplayName);
                 }
-                embed.AddField("SOFA", $"{sofaField}", true);
+                if (sofaField.Length > 0)
+                    embed.AddField("SOFA", $"{sofaField}", true);
                 string rofaField = "";
                 foreach (var member in rofaMembers)
                 {
                     rofaField += AddMemberAndStatus(member.Value, member.Key.DisplayName);
                 }
-                embed.AddField("ROFA", $"{rofaField}", true);
+                if (rofaField.Length > 0)
+                    embed.AddField("ROFA", $"{rofaField}", true);
                 if (unassignedMembers.Count > 0)
                 {
                     string unassignedField = "";
@@ -70,20 +75,24 @@ namespace SOFA_Bot_Test
             {
                 SocketRole role;
                 string squadMembers;
-                for (int i = 1; i <= 7; i++)
+                List<ulong> handledMembersId = new();
+                for (int i = 1; i <= 6; i++)
                 {
                     squadMembers = "";
                     role = BotHandler.GetRole($"Squad {i}");
                     foreach (var member in sofaMembers)
-                        if (member.Key.Roles.Contains(role))
+                        if (member.Key.Roles.Contains(role) && !handledMembersId.Contains(member.Key.Id))
+                        {
                             squadMembers += AddMemberAndStatus(member.Value, member.Key.DisplayName);
+                            handledMembersId.Add(member.Key.Id);
+                        }
                     if (squadMembers.Count() > 0)
                         embed.AddField($"Squad {i}", squadMembers, true);
                 }
                 role = BotHandler.GetRole($"SOFA Reserve");
                 squadMembers = "";
                 foreach (var member in sofaMembers)
-                    if (member.Key.Roles.Contains(role))
+                    if (member.Key.Roles.Contains(role) && !handledMembersId.Contains(member.Key.Id))
                         squadMembers += AddMemberAndStatus(member.Value, member.Key.DisplayName);
                 if (squadMembers.Count() > 0)
                     embed.AddField($"Reserve", squadMembers, true);

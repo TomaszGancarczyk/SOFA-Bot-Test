@@ -34,7 +34,8 @@ namespace SOFA_Bot_Test
             SocketGuildUser[] rofaMembers = Guild.Users.Where(user => user.Roles.Contains(rofaRole)).ToArray();
             foreach (SocketGuildUser member in rofaMembers)
             {
-                RofaMembers.Add(member, null);
+                if (!member.Roles.Contains(sofaRole))
+                    RofaMembers.Add(member, null);
             }
             UnassignedMembers = [];
         }
@@ -46,25 +47,30 @@ namespace SOFA_Bot_Test
         {
             return UnassignedMembers;
         }
-        internal static void SetMemberStatus(ulong memberId, bool status)
+        internal static void SetMemberStatus(SocketUser member, bool status)
         {
-            SocketGuildUser member = Guild.Users.FirstOrDefault(user => user.Id == memberId);
-            if (SofaMembers.Keys.Where(user => user.Id == memberId) != null)
+            if (SofaMembers.Keys.Where(user => user.Id == member.Id) != null)
             {
-                SocketGuildUser key = SofaMembers.Keys.FirstOrDefault(user => user.Id == memberId);
+                SocketGuildUser key = SofaMembers.Keys.FirstOrDefault(user => user.Id == member.Id);
                 SofaMembers[key] = status;
             }
-            else if (RofaMembers.Keys.Where(user => user.Id == memberId) != null)
+            else if (RofaMembers.Keys.Where(user => user.Id == member.Id) != null)
             {
-                SocketGuildUser key = RofaMembers.Keys.FirstOrDefault(user => user.Id == memberId);
+                SocketGuildUser key = RofaMembers.Keys.FirstOrDefault(user => user.Id == member.Id);
                 RofaMembers[key] = status;
+            }
+            else if (UnassignedMembers.Keys.Where(user => user.Id == member.Id) != null)
+            {
+                SocketGuildUser key = UnassignedMembers.Keys.FirstOrDefault(user => user.Id == member.Id);
+                UnassignedMembers[key] = status;
             }
             else
             {
-                UnassignedMembers.Add(member, status);
+                SocketGuildUser newMember = Guild.Users.FirstOrDefault(user => user.Id == member.Id);
+                UnassignedMembers.Add(newMember, status);
             }
 
-            logger.LogInformation("{Time} - Setting status {status} for {member}", DateTime.Now, status, member.DisplayName);
+            logger.LogInformation("{Time} - Setting status {status} for {member}", DateTime.Now, status, member.GlobalName);
         }
     }
 }
