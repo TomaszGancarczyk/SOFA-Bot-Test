@@ -38,8 +38,12 @@ namespace SOFA_Bot_Test
             Dictionary<SocketGuildUser, bool?> sofaMembers = MemberHandler.GetSofaMembers();
             Dictionary<SocketGuildUser, bool?> rofaMembers = MemberHandler.GetRofaMembers();
             Dictionary<SocketGuildUser, bool?> unassignedMembers = MemberHandler.GetUnassignedMembers();
+            int[] totalPresentAbsentUnsigned = {0, 0, 0};
+            AddPresentAbsentUnsigned(totalPresentAbsentUnsigned, sofaMembers);
+            AddPresentAbsentUnsigned(totalPresentAbsentUnsigned, unassignedMembers);
             if (EventType == "Golden Drop")
             {
+                AddPresentAbsentUnsigned(totalPresentAbsentUnsigned, rofaMembers);
                 string sofaField = "";
                 foreach (var member in sofaMembers)
                 {
@@ -93,7 +97,23 @@ namespace SOFA_Bot_Test
                     embed.AddField("Unassigned", $"{unassignedField}", true);
                 }
             }
+            string footerMessage = $"{totalPresentAbsentUnsigned[0]} Present, {totalPresentAbsentUnsigned[1]} Absent, {totalPresentAbsentUnsigned[2]} Unsigned";
+            embed.WithFooter(footerMessage);
             return embed;
+        }
+        private static int[] AddPresentAbsentUnsigned(int[] totalPresentAbsentUnsigned, Dictionary<SocketGuildUser, bool?> memberDict)
+        {
+
+            foreach (var member in memberDict)
+            {
+                if (member.Value == true)
+                    totalPresentAbsentUnsigned[0] = totalPresentAbsentUnsigned[0] + 1;
+                if (member.Value == false)
+                    totalPresentAbsentUnsigned[1] = totalPresentAbsentUnsigned[1] + 1;
+                if (member.Value == null)
+                    totalPresentAbsentUnsigned[2] = totalPresentAbsentUnsigned[2] + 1;
+            }
+            return totalPresentAbsentUnsigned;
         }
         internal async static Task<EmbedBuilder> CloseAttendanceMessage()
         {
@@ -120,7 +140,7 @@ namespace SOFA_Bot_Test
         {
             EmbedBuilder embed = new();
             embed.WithColor(Color.DarkGrey);
-            embed.WithTitle($"This is an old signup");
+            embed.WithTitle($"This is signup is closed");
             return embed;
         }
         private static string AddMemberAndStatus(bool? status, string displayName)

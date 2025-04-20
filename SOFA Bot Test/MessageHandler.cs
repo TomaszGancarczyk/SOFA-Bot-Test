@@ -21,7 +21,7 @@ namespace SOFA_Bot_Test
             {
                 MemberHandler.SetMembers();
                 EmbedBuilder embedMessage = await CreateMessage.CreateAttendanceMessage();
-                ComponentBuilder messageButton = CreateButton.CreateAttendanceButton();
+                ComponentBuilder messageButton = await CreateButton.CreateAttendanceButton();
                 if (eventType == "Golden Drop")
                 {
                     eventMessage = await goldenDropChannel.SendMessageAsync("", false, embedMessage.Build(), null, null, null, messageButton.Build());
@@ -30,6 +30,7 @@ namespace SOFA_Bot_Test
                 {
                     eventMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build(), null, null, null, messageButton.Build());
                 }
+                logger.LogInformation("{Time} - Signup message is sent", DateTime.Now);
             }
             return eventMessage;
         }

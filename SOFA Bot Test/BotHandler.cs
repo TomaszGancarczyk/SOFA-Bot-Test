@@ -21,7 +21,7 @@ namespace SOFA_Bot_Test
             Guild = discord.GetGuild(BotInfo.GetGuildId());
             if (Guild == null)
             {
-                logger.LogError("{Time} - Guild not found", DateTime.Now);
+                logger.LogCritical("{Time} - Guild not found", DateTime.Now);
                 throw new ArgumentNullException("Guild not found");
             }
             logger.LogInformation("{Time} - Found Guild: {Guild.Name}", DateTime.Now, Guild.Name);
@@ -29,7 +29,7 @@ namespace SOFA_Bot_Test
             QuestionChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetQuestionChannelId());
             if (QuestionChannel == null)
             {
-                logger.LogError("{Time} - Quesion channel not found", DateTime.Now);
+                logger.LogCritical("{Time} - Quesion channel not found", DateTime.Now);
                 throw new ArgumentNullException("Question channel not found");
             }
             logger.LogInformation("{Time} - Found Question Channel: {Channel.Name}", DateTime.Now, QuestionChannel.Name);
@@ -37,7 +37,7 @@ namespace SOFA_Bot_Test
             SignupsChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetSignupsChannelId());
             if (SignupsChannel == null)
             {
-                logger.LogError("{Time} - Signups channel not found", DateTime.Now);
+                logger.LogCritical("{Time} - Signups channel not found", DateTime.Now);
                 throw new ArgumentNullException("Signups channel not found");
             }
             logger.LogInformation("{Time} - Found Signups Channel: {Channel.Name}", DateTime.Now, SignupsChannel.Name);
@@ -45,7 +45,7 @@ namespace SOFA_Bot_Test
             GoldenDropChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetGoldenDropChannelId());
             if (GoldenDropChannel == null)
             {
-                logger.LogError("{Time} - Golden Drop channel not found", DateTime.Now);
+                logger.LogCritical("{Time} - Golden Drop channel not found", DateTime.Now);
                 throw new ArgumentNullException("Golden Drop channel not found");
             }
             logger.LogInformation("{Time} - Found Golden Drop Channel: {Channel.Name}", DateTime.Now, GoldenDropChannel.Name);
@@ -71,6 +71,13 @@ namespace SOFA_Bot_Test
         }
         private async static void StartEvent()
         {
+            while (true)
+            {
+                await HandleEvent();
+            }
+        }
+        private async static Task HandleEvent()
+        {
             logger.LogInformation("{Time} - Starting event", DateTime.Now);
             CurrentMessage = null;
             logger.LogInformation("{Time} - Getting event date time", DateTime.Now);
@@ -81,22 +88,16 @@ namespace SOFA_Bot_Test
             if (reminderTimeSpan > TimeSpan.Zero)
                 Reminder.Handle(reminderTimeSpan);
             else
-                logger.LogError("{Time} - reminderTimeSpan is less than 0", DateTime.Now);
+                logger.LogWarning("{Time} - reminderTimeSpan is less than 0", DateTime.Now);
             TimeSpan eventCloseTimeSpan = eventDateTime - DateTime.Now.AddMinutes(20);
             if (eventCloseTimeSpan > TimeSpan.Zero)
                 Task.Delay(eventCloseTimeSpan).Wait();
             else
-                logger.LogError("{Time} - eventCloseTimeSpan is less than 0", DateTime.Now);
+                logger.LogWarning("{Time} - eventCloseTimeSpan is less than 0", DateTime.Now);
             EmbedBuilder closedMessage = await CreateMessage.CloseAttendanceMessage();
-            try
-            {
-                await SignupsChannel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
-            }
-            catch
-            {
-                await GoldenDropChannel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
-            }
+            await CurrentMessage.Channel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
             CurrentMessage = null;
+            Task.Delay(7200000).Wait();
         }
     }
 }

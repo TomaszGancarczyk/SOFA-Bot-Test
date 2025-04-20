@@ -41,7 +41,7 @@ namespace SOFA_Bot_Test
             component.WithButton("Day Off", "dayOffButton", emote: new Emoji("🏖️"));
             return component;
         }
-        internal static ComponentBuilder CreateAttendanceButton()
+        internal static async Task<ComponentBuilder> CreateAttendanceButton()
         {
             ComponentBuilder button = new ComponentBuilder()
                 .WithButton("Present", "presentButton", ButtonStyle.Success)

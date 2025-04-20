@@ -68,7 +68,7 @@ namespace SOFA_Bot_Test
                     }
                     else
                     {
-                        logger.LogInformation("{Time} - {User} interacted with old message", DateTime.Now, component.User.GlobalName);
+                        logger.LogInformation("{Time} - {User} interacted with old signup", DateTime.Now, component.User.GlobalName);
                         confirmationMessage = await CreateMessage.CreateWrongSignupMesasage();
                         await component.RespondAsync(embed: confirmationMessage.Build(), ephemeral: true);
                     }
