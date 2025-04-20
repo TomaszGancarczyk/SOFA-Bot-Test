@@ -95,6 +95,12 @@ namespace SOFA_Bot_Test
             }
             return embed;
         }
+        internal async static Task<EmbedBuilder> CloseAttendanceMessage()
+        {
+            EmbedBuilder embed = await UpdateAttendanceMessage();
+            embed.WithTitle($"{EventMessageTitle} - Signups closed");
+            return embed;
+        }
         internal async static Task<EmbedBuilder> CreateConfirmationMesasage(string status)
         {
             EmbedBuilder embed = new();

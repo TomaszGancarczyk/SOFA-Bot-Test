@@ -12,7 +12,7 @@ namespace SOFA_Bot_Test
         private static IMessageChannel QuestionChannel;
         private static IMessageChannel SignupsChannel;
         private static IMessageChannel GoldenDropChannel;
-        private static IMessage CurrentMessage;
+        private static IMessage? CurrentMessage;
 
         internal static void InitializeBotHandler(DiscordSocketClient discord)
         {
@@ -65,20 +65,38 @@ namespace SOFA_Bot_Test
         {
             CurrentMessage = message;
         }
-        internal static IMessage GetCurrentMessage()
+        internal static ulong GetCurrentMessageId()
         {
-            return CurrentMessage;
+            return CurrentMessage.Id;
         }
         private async static void StartEvent()
         {
             logger.LogInformation("{Time} - Starting event", DateTime.Now);
+            CurrentMessage = null;
             logger.LogInformation("{Time} - Getting event date time", DateTime.Now);
             Timer.SetEventDateTimeForNextDay();
             var eventDateTime = Timer.GetEventDateTime();
             CurrentMessage = await MessageHandler.CreateMesage(QuestionChannel, SignupsChannel, GoldenDropChannel);
             TimeSpan reminderTimeSpan = eventDateTime - DateTime.Now.AddHours(1);
-            if (reminderTimeSpan > TimeSpan.Zero) Reminder.Handle(reminderTimeSpan);
-            //TODO Continue after reminder is handled
+            if (reminderTimeSpan > TimeSpan.Zero)
+                Reminder.Handle(reminderTimeSpan);
+            else
+                logger.LogError("{Time} - reminderTimeSpan is less than 0", DateTime.Now);
+            TimeSpan eventCloseTimeSpan = eventDateTime - DateTime.Now.AddMinutes(20);
+            if (eventCloseTimeSpan > TimeSpan.Zero)
+                Task.Delay(eventCloseTimeSpan).Wait();
+            else
+                logger.LogError("{Time} - eventCloseTimeSpan is less than 0", DateTime.Now);
+            EmbedBuilder closedMessage = await CreateMessage.CloseAttendanceMessage();
+            try
+            {
+                await SignupsChannel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
+            }
+            catch
+            {
+                await GoldenDropChannel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
+            }
+            CurrentMessage = null;
         }
     }
 }
