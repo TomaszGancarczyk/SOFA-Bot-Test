@@ -1,20 +1,17 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SOFA_Bot_Test
 {
     internal class StatsHandler
     {
-        internal async static Task<EmbedBuilder> GetStatsMessage(SocketSlashCommand command)
+        internal async static Task<EmbedBuilder> CreateStatsMessage(SocketSlashCommand command, string player)
         {
-            return null;
+            EmbedBuilder embed = new();
+            embed.WithColor(Color.Green);
+            return embed;
         }
-        internal async static Task<EmbedBuilder> GetStatsErrorMessage()
+        internal async static Task<EmbedBuilder> CreateStatsErrorMessage(SocketSlashCommand command)
         {
             EmbedBuilder embed = new();
             embed.WithColor(Color.Red);

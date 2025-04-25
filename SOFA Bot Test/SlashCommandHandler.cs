@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel;
 
 namespace SOFA_Bot_Test
 {
@@ -10,21 +9,24 @@ namespace SOFA_Bot_Test
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
         public static async Task Handler(SocketSlashCommand command)
         {
-            EmbedBuilder statsMessage;
+            EmbedBuilder embed;
+            bool isEphemeral;
             switch (command.Data.Name)
             {
                 case "stats":
-                    logger.LogInformation("{Time} - Got tournament response to event question", DateTime.Now);
-                    statsMessage = await StatsHandler.GetStatsMessage(command);
-                    if (statsMessage != null)
+                    logger.LogInformation("{Time} - User {user} asked for stats for {player}", DateTime.Now, command.User.GlobalName, command.Data.Options.First().Value);
+                    string player = null;
+                    if (player != null)
                     {
-                        await command.RespondAsync(embed: statsMessage.Build(), ephemeral: false);
+                        embed = await StatsHandler.CreateStatsMessage(command, player);
+                        isEphemeral = false;
                     }
                     else
                     {
-                        var errormessage = await StatsHandler.GetStatsErrorMessage();
-                        await command.RespondAsync(embed: errormessage.Build(), ephemeral: true);
+                        embed = await StatsHandler.CreateStatsErrorMessage(command);
+                        isEphemeral = true;
                     }
+                    await command.FollowupAsync(embed: embed.Build(), ephemeral: isEphemeral);
                     break;
             }
         }

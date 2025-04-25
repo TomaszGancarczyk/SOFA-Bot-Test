@@ -1,8 +1,6 @@
 ﻿using Discord;
-using Discord.Net;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace SOFA_Bot_Test
 {
@@ -25,7 +23,8 @@ namespace SOFA_Bot_Test
             {
                 AlwaysDownloadUsers = true,
                 MessageCacheSize = 100,
-                GatewayIntents = GatewayIntents.All
+                GatewayIntents = GatewayIntents.All,
+                UseInteractionSnowflakeDate = false
             };
             Discord = new DiscordSocketClient(config);
         }
