@@ -1,6 +1,8 @@
 ﻿using Discord;
+using Discord.Net;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace SOFA_Bot_Test
 {
@@ -32,14 +34,33 @@ namespace SOFA_Bot_Test
         {
             await Discord.LoginAsync(TokenType.Bot, Token);
             await Discord.StartAsync();
+            Discord.Ready += DiscordReady;
             Discord.Ready += () =>
             {
+                Discord.ButtonExecuted += ButtonEventHandler.Handler;
+                Discord.SlashCommandExecuted += SlashCommandHandler.Handler;
                 logger.LogInformation("{Time} - [SOFA] Signups Bot is running", DateTime.Now);
                 return Task.CompletedTask;
             };
             await Task.Delay(3000);
             BotHandler.InitializeBotHandler(Discord);
             await Task.Delay(-1);
+        }
+        private async Task DiscordReady()
+        {
+            var statsCommand = new Discord.SlashCommandBuilder()
+                .WithName("stats")
+                .WithDescription("Lists player's stalcraft stats")
+                .AddOption("player", ApplicationCommandOptionType.String, "The player whos stats you want to see [you can compare stats with other player with TAB]", isRequired: true)
+                .AddOption("compare", ApplicationCommandOptionType.String, "The player whos stats you want to compare", isRequired: false);
+            try
+            {
+                await Discord.Rest.CreateGlobalCommand(statsCommand.Build());
+            }
+            catch (Exception e)
+            {
+                logger.LogCritical(e.ToString());
+            }
         }
     }
 }

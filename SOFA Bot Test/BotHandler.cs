@@ -17,7 +17,6 @@ namespace SOFA_Bot_Test
         internal static void InitializeBotHandler(DiscordSocketClient discord)
         {
             Discord = discord;
-            Discord.ButtonExecuted += ButtonEventHandler.Handler;
             Guild = discord.GetGuild(BotInfo.GetGuildId());
             if (Guild == null)
             {
@@ -98,7 +97,6 @@ namespace SOFA_Bot_Test
             await CurrentMessage.Channel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
             CurrentMessage = null;
             Task.Delay(7200000).Wait();
-            //TODO fix people being added multiple times in squads
         }
     }
 }
