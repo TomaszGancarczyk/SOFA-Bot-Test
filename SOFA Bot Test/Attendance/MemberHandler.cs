@@ -1,11 +1,11 @@
 ﻿using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 
-namespace SOFA_Bot_Test
+namespace SOFA_Bot_Test.Attendance
 {
     internal class MemberHandler
     {
-        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
+        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Attendance");
         private static SocketGuild Guild = BotHandler.GetGuild();
         private static string SofaRoleName = BotInfo.GetSofaRoleName();
         private static Dictionary<SocketGuildUser, bool?> SofaMembers;

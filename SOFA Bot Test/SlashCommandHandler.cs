@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using SOFA_Bot_Test.PlayerStats;
 
 namespace SOFA_Bot_Test
 {
@@ -14,8 +15,10 @@ namespace SOFA_Bot_Test
             switch (command.Data.Name)
             {
                 case "stats":
-                    logger.LogInformation("{Time} - User {user} asked for stats for {player}", DateTime.Now, command.User.GlobalName, command.Data.Options.First().Value);
-                    string player = null;
+                    command.DeferAsync();
+                    string playerName = command.Data.Options.First().Value.ToString();
+                    logger.LogInformation("{Time} - User {user} asked for stats for {player}", DateTime.Now, command.User.GlobalName, playerName);
+                    string player = await ApiHandler.GetPlayerStats(playerName);
                     if (player != null)
                     {
                         embed = await StatsHandler.CreateStatsMessage(command, player);

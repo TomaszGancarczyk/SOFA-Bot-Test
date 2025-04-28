@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 
-namespace SOFA_Bot_Test
+namespace SOFA_Bot_Test.PlayerStats
 {
     internal class StatsHandler
     {

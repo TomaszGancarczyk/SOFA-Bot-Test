@@ -1,11 +1,11 @@
 ﻿using Discord;
 using Microsoft.Extensions.Logging;
 
-namespace SOFA_Bot_Test
+namespace SOFA_Bot_Test.Attendance
 {
     internal class QuestionHandler
     {
-        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
+        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Attendance");
         private static bool WaitingForQuestionResponse;
         private static string QuestionResponse;
 

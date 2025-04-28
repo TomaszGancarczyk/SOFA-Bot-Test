@@ -1,13 +1,13 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using SOFA_Bot_Test.Attendance;
 
 namespace SOFA_Bot_Test
 {
     internal class BotHandler
     {
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
-        private static DiscordSocketClient Discord;
         private static SocketGuild Guild;
         private static IMessageChannel QuestionChannel;
         private static IMessageChannel SignupsChannel;
@@ -16,7 +16,6 @@ namespace SOFA_Bot_Test
 
         internal static void InitializeBotHandler(DiscordSocketClient discord)
         {
-            Discord = discord;
             Guild = discord.GetGuild(BotInfo.GetGuildId());
             if (Guild == null)
             {

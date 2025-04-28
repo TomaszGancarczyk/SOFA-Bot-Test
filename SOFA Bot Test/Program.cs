@@ -1,13 +1,14 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using SOFA_Bot_Test.Attendance;
 
 namespace SOFA_Bot_Test
 {
     internal class Program
     {
         private readonly DiscordSocketClient Discord;
-        private static readonly string Token = BotInfo.GetToken();
+        private static readonly string Token = BotInfo.GetDiscordToken();
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
 
         static Task Main()
@@ -50,8 +51,7 @@ namespace SOFA_Bot_Test
             var statsCommand = new Discord.SlashCommandBuilder()
                 .WithName("stats")
                 .WithDescription("Lists player's stalcraft stats")
-                .AddOption("player", ApplicationCommandOptionType.String, "The player whos stats you want to see [you can compare stats with other player with TAB]", isRequired: true)
-                .AddOption("compare", ApplicationCommandOptionType.String, "The player whos stats you want to compare", isRequired: false);
+                .AddOption("player", ApplicationCommandOptionType.String, "The name of a player whos stats you want to see", isRequired: true);
             try
             {
                 await Discord.Rest.CreateGlobalCommand(statsCommand.Build());

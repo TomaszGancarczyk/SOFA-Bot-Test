@@ -2,11 +2,11 @@
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 
-namespace SOFA_Bot_Test
+namespace SOFA_Bot_Test.Attendance
 {
     internal class CreateMessage
     {
-        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
+        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Attendance");
         private static string EventType;
         private static string EventMessageTitle;
         internal async static Task<EmbedBuilder> CreateAttendanceMessage()
