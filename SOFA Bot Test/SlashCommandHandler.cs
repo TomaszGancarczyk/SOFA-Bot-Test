@@ -15,10 +15,10 @@ namespace SOFA_Bot_Test
             switch (command.Data.Name)
             {
                 case "stats":
-                    command.DeferAsync();
+                    await command.DeferAsync();
                     string playerName = command.Data.Options.First().Value.ToString();
                     logger.LogInformation("{Time} - User {user} asked for stats for {player}", DateTime.Now, command.User.GlobalName, playerName);
-                    string player = await ApiHandler.GetPlayerStats(playerName);
+                    PlayerStatsDeserialized player = await ApiHandler.GetPlayerStats(playerName);
                     if (player != null)
                     {
                         embed = await StatsHandler.CreateStatsMessage(command, player);

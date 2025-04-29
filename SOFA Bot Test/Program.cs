@@ -58,7 +58,7 @@ namespace SOFA_Bot_Test
             }
             catch (Exception e)
             {
-                logger.LogCritical(e.ToString());
+                logger.LogCritical("{error}", e.ToString());
             }
         }
     }
