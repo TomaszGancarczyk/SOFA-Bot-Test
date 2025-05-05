@@ -19,11 +19,10 @@ namespace SOFA_Bot_Test.Attendance
         {
             WaitingForQuestionResponse = true;
             DayOfWeek eventDayOfWeek = Timer.GetEventDateTime().DayOfWeek;
-            if (eventDayOfWeek == DayOfWeek.Tuesday || eventDayOfWeek == DayOfWeek.Wednesday) return "Day Off";
             WaitingForQuestionResponse = true;
             logger.LogInformation("{Time} - Sending question for event", DateTime.Now);
             string questionMessageContent = "## What do we play tomorrow?";
-            ComponentBuilder component = CreateButton.CreateQuestionButton();
+            ComponentBuilder component = CreateButton.CreateQuestionButtons();
             IMessage questionMessage = await questionChannel.SendMessageAsync(questionMessageContent, components: component.Build());
             while (WaitingForQuestionResponse)
             {

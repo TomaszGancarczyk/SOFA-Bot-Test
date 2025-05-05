@@ -10,18 +10,17 @@ namespace SOFA_Bot_Test.Attendance
         [
             DayOfWeek.Thursday,
             DayOfWeek.Friday,
-            DayOfWeek.Saturday
+            DayOfWeek.Saturday,
+            DayOfWeek.Sunday
         ];
         private static readonly List<DayOfWeek> GoldenDropDays =
         [
-            DayOfWeek.Monday,
-            DayOfWeek.Sunday
         ];
         private static readonly List<DayOfWeek> BaseCaptureDays =
         [
             DayOfWeek.Sunday
         ];
-        internal static ComponentBuilder CreateQuestionButton()
+        internal static ComponentBuilder CreateQuestionButtons()
         {
             DayOfWeek eventDayOfWeek = Timer.GetEventDateTime().DayOfWeek;
             ComponentBuilder component = new();
