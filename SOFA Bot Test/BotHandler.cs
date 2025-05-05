@@ -97,5 +97,28 @@ namespace SOFA_Bot_Test
             CurrentMessage = null;
             Task.Delay(7200000).Wait();
         }
+        //TODO add /createsignup to skip last signup and make a new one
+        // make sure the new signup won't colide with the old one
+
+        //TODO change days for different activities
+        //gdrop out for now
+        //brawl
+        //  every day
+        //day off
+        //  every day
+        //tournament
+        //  thursday-sunday
+        //base cap
+        //  sunday
+
+        //TODO maybe change reminder message to be day based instead of activity based???
+
+        //TODO handle player stats from API call
+
+        //TODO Testing
+        // people changing roles mid signup
+        // people with multiple roles handled correctly
+        // spamming signup button
+        // handle a lot of people in one tab
     }
 }

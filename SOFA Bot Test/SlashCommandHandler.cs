@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using SOFA_Bot_Test.Attendance;
 using SOFA_Bot_Test.PlayerStats;
 
 namespace SOFA_Bot_Test
@@ -30,6 +31,15 @@ namespace SOFA_Bot_Test
                         isEphemeral = true;
                     }
                     await command.FollowupAsync(embed: embed.Build(), ephemeral: isEphemeral);
+                    break;
+                case "reminderMessage":
+                    bool status = false;
+                    if (command.Data.Options.First().Value.ToString() == "1")
+                        status = true;
+                    if (command.Data.Options.First().Value.ToString() == "0")
+                        status = false;
+                    logger.LogInformation("{Time} - Setting reminders to {status}", DateTime.Now, command.User.GlobalName, status);
+                        await Reminder.SetReminderPermission(status);
                     break;
             }
         }

@@ -52,9 +52,21 @@ namespace SOFA_Bot_Test
                 .WithName("stats")
                 .WithDescription("Lists player's stalcraft stats")
                 .AddOption("player", ApplicationCommandOptionType.String, "The name of a player whos stats you want to see", isRequired: true);
+            var reminderMessageCommand = new Discord.SlashCommandBuilder()
+                .WithName("reminderMessage")
+                .WithDescription("Sets status of reminder messages, true = messages are sent")
+                .AddOption(new SlashCommandOptionBuilder()
+                    .WithName("status")
+                    .WithDescription("Do you want the bot to send reminder messages?")
+                    .WithRequired(true)
+                    .AddChoice("Yes", 1)
+                    .AddChoice("No", 0)
+                    .WithType(ApplicationCommandOptionType.Integer)
+        );
             try
             {
                 await Discord.Rest.CreateGlobalCommand(statsCommand.Build());
+                await Discord.Rest.CreateGlobalCommand(reminderMessageCommand.Build());
             }
             catch (Exception e)
             {
