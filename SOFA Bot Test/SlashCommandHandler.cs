@@ -13,6 +13,9 @@ namespace SOFA_Bot_Test
         {
             EmbedBuilder embed;
             bool isEphemeral;
+            List<SocketRole> privilegedRoles;
+            SocketGuildUser user;
+            bool hasPermission = false;
             switch (command.Data.Name)
             {
                 case "stats":
@@ -35,25 +38,57 @@ namespace SOFA_Bot_Test
                     break;
                 case "reminderMessage":
                     await command.DeferAsync();
-                    embed = null;
-                    bool status = false;
-                    if (command.Data.Options.First().Value.ToString() == "1")
+                    hasPermission = false;
+                    privilegedRoles = await BotHandler.GetPrivilegedRoles();
+                    user = await BotHandler.GetGuildUserByName(command.User.GlobalName);
+                    foreach (SocketRole role in privilegedRoles)
                     {
-                        status = true;
-                        embed = await Reminder.CreateSignupCommandResponse(status);
+                        if (user.Roles.Contains(role))
+                        {
+                            embed = null;
+                            bool status = false;
+                            if (command.Data.Options.First().Value.ToString() == "1")
+                            {
+                                status = true;
+                                embed = await Reminder.CreateSignupCommandResponse(status);
+                            }
+                            if (command.Data.Options.First().Value.ToString() == "0")
+                            {
+                                status = false;
+                                embed = await Reminder.CreateSignupCommandResponse(status);
+                            }
+                            logger.LogInformation("{Time} - Setting reminders to {status}", DateTime.Now, command.User.GlobalName, status);
+                            await Reminder.SetReminderPermission(status);
+                            hasPermission = true;
+                            //respond success
+                            break;
+                        }
+                        if (!hasPermission)
+                        {
+                            //respond no permission
+                        }
                     }
-                    if (command.Data.Options.First().Value.ToString() == "0")
-                    {
-                        status = false;
-                        embed = await Reminder.CreateSignupCommandResponse(status);
-                    }
-                    logger.LogInformation("{Time} - Setting reminders to {status}", DateTime.Now, command.User.GlobalName, status);
-                    await Reminder.SetReminderPermission(status);
                     break;
                 case "createSignup":
                     await command.DeferAsync();
-                    await QuestionHandler.DeleteReminderMessage();
-                    await BotHandler.HandleEvent();
+                    hasPermission = false;
+                    privilegedRoles = await BotHandler.GetPrivilegedRoles();
+                    user = await BotHandler.GetGuildUserByName(command.User.GlobalName);
+                    foreach (SocketRole role in privilegedRoles)
+                    {
+                        if (user.Roles.Contains(role))
+                        {
+                            await QuestionHandler.DeleteReminderMessage();
+                            await BotHandler.HandleEvent();
+                            hasPermission = true;
+                            //respond success
+                            break;
+                        }
+                    }
+                    if (!hasPermission)
+                    {
+                        //respond no permission
+                    }
                     break;
             }
         }

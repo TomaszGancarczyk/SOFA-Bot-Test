@@ -97,7 +97,22 @@ namespace SOFA_Bot_Test
             CurrentMessage = null;
             Task.Delay(7200000).Wait();
         }
-        //TODO add required role to /reminder and /createsignup
+        internal async static Task<List<SocketRole>> GetPrivilegedRoles()
+        {
+            List<SocketRole> privilegedRoles = null;
+            string[] roleNames = BotInfo.GetPrivilegedRoleNames();
+            foreach (string roleName in roleNames)
+            {
+                SocketRole role = Guild.Roles.FirstOrDefault(role => role.Name == roleName);
+                privilegedRoles.Add(role);
+            }
+            return privilegedRoles;
+        }
+        internal async static Task<SocketGuildUser> GetGuildUserByName(string userName)
+        {
+            return Guild.Users.FirstOrDefault(user => user.GlobalName == userName);
+        }
+        //TODO add responses to slashcommandhandler
 
         //TODO maybe change reminder message to be day based instead of activity based???
 
