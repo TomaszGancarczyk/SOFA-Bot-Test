@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 
@@ -38,6 +39,20 @@ namespace SOFA_Bot_Test.Attendance
             logger.LogInformation("{Time} - Sending reminder to {member}", DateTime.Now, member.DisplayName);
             string message = "Don't forget to signup :3";
             await member.SendMessageAsync(message);
+        }
+        internal static async Task<EmbedBuilder> CreateSignupCommandResponse(bool status)
+        {
+            EmbedBuilder embed = new();
+            if (status)
+            {
+                embed.WithColor(Color.Green);
+            }
+            else if (!status)
+            {
+                embed.WithColor(Color.Red);
+            }
+            embed.WithTitle($"Set reminder status to {status}");
+            return embed;
         }
     }
 }

@@ -62,7 +62,10 @@ namespace SOFA_Bot_Test
                     .AddChoice("Yes", 1)
                     .AddChoice("No", 0)
                     .WithType(ApplicationCommandOptionType.Integer)
-        );
+                );
+            var createSignupCommand = new Discord.SlashCommandBuilder()
+                .WithName("createSignup")
+                .WithDescription("Create new signup for next day");
             try
             {
                 await Discord.Rest.CreateGlobalCommand(statsCommand.Build());

@@ -74,7 +74,7 @@ namespace SOFA_Bot_Test
                 await HandleEvent();
             }
         }
-        private async static Task HandleEvent()
+        internal async static Task HandleEvent()
         {
             logger.LogInformation("{Time} - Starting event", DateTime.Now);
             CurrentMessage = null;
@@ -97,8 +97,7 @@ namespace SOFA_Bot_Test
             CurrentMessage = null;
             Task.Delay(7200000).Wait();
         }
-        //TODO add /createsignup to skip last signup and make a new one
-        // make sure the new signup won't colide with the old one
+        //TODO add required role to /reminder and /createsignup
 
         //TODO maybe change reminder message to be day based instead of activity based???
 
@@ -109,5 +108,7 @@ namespace SOFA_Bot_Test
         // people with multiple roles handled correctly
         // spamming signup button
         // handle a lot of people in one tab
+        // test /reminder
+        // test /createsignup
     }
 }

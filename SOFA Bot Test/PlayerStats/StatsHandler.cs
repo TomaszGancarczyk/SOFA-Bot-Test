@@ -15,7 +15,7 @@ namespace SOFA_Bot_Test.PlayerStats
         {
             EmbedBuilder embed = new();
             embed.WithColor(Color.Red);
-            embed.WithTitle($"Couldn't find this player");
+            embed.WithTitle($"Couldn't find player {command.Data.Options.First().Value.ToString}");
             return embed;
         }
     }

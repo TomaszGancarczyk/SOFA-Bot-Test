@@ -8,6 +8,7 @@ namespace SOFA_Bot_Test.Attendance
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Attendance");
         private static bool WaitingForQuestionResponse;
         private static string QuestionResponse;
+        private static IMessage QuestionMessage;
 
         internal static void SetQuestionAnswear(string questionResponse)
         {
@@ -17,20 +18,28 @@ namespace SOFA_Bot_Test.Attendance
 
         internal async static Task<string> HandleEventQuestion(IMessageChannel questionChannel)
         {
+            QuestionMessage = null;
             WaitingForQuestionResponse = true;
             DayOfWeek eventDayOfWeek = Timer.GetEventDateTime().DayOfWeek;
             WaitingForQuestionResponse = true;
             logger.LogInformation("{Time} - Sending question for event", DateTime.Now);
             string questionMessageContent = "## What do we play tomorrow?";
             ComponentBuilder component = CreateButton.CreateQuestionButtons();
-            IMessage questionMessage = await questionChannel.SendMessageAsync(questionMessageContent, components: component.Build());
+            QuestionMessage = await questionChannel.SendMessageAsync(questionMessageContent, components: component.Build());
             while (WaitingForQuestionResponse)
             {
                 await Task.Delay(1000);
             }
-            await questionMessage.DeleteAsync();
             return QuestionResponse;
         }
-
+        internal async static Task DeleteReminderMessage()
+        {
+            if (QuestionMessage != null)
+            {
+                logger.LogInformation("{Time} - Deleting question message", DateTime.Now);
+                await QuestionMessage.DeleteAsync();
+                QuestionMessage = null;
+            }
+        }
     }
 }

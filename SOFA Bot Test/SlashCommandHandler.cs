@@ -17,6 +17,7 @@ namespace SOFA_Bot_Test
             {
                 case "stats":
                     await command.DeferAsync();
+                    embed = null;
                     string playerName = command.Data.Options.First().Value.ToString();
                     logger.LogInformation("{Time} - User {user} asked for stats for {player}", DateTime.Now, command.User.GlobalName, playerName);
                     PlayerStatsDeserialized player = await ApiHandler.GetPlayerStats(playerName);
@@ -33,13 +34,26 @@ namespace SOFA_Bot_Test
                     await command.FollowupAsync(embed: embed.Build(), ephemeral: isEphemeral);
                     break;
                 case "reminderMessage":
+                    await command.DeferAsync();
+                    embed = null;
                     bool status = false;
                     if (command.Data.Options.First().Value.ToString() == "1")
+                    {
                         status = true;
+                        embed = await Reminder.CreateSignupCommandResponse(status);
+                    }
                     if (command.Data.Options.First().Value.ToString() == "0")
+                    {
                         status = false;
+                        embed = await Reminder.CreateSignupCommandResponse(status);
+                    }
                     logger.LogInformation("{Time} - Setting reminders to {status}", DateTime.Now, command.User.GlobalName, status);
-                        await Reminder.SetReminderPermission(status);
+                    await Reminder.SetReminderPermission(status);
+                    break;
+                case "createSignup":
+                    await command.DeferAsync();
+                    await QuestionHandler.DeleteReminderMessage();
+                    await BotHandler.HandleEvent();
                     break;
             }
         }
