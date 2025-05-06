@@ -1,5 +1,4 @@
 ﻿using Discord;
-using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 
@@ -9,9 +8,10 @@ namespace SOFA_Bot_Test.Attendance
     {
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Attendance");
         private static bool ReminderPermission = false;
-        internal static Task SetReminderPermission(bool permission)
+        internal static Task SetReminderPermission(bool status)
         {
-            ReminderPermission = permission;
+            logger.LogInformation("{Time} - Setting reminders to {status}", DateTime.Now, status);
+            ReminderPermission = status;
             return Task.CompletedTask;
         }
         internal static async void Handle(TimeSpan reminderTimeSpan)

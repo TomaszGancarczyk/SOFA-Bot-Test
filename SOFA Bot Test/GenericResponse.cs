@@ -1,0 +1,52 @@
+﻿using Discord.WebSocket;
+using Discord;
+using Microsoft.Extensions.Logging;
+
+namespace SOFA_Bot_Test
+{
+    internal class GenericResponse
+    {
+        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Player Stats");
+        internal class Error
+        {
+            internal async static Task<EmbedBuilder> CantFindPlayer(SocketSlashCommand command)
+            {
+                EmbedBuilder embed = new();
+                embed.WithColor(Color.Red);
+                embed.WithTitle($"Couldn't find player {command.Data.Options.First().Value.ToString}");
+                return embed;
+            }
+            internal async static Task<EmbedBuilder> NoPermission()
+            {
+                EmbedBuilder embed = new();
+                embed.WithColor(Color.Red);
+                embed.WithTitle($"You don't have permission to use this command");
+                return embed;
+            }
+            internal async static Task<EmbedBuilder> Null()
+            {
+                EmbedBuilder embed = new();
+                embed.WithColor(Color.Red);
+                embed.WithTitle($"The field was empty");
+                return embed;
+            }
+        }
+        internal class Success
+        {
+            internal async static Task<EmbedBuilder> NewSignup()
+            {
+                EmbedBuilder embed = new();
+                embed.WithColor(Color.Green);
+                embed.WithTitle($"Creating new signup");
+                return embed;
+            }
+            internal async static Task<EmbedBuilder> RemindersChanged(bool status)
+            {
+                EmbedBuilder embed = new();
+                embed.WithColor(Color.Green);
+                embed.WithTitle($"Reminder messages are changed to {status}");
+                return embed;
+            }
+        }
+    }
+}

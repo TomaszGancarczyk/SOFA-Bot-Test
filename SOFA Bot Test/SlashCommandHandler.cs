@@ -15,13 +15,18 @@ namespace SOFA_Bot_Test
             bool isEphemeral;
             List<SocketRole> privilegedRoles;
             SocketGuildUser user;
-            bool hasPermission = false;
+            bool hasPermission;
             switch (command.Data.Name)
             {
                 case "stats":
                     await command.DeferAsync();
-                    embed = null;
                     string playerName = command.Data.Options.First().Value.ToString();
+                    if (playerName == null)
+                    {
+                        embed = await GenericResponse.Error.Null();
+                        await command.FollowupAsync(embed: embed.Build(), ephemeral: true);
+                        break;
+                    }
                     logger.LogInformation("{Time} - User {user} asked for stats for {player}", DateTime.Now, command.User.GlobalName, playerName);
                     PlayerStatsDeserialized player = await ApiHandler.GetPlayerStats(playerName);
                     if (player != null)
@@ -31,7 +36,7 @@ namespace SOFA_Bot_Test
                     }
                     else
                     {
-                        embed = await StatsHandler.CreateStatsErrorMessage(command);
+                        embed = await GenericResponse.Error.CantFindPlayer(command);
                         isEphemeral = true;
                     }
                     await command.FollowupAsync(embed: embed.Build(), ephemeral: isEphemeral);
@@ -41,11 +46,11 @@ namespace SOFA_Bot_Test
                     hasPermission = false;
                     privilegedRoles = await BotHandler.GetPrivilegedRoles();
                     user = await BotHandler.GetGuildUserByName(command.User.GlobalName);
+                    embed = null;
                     foreach (SocketRole role in privilegedRoles)
                     {
                         if (user.Roles.Contains(role))
                         {
-                            embed = null;
                             bool status = false;
                             if (command.Data.Options.First().Value.ToString() == "1")
                             {
@@ -57,16 +62,16 @@ namespace SOFA_Bot_Test
                                 status = false;
                                 embed = await Reminder.CreateSignupCommandResponse(status);
                             }
-                            logger.LogInformation("{Time} - Setting reminders to {status}", DateTime.Now, command.User.GlobalName, status);
                             await Reminder.SetReminderPermission(status);
                             hasPermission = true;
-                            //respond success
+                            embed = await GenericResponse.Success.RemindersChanged(status);
                             break;
                         }
                         if (!hasPermission)
                         {
-                            //respond no permission
+                            embed = await GenericResponse.Error.NoPermission();
                         }
+                        await command.FollowupAsync(embed: embed.Build(), ephemeral: true);
                     }
                     break;
                 case "createSignup":
@@ -74,6 +79,7 @@ namespace SOFA_Bot_Test
                     hasPermission = false;
                     privilegedRoles = await BotHandler.GetPrivilegedRoles();
                     user = await BotHandler.GetGuildUserByName(command.User.GlobalName);
+                    embed = null;
                     foreach (SocketRole role in privilegedRoles)
                     {
                         if (user.Roles.Contains(role))
@@ -81,14 +87,15 @@ namespace SOFA_Bot_Test
                             await QuestionHandler.DeleteReminderMessage();
                             await BotHandler.HandleEvent();
                             hasPermission = true;
-                            //respond success
+                            embed = await GenericResponse.Success.NewSignup();
                             break;
                         }
                     }
                     if (!hasPermission)
                     {
-                        //respond no permission
+                        embed = await GenericResponse.Error.NoPermission();
                     }
+                    await command.FollowupAsync(embed: embed.Build(), ephemeral: true);
                     break;
             }
         }

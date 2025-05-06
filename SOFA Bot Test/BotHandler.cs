@@ -74,6 +74,24 @@ namespace SOFA_Bot_Test
                 await HandleEvent();
             }
         }
+        internal async static Task<List<SocketRole>> GetPrivilegedRoles()
+        {
+            List<SocketRole> privilegedRoles = null;
+            string[] roleNames = BotInfo.GetPrivilegedRoleNames();
+            foreach (string roleName in roleNames)
+            {
+                SocketRole role = Guild.Roles.FirstOrDefault(role => role.Name == roleName);
+                if (role != null)
+                {
+                    privilegedRoles.Add(role);
+                }
+            }
+            return privilegedRoles;
+        }
+        internal async static Task<SocketGuildUser> GetGuildUserByName(string userName)
+        {
+            return Guild.Users.FirstOrDefault(user => user.GlobalName == userName);
+        }
         internal async static Task HandleEvent()
         {
             logger.LogInformation("{Time} - Starting event", DateTime.Now);
@@ -97,21 +115,6 @@ namespace SOFA_Bot_Test
             CurrentMessage = null;
             Task.Delay(7200000).Wait();
         }
-        internal async static Task<List<SocketRole>> GetPrivilegedRoles()
-        {
-            List<SocketRole> privilegedRoles = null;
-            string[] roleNames = BotInfo.GetPrivilegedRoleNames();
-            foreach (string roleName in roleNames)
-            {
-                SocketRole role = Guild.Roles.FirstOrDefault(role => role.Name == roleName);
-                privilegedRoles.Add(role);
-            }
-            return privilegedRoles;
-        }
-        internal async static Task<SocketGuildUser> GetGuildUserByName(string userName)
-        {
-            return Guild.Users.FirstOrDefault(user => user.GlobalName == userName);
-        }
         //TODO add responses to slashcommandhandler
 
         //TODO maybe change reminder message to be day based instead of activity based???
@@ -125,5 +128,6 @@ namespace SOFA_Bot_Test
         // handle a lot of people in one tab
         // test /reminder
         // test /createsignup
+        // test slash command permissions
     }
 }
