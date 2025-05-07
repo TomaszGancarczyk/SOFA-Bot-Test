@@ -115,19 +115,18 @@ namespace SOFA_Bot_Test
             CurrentMessage = null;
             Task.Delay(7200000).Wait();
         }
-        //TODO add responses to slashcommandhandler
-
-        //TODO maybe change reminder message to be day based instead of activity based???
+        //TODO check if question message is the right one
 
         //TODO handle player stats from API call
 
         //TODO Testing
-        // people changing roles mid signup
-        // people with multiple roles handled correctly
-        // spamming signup button
-        // handle a lot of people in one tab
+        // test people changing roles mid signup
+        // test people with multiple roles handled correctly
+        // test spamming signup button
+        // test handle a lot of people in one tab
         // test /reminder
         // test /createsignup
         // test slash command permissions
+        // test reminder messages sent on correct days
     }
 }

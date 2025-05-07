@@ -21,7 +21,7 @@ namespace SOFA_Bot_Test.Attendance
                 Task.Delay(reminderTimeSpan).Wait();
                 string eventType = CreateMessage.GetEventType();
                 List<SocketGuildUser> offMembers = [];
-                if (eventType != "Day Off" && eventType != "Golden Drop" && eventType != "Brawl")
+                if (eventType == "Tournament" || eventType == "Base Capture")
                 {
                     foreach (var member in MemberHandler.GetSofaMembers())
                         if (member.Value == null)

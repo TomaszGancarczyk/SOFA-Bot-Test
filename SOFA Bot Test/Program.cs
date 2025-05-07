@@ -34,7 +34,7 @@ namespace SOFA_Bot_Test
         {
             await Discord.LoginAsync(TokenType.Bot, Token);
             await Discord.StartAsync();
-            Discord.Ready += DiscordReady;
+            await DiscordReady();
             Discord.Ready += () =>
             {
                 Discord.ButtonExecuted += ButtonEventHandler.Handler;
@@ -53,7 +53,7 @@ namespace SOFA_Bot_Test
                 .WithDescription("Lists player's stalcraft stats")
                 .AddOption("player", ApplicationCommandOptionType.String, "The name of a player whos stats you want to see", isRequired: true);
             var reminderMessageCommand = new Discord.SlashCommandBuilder()
-                .WithName("reminderMessage")
+                .WithName("reminder-message")
                 .WithDescription("Sets status of reminder messages, true = messages are sent")
                 .AddOption(new SlashCommandOptionBuilder()
                     .WithName("status")
@@ -64,12 +64,13 @@ namespace SOFA_Bot_Test
                     .WithType(ApplicationCommandOptionType.Integer)
                 );
             var createSignupCommand = new Discord.SlashCommandBuilder()
-                .WithName("createSignup")
+                .WithName("create-signup")
                 .WithDescription("Create new signup for next day");
             try
             {
-                await Discord.Rest.CreateGlobalCommand(statsCommand.Build());
-                await Discord.Rest.CreateGlobalCommand(reminderMessageCommand.Build());
+                await Discord.CreateGlobalApplicationCommandAsync(statsCommand.Build());
+                await Discord.CreateGlobalApplicationCommandAsync(reminderMessageCommand.Build());
+                await Discord.CreateGlobalApplicationCommandAsync(createSignupCommand.Build());
             }
             catch (Exception e)
             {

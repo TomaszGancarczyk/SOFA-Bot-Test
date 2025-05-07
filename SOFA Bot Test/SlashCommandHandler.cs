@@ -41,7 +41,7 @@ namespace SOFA_Bot_Test
                     }
                     await command.FollowupAsync(embed: embed.Build(), ephemeral: isEphemeral);
                     break;
-                case "reminderMessage":
+                case "reminder-message":
                     await command.DeferAsync();
                     hasPermission = false;
                     privilegedRoles = await BotHandler.GetPrivilegedRoles();
@@ -74,7 +74,7 @@ namespace SOFA_Bot_Test
                         await command.FollowupAsync(embed: embed.Build(), ephemeral: true);
                     }
                     break;
-                case "createSignup":
+                case "create-signup":
                     await command.DeferAsync();
                     hasPermission = false;
                     privilegedRoles = await BotHandler.GetPrivilegedRoles();

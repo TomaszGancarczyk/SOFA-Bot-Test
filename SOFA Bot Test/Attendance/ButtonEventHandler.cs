@@ -18,22 +18,27 @@ namespace SOFA_Bot_Test.Attendance
                 case "tournamentButton":
                     logger.LogInformation("{Time} - Got tournament response to event question", DateTime.Now);
                     QuestionHandler.SetQuestionAnswear("Tournament");
+                    component.Message.DeleteAsync().Wait();
                     break;
                 case "goldenDropButton":
                     logger.LogInformation("{Time} - Got golden drop response to event question", DateTime.Now);
                     QuestionHandler.SetQuestionAnswear("Golden Drop");
+                    component.Message.DeleteAsync().Wait();
                     break;
                 case "baseCaptureButton":
                     logger.LogInformation("{Time} - Got base capture response to event question", DateTime.Now);
                     QuestionHandler.SetQuestionAnswear("Base Capture");
+                    component.Message.DeleteAsync().Wait();
                     break;
                 case "dayOffButton":
                     logger.LogInformation("{Time} - Got day off response to event question", DateTime.Now);
                     QuestionHandler.SetQuestionAnswear("Day Off");
+                    component.Message.DeleteAsync().Wait();
                     break;
                 case "brawlButton":
                     logger.LogInformation("{Time} - Got brawl response to event question", DateTime.Now);
                     QuestionHandler.SetQuestionAnswear("Brawl");
+                    component.Message.DeleteAsync().Wait();
                     break;
                 case "presentButton":
                     currentMessageId = BotHandler.GetCurrentMessageId();
