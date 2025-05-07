@@ -34,7 +34,7 @@ namespace SOFA_Bot_Test
         {
             await Discord.LoginAsync(TokenType.Bot, Token);
             await Discord.StartAsync();
-            await DiscordReady();
+            Discord.Ready += DiscordReady;
             Discord.Ready += () =>
             {
                 Discord.ButtonExecuted += ButtonEventHandler.Handler;
@@ -68,9 +68,9 @@ namespace SOFA_Bot_Test
                 .WithDescription("Create new signup for next day");
             try
             {
+                await Discord.CreateGlobalApplicationCommandAsync(createSignupCommand.Build());
                 await Discord.CreateGlobalApplicationCommandAsync(statsCommand.Build());
                 await Discord.CreateGlobalApplicationCommandAsync(reminderMessageCommand.Build());
-                await Discord.CreateGlobalApplicationCommandAsync(createSignupCommand.Build());
             }
             catch (Exception e)
             {

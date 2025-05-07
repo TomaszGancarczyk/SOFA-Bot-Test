@@ -85,7 +85,7 @@ namespace SOFA_Bot_Test
                         if (user.Roles.Contains(role))
                         {
                             await QuestionHandler.DeleteReminderMessage();
-                            await BotHandler.HandleEvent();
+                            await BotHandler.StartAttendanceEvent();
                             hasPermission = true;
                             embed = await GenericResponse.Success.NewSignup();
                             break;

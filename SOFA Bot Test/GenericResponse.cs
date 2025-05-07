@@ -13,7 +13,7 @@ namespace SOFA_Bot_Test
             {
                 EmbedBuilder embed = new();
                 embed.WithColor(Color.Red);
-                embed.WithTitle($"Couldn't find player {command.Data.Options.First().Value.ToString}");
+                embed.WithTitle($"Couldn't find player {command.Data.Options.First().Value}");
                 return embed;
             }
             internal async static Task<EmbedBuilder> NoPermission()

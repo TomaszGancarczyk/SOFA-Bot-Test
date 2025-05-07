@@ -71,7 +71,7 @@ namespace SOFA_Bot_Test
         {
             while (true)
             {
-                await HandleEvent();
+                await StartAttendanceEvent();
             }
         }
         internal async static Task<List<SocketRole>> GetPrivilegedRoles()
@@ -92,7 +92,7 @@ namespace SOFA_Bot_Test
         {
             return Guild.Users.FirstOrDefault(user => user.GlobalName == userName);
         }
-        internal async static Task HandleEvent()
+        internal async static Task StartAttendanceEvent()
         {
             logger.LogInformation("{Time} - Starting event", DateTime.Now);
             CurrentMessage = null;
@@ -115,7 +115,8 @@ namespace SOFA_Bot_Test
             CurrentMessage = null;
             Task.Delay(7200000).Wait();
         }
-        //TODO check if question message is the right one
+
+        //create-signup add option for signup today
 
         //TODO handle player stats from API call
 
