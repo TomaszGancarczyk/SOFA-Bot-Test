@@ -28,7 +28,7 @@ namespace SOFA_Bot_Test
                         break;
                     }
                     logger.LogInformation("{Time} - User {user} asked for stats for {player}", DateTime.Now, command.User.GlobalName, playerName);
-                    PlayerStatsDeserialized player = await ApiHandler.GetPlayerStats(playerName);
+                    global::PlayerStats player = await ApiHandler.GetPlayerStats(playerName);
                     if (player != null)
                     {
                         embed = await StatsHandler.CreateStatsMessage(command, player);
@@ -57,7 +57,7 @@ namespace SOFA_Bot_Test
                                 status = true;
                                 embed = await Reminder.CreateSignupCommandResponse(status);
                             }
-                            if (command.Data.Options.First().Value.ToString() == "0")
+                            else if (command.Data.Options.First().Value.ToString() == "0")
                             {
                                 status = false;
                                 embed = await Reminder.CreateSignupCommandResponse(status);
@@ -85,7 +85,14 @@ namespace SOFA_Bot_Test
                         if (user.Roles.Contains(role))
                         {
                             await QuestionHandler.DeleteReminderMessage();
-                            await BotHandler.StartAttendanceEvent();
+                            if (command.Data.Options.First().Value.ToString() == "1")
+                            {
+                                await BotHandler.StartAttendanceEvent(true);
+                            }
+                            else if (command.Data.Options.First().Value.ToString() == "0")
+                            {
+                                await BotHandler.StartAttendanceEvent(false);
+                            }
                             hasPermission = true;
                             embed = await GenericResponse.Success.NewSignup();
                             break;

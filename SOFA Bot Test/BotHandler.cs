@@ -71,7 +71,7 @@ namespace SOFA_Bot_Test
         {
             while (true)
             {
-                await StartAttendanceEvent();
+                await StartAttendanceEvent(false);
             }
         }
         internal async static Task<List<SocketRole>> GetPrivilegedRoles()
@@ -92,12 +92,12 @@ namespace SOFA_Bot_Test
         {
             return Guild.Users.FirstOrDefault(user => user.GlobalName == userName);
         }
-        internal async static Task StartAttendanceEvent()
+        internal async static Task StartAttendanceEvent(bool isToday)
         {
             logger.LogInformation("{Time} - Starting event", DateTime.Now);
             CurrentMessage = null;
             logger.LogInformation("{Time} - Getting event date time", DateTime.Now);
-            Timer.SetEventDateTimeForNextDay();
+            Timer.SetEventDateTimeForNextDay(isToday);
             var eventDateTime = Timer.GetEventDateTime();
             CurrentMessage = await MessageHandler.CreateMesage(QuestionChannel, SignupsChannel, GoldenDropChannel);
             TimeSpan reminderTimeSpan = eventDateTime - DateTime.Now.AddHours(1);
@@ -115,9 +115,6 @@ namespace SOFA_Bot_Test
             CurrentMessage = null;
             Task.Delay(7200000).Wait();
         }
-
-        //create-signup add option for signup today
-
         //TODO handle player stats from API call
 
         //TODO Testing
@@ -127,7 +124,9 @@ namespace SOFA_Bot_Test
         // test handle a lot of people in one tab
         // test /reminder
         // test /createsignup
+        //   both options
         // test slash command permissions
+        //   for leader, officer, deputy, admin
         // test reminder messages sent on correct days
     }
 }

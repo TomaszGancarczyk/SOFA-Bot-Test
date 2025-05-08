@@ -65,7 +65,15 @@ namespace SOFA_Bot_Test
                 );
             var createSignupCommand = new Discord.SlashCommandBuilder()
                 .WithName("create-signup")
-                .WithDescription("Create new signup for next day");
+                .WithDescription("Create new signup for next day")
+                .AddOption(new SlashCommandOptionBuilder()
+                    .WithName("when")
+                    .WithDescription("Is is signup for today or tomorrow?")
+                    .WithRequired(true)
+                    .AddChoice("Today", 1)
+                    .AddChoice("Tomorrow", 0)
+                    .WithType(ApplicationCommandOptionType.Integer)
+                );
             try
             {
                 await Discord.CreateGlobalApplicationCommandAsync(createSignupCommand.Build());

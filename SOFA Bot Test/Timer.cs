@@ -10,9 +10,11 @@ namespace SOFA_Bot_Test
         {
             return EventDateTime;
         }
-        internal static void SetEventDateTimeForNextDay()
+        internal static void SetEventDateTimeForNextDay(bool isToday)
         {
-            DateOnly eventDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
+            DateOnly eventDate = DateOnly.FromDateTime(DateTime.Now);
+            if (!isToday)
+                eventDate = eventDate.AddDays(1);
             TimeOnly eventTime = new(19, 00);
             DateTime eventDateTime = new(eventDate, eventTime);
 
@@ -25,6 +27,7 @@ namespace SOFA_Bot_Test
             {
                 eventDateTime = eventDateTime.AddHours(1);
             }
+            if (eventDateTime < DateTime.Now)
             logger.LogInformation("{Time} - Event date time set for {eventDateTime}", DateTime.Now, eventDateTime);
             EventDateTime = eventDateTime;
         }
