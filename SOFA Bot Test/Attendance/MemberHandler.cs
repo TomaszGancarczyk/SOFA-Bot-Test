@@ -23,18 +23,16 @@ namespace SOFA_Bot_Test.Attendance
         internal static void SetMembers()
         {
             SofaMembers = [];
-            SocketRole sofaRole = Guild.Roles.FirstOrDefault(role => role.Name == SofaRoleName);
-            SocketGuildUser[] sofaMembers = Guild.Users.Where(user => user.Roles.Contains(sofaRole)).ToArray();
+            SocketGuildUser[] sofaMembers = Guild.Users.Where(user => user.Roles.Any(role => role.Name == SofaRoleName)).ToArray();
             foreach (SocketGuildUser member in sofaMembers)
             {
                 SofaMembers.Add(member, null);
             }
             RofaMembers = [];
-            SocketRole rofaRole = Guild.Roles.FirstOrDefault(role => role.Name == RofaRoleName);
-            SocketGuildUser[] rofaMembers = Guild.Users.Where(user => user.Roles.Contains(rofaRole)).ToArray();
+            SocketGuildUser[] rofaMembers = Guild.Users.Where(user => user.Roles.Any(role => role.Name == RofaRoleName)).ToArray();
             foreach (SocketGuildUser member in rofaMembers)
             {
-                if (!member.Roles.Contains(sofaRole))
+                if (!member.Roles.Any(role => role.Name == SofaRoleName))
                     RofaMembers.Add(member, null);
             }
             UnassignedMembers = [];

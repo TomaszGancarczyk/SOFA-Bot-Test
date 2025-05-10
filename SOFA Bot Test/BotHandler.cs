@@ -74,20 +74,6 @@ namespace SOFA_Bot_Test
                 await StartAttendanceEvent(false);
             }
         }
-        internal async static Task<List<SocketRole>> GetPrivilegedRoles()
-        {
-            List<SocketRole> privilegedRoles = null;
-            string[] roleNames = BotInfo.GetPrivilegedRoleNames();
-            foreach (string roleName in roleNames)
-            {
-                SocketRole role = Guild.Roles.FirstOrDefault(role => role.Name == roleName);
-                if (role != null)
-                {
-                    privilegedRoles.Add(role);
-                }
-            }
-            return privilegedRoles;
-        }
         internal async static Task<SocketGuildUser> GetGuildUserByName(string userName)
         {
             return Guild.Users.FirstOrDefault(user => user.GlobalName == userName);

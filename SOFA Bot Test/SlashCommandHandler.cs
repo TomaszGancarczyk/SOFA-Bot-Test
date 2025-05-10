@@ -13,7 +13,7 @@ namespace SOFA_Bot_Test
         {
             EmbedBuilder embed;
             bool isEphemeral;
-            List<SocketRole> privilegedRoles;
+            string[] privilegedRoles;
             SocketGuildUser user;
             bool hasPermission;
             switch (command.Data.Name)
@@ -28,7 +28,7 @@ namespace SOFA_Bot_Test
                         break;
                     }
                     logger.LogInformation("{Time} - User {user} asked for stats for {player}", DateTime.Now, command.User.GlobalName, playerName);
-                    global::PlayerStats player = await ApiHandler.GetPlayerStats(playerName);
+                    Stats.PlayerStats player = await ApiHandler.GetPlayerStats(playerName);
                     if (player != null)
                     {
                         embed = await StatsHandler.CreateStatsMessage(command, player);
@@ -44,12 +44,12 @@ namespace SOFA_Bot_Test
                 case "reminder-message":
                     await command.DeferAsync();
                     hasPermission = false;
-                    privilegedRoles = await BotHandler.GetPrivilegedRoles();
+                    privilegedRoles = BotInfo.GetPrivilegedRoleNames();
                     user = await BotHandler.GetGuildUserByName(command.User.GlobalName);
                     embed = null;
-                    foreach (SocketRole role in privilegedRoles)
+                    foreach (string roleName in privilegedRoles)
                     {
-                        if (user.Roles.Contains(role))
+                        if (user.Roles.Any(role => role.Name == roleName))
                         {
                             bool status = false;
                             if (command.Data.Options.First().Value.ToString() == "1")
@@ -77,12 +77,12 @@ namespace SOFA_Bot_Test
                 case "create-signup":
                     await command.DeferAsync();
                     hasPermission = false;
-                    privilegedRoles = await BotHandler.GetPrivilegedRoles();
+                    privilegedRoles = BotInfo.GetPrivilegedRoleNames();
                     user = await BotHandler.GetGuildUserByName(command.User.GlobalName);
                     embed = null;
-                    foreach (SocketRole role in privilegedRoles)
+                    foreach (string roleName in privilegedRoles)
                     {
-                        if (user.Roles.Contains(role))
+                        if (user.Roles.Any(role => role.Name == roleName))
                         {
                             await QuestionHandler.DeleteReminderMessage();
                             if (command.Data.Options.First().Value.ToString() == "1")

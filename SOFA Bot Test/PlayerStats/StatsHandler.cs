@@ -5,7 +5,7 @@ namespace SOFA_Bot_Test.PlayerStats
 {
     internal class StatsHandler
     {
-        internal async static Task<EmbedBuilder> CreateStatsMessage(SocketSlashCommand command, global::PlayerStats player)
+        internal async static Task<EmbedBuilder> CreateStatsMessage(SocketSlashCommand command, Stats.PlayerStats player)
         {
             EmbedBuilder embed = new();
             embed.WithColor(Color.Green);
