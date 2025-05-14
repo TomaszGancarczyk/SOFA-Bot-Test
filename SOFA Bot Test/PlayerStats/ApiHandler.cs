@@ -1,15 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System.Net.Http.Headers;
-using System.Text.Json;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
-namespace SOFA_Bot_Test
+namespace SOFA_Bot_Test.PlayerStats
 {
     internal class ApiHandler
     {
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Player Stats");
-        internal static async Task<Stats.PlayerStats> GetPlayerStats(string playerName)
+        internal static async Task<Stats> GetPlayerStats(string playerName)
         {
             logger.LogInformation("{Time} - Calling API for {player}", DateTime.Now, playerName);
             string apitoken = BotInfo.GetApiToken();
@@ -25,13 +23,9 @@ namespace SOFA_Bot_Test
             HttpResponseMessage response = client.GetAsync($"{playerName}/profile").Result;
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
                 logger.LogInformation("{Time} - Successfully got the request for {player}", DateTime.Now, playerName);
                 string responseBody = await response.Content.ReadAsStringAsync();
-                Stats.PlayerStats playerStats = JsonSerializer.Deserialize<Stats.PlayerStats>(responseBody, options);
+                Stats playerStats = await ConvertJsonStringToPlayerStats(responseBody);
                 return playerStats;
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
@@ -49,6 +43,16 @@ namespace SOFA_Bot_Test
                 logger.LogWarning("{Time} - Unsupported error in API call: {error code}", DateTime.Now, response.StatusCode);
                 return null;
             }
+        }
+        private static async Task<Stats> ConvertJsonStringToPlayerStats(string jsonString)
+        {
+            dynamic dynamicStats = JsonConvert.DeserializeObject(jsonString);
+            Stats stats = new()
+            {
+                Uuid = dynamicStats.uuid,
+                Username = dynamicStats.username
+            };
+            return stats;
         }
     }
 }

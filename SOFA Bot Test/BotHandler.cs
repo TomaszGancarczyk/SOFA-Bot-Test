@@ -63,9 +63,10 @@ namespace SOFA_Bot_Test
         {
             CurrentMessage = message;
         }
-        internal static ulong GetCurrentMessageId()
+        internal static ulong? GetCurrentMessageId()
         {
-            return CurrentMessage.Id;
+            if (CurrentMessage == null) return null;
+            else return CurrentMessage.Id;
         }
         private async static void StartEvent()
         {
@@ -83,8 +84,8 @@ namespace SOFA_Bot_Test
             logger.LogInformation("{Time} - Starting event", DateTime.Now);
             CurrentMessage = null;
             logger.LogInformation("{Time} - Getting event date time", DateTime.Now);
-            Timer.SetEventDateTimeForNextDay(isToday);
-            var eventDateTime = Timer.GetEventDateTime();
+            Attendance.Timer.SetEventDateTimeForNextDay(isToday);
+            var eventDateTime = Attendance.Timer.GetEventDateTime();
             CurrentMessage = await MessageHandler.CreateMesage(QuestionChannel, SignupsChannel, GoldenDropChannel);
             TimeSpan reminderTimeSpan = eventDateTime - DateTime.Now.AddHours(1);
             if (reminderTimeSpan > TimeSpan.Zero)

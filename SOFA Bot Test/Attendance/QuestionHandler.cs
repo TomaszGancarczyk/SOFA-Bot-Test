@@ -18,12 +18,14 @@ namespace SOFA_Bot_Test.Attendance
 
         internal async static Task<string> HandleEventQuestion(IMessageChannel questionChannel)
         {
+            DateTime eventDateTime = Timer.GetEventDateTime();
+            string eventDateTimeDay = "";
+            if (eventDateTime.Day == DateTime.Now.Day) eventDateTimeDay = "today";
+            if (eventDateTime.Day == DateTime.Now.AddDays(1).Day) eventDateTimeDay = "tomorrow";
             CurrentQuestionMessage = null;
             WaitingForQuestionResponse = true;
-            DayOfWeek eventDayOfWeek = Timer.GetEventDateTime().DayOfWeek;
-            WaitingForQuestionResponse = true;
             logger.LogInformation("{Time} - Sending question for event", DateTime.Now);
-            string questionMessageContent = "## What do we play tomorrow?";
+            string questionMessageContent = $"## What do we play {eventDateTimeDay}?";
             ComponentBuilder component = CreateButton.CreateQuestionButtons();
             CurrentQuestionMessage = await questionChannel.SendMessageAsync(questionMessageContent, components: component.Build());
             while (WaitingForQuestionResponse)

@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel;
 
 namespace SOFA_Bot_Test.Attendance
 {
@@ -12,7 +13,7 @@ namespace SOFA_Bot_Test.Attendance
         {
             EmbedBuilder updatedMessage;
             EmbedBuilder confirmationMessage;
-            ulong currentMessageId;
+            ulong? currentMessageId;
             switch (component.Data.CustomId)
             {
                 case "tournamentButton":
@@ -42,9 +43,13 @@ namespace SOFA_Bot_Test.Attendance
                     break;
                 case "presentButton":
                     currentMessageId = BotHandler.GetCurrentMessageId();
-                    if (component.Message.Id == currentMessageId)
+                    if (currentMessageId == null)
                     {
-                        logger.LogInformation("{Time} - {User} clicked present", DateTime.Now, component.User.GlobalName);
+                        RespondWithOldSignupError(component);
+                    }
+                    else if (component.Message.Id == currentMessageId)
+                    {
+                        logger.LogInformation("{Time} - {User} clicked present on the signup", DateTime.Now, component.User.GlobalName);
                         MemberHandler.SetMemberStatus(component.User, true);
                         updatedMessage = await CreateMessage.UpdateAttendanceMessage();
                         confirmationMessage = await CreateMessage.CreateConfirmationMesasage("Present");
@@ -54,16 +59,18 @@ namespace SOFA_Bot_Test.Attendance
                     }
                     else
                     {
-                        logger.LogInformation("{Time} - {User} interacted with old message", DateTime.Now, component.User.GlobalName);
-                        confirmationMessage = await CreateMessage.CreateWrongSignupMesasage();
-                        await component.RespondAsync(embed: confirmationMessage.Build(), ephemeral: true);
+                        RespondWithOldSignupError(component);
                     }
                     break;
                 case "absentButton":
                     currentMessageId = BotHandler.GetCurrentMessageId();
-                    if (component.Message.Id == currentMessageId)
+                    if (currentMessageId == null)
                     {
-                        logger.LogInformation("{Time} - {User} clicked absent", DateTime.Now, component.User.GlobalName);
+                        RespondWithOldSignupError(component);
+                    }
+                    else if (component.Message.Id == currentMessageId)
+                    {
+                        logger.LogInformation("{Time} - {User} clicked absent on the signup", DateTime.Now, component.User.GlobalName);
                         MemberHandler.SetMemberStatus(component.User, false);
                         updatedMessage = await CreateMessage.UpdateAttendanceMessage();
                         confirmationMessage = await CreateMessage.CreateConfirmationMesasage("Absent");
@@ -73,12 +80,16 @@ namespace SOFA_Bot_Test.Attendance
                     }
                     else
                     {
-                        logger.LogInformation("{Time} - {User} interacted with old signup", DateTime.Now, component.User.GlobalName);
-                        confirmationMessage = await CreateMessage.CreateWrongSignupMesasage();
-                        await component.RespondAsync(embed: confirmationMessage.Build(), ephemeral: true);
+                        RespondWithOldSignupError(component);
                     }
                     break;
             }
+        }
+        private static async void RespondWithOldSignupError(SocketMessageComponent component)
+        {
+            logger.LogInformation("{Time} - {User} interacted with old signup", DateTime.Now, component.User.GlobalName);
+            EmbedBuilder message = await CreateMessage.CreateWrongSignupMesasage();
+            await component.RespondAsync(embed: message.Build(), ephemeral: true);
         }
     }
 }

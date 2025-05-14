@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace SOFA_Bot_Test
+namespace SOFA_Bot_Test.Attendance
 {
     internal class Timer
     {

@@ -12,7 +12,6 @@ namespace SOFA_Bot_Test
         public static async Task Handler(SocketSlashCommand command)
         {
             EmbedBuilder embed;
-            bool isEphemeral;
             string[] privilegedRoles;
             SocketGuildUser user;
             bool hasPermission;
@@ -24,25 +23,23 @@ namespace SOFA_Bot_Test
                     if (playerName == null)
                     {
                         embed = await GenericResponse.Error.Null();
-                        await command.FollowupAsync(embed: embed.Build(), ephemeral: true);
+                        await command.FollowupAsync(embed: embed.Build());
                         break;
                     }
                     logger.LogInformation("{Time} - User {user} asked for stats for {player}", DateTime.Now, command.User.GlobalName, playerName);
-                    Stats.PlayerStats player = await ApiHandler.GetPlayerStats(playerName);
+                    Stats player = await ApiHandler.GetPlayerStats(playerName);
                     if (player != null)
                     {
                         embed = await StatsHandler.CreateStatsMessage(command, player);
-                        isEphemeral = false;
                     }
                     else
                     {
                         embed = await GenericResponse.Error.CantFindPlayer(command);
-                        isEphemeral = true;
                     }
-                    await command.FollowupAsync(embed: embed.Build(), ephemeral: isEphemeral);
+                    await command.FollowupAsync(embed: embed.Build());
                     break;
                 case "reminder-message":
-                    await command.DeferAsync();
+                    await command.DeferAsync(ephemeral: true);
                     hasPermission = false;
                     privilegedRoles = BotInfo.GetPrivilegedRoleNames();
                     user = await BotHandler.GetGuildUserByName(command.User.GlobalName);
@@ -67,15 +64,15 @@ namespace SOFA_Bot_Test
                             embed = await GenericResponse.Success.RemindersChanged(status);
                             break;
                         }
-                        if (!hasPermission)
-                        {
-                            embed = await GenericResponse.Error.NoPermission();
-                        }
-                        await command.FollowupAsync(embed: embed.Build(), ephemeral: true);
                     }
+                    if (!hasPermission)
+                    {
+                        embed = await GenericResponse.Error.NoPermission();
+                    }
+                    await command.FollowupAsync(embed: embed.Build());
                     break;
                 case "create-signup":
-                    await command.DeferAsync();
+                    await command.DeferAsync(ephemeral: true);
                     hasPermission = false;
                     privilegedRoles = BotInfo.GetPrivilegedRoleNames();
                     user = await BotHandler.GetGuildUserByName(command.User.GlobalName);
@@ -84,14 +81,14 @@ namespace SOFA_Bot_Test
                     {
                         if (user.Roles.Any(role => role.Name == roleName))
                         {
-                            await QuestionHandler.DeleteReminderMessage();
+                            QuestionHandler.DeleteReminderMessage();
                             if (command.Data.Options.First().Value.ToString() == "1")
                             {
-                                await BotHandler.StartAttendanceEvent(true);
+                                BotHandler.StartAttendanceEvent(true);
                             }
                             else if (command.Data.Options.First().Value.ToString() == "0")
                             {
-                                await BotHandler.StartAttendanceEvent(false);
+                                BotHandler.StartAttendanceEvent(false);
                             }
                             hasPermission = true;
                             embed = await GenericResponse.Success.NewSignup();
@@ -102,7 +99,7 @@ namespace SOFA_Bot_Test
                     {
                         embed = await GenericResponse.Error.NoPermission();
                     }
-                    await command.FollowupAsync(embed: embed.Build(), ephemeral: true);
+                    await command.FollowupAsync(embed: embed.Build());
                     break;
             }
         }
