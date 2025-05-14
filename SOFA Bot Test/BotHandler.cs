@@ -20,7 +20,7 @@ namespace SOFA_Bot_Test
             if (Guild == null)
             {
                 logger.LogCritical("{Time} - Guild not found", DateTime.Now);
-                throw new ArgumentNullException("Guild not found");
+                throw new ArgumentException("Guild not found");
             }
             logger.LogInformation("{Time} - Found Guild: {Guild.Name}", DateTime.Now, Guild.Name);
 
@@ -28,7 +28,7 @@ namespace SOFA_Bot_Test
             if (QuestionChannel == null)
             {
                 logger.LogCritical("{Time} - Quesion channel not found", DateTime.Now);
-                throw new ArgumentNullException("Question channel not found");
+                throw new ArgumentException("Question channel not found");
             }
             logger.LogInformation("{Time} - Found Question Channel: {Channel.Name}", DateTime.Now, QuestionChannel.Name);
 
@@ -36,7 +36,7 @@ namespace SOFA_Bot_Test
             if (SignupsChannel == null)
             {
                 logger.LogCritical("{Time} - Signups channel not found", DateTime.Now);
-                throw new ArgumentNullException("Signups channel not found");
+                throw new ArgumentException("Signups channel not found");
             }
             logger.LogInformation("{Time} - Found Signups Channel: {Channel.Name}", DateTime.Now, SignupsChannel.Name);
 
@@ -44,7 +44,7 @@ namespace SOFA_Bot_Test
             if (GoldenDropChannel == null)
             {
                 logger.LogCritical("{Time} - Golden Drop channel not found", DateTime.Now);
-                throw new ArgumentNullException("Golden Drop channel not found");
+                throw new ArgumentException("Golden Drop channel not found");
             }
             logger.LogInformation("{Time} - Found Golden Drop Channel: {Channel.Name}", DateTime.Now, GoldenDropChannel.Name);
 
@@ -102,18 +102,21 @@ namespace SOFA_Bot_Test
             CurrentMessage = null;
             Task.Delay(7200000).Wait();
         }
+
         //TODO handle player stats from API call
+        //     waiting for API token
 
         //TODO Testing
+        //     
         // test people changing roles mid signup
-        // test people with multiple roles handled correctly
         // test spamming signup button
         // test handle a lot of people in one tab
         // test /reminder
-        // test /createsignup
-        //   both options
-        // test slash command permissions
-        //   for leader, officer, deputy, admin
-        // test reminder messages sent on correct days
+        //     test functionality
+        //          if its sent for correct events
+        //          if enabling/disabling works
+        //     --permissions are working--
+        //     --response is working--
+        // test if there are no visual bugs for messages
     }
 }

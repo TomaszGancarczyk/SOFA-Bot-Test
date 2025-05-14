@@ -6,10 +6,10 @@ namespace SOFA_Bot_Test.Attendance
     internal class MemberHandler
     {
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Attendance");
-        private static SocketGuild Guild = BotHandler.GetGuild();
-        private static string SofaRoleName = BotInfo.GetSofaRoleName();
+        private static readonly SocketGuild Guild = BotHandler.GetGuild();
+        private static readonly string SofaRoleName = BotInfo.GetSofaRoleName();
         private static Dictionary<SocketGuildUser, bool?> SofaMembers;
-        private static string RofaRoleName = BotInfo.GetRofaRoleName();
+        private static readonly string RofaRoleName = BotInfo.GetRofaRoleName();
         private static Dictionary<SocketGuildUser, bool?> RofaMembers;
         private static Dictionary<SocketGuildUser, bool?> UnassignedMembers;
         internal static SocketRole GetRole(string roleName)
@@ -23,13 +23,13 @@ namespace SOFA_Bot_Test.Attendance
         internal static void SetMembers()
         {
             SofaMembers = [];
-            SocketGuildUser[] sofaMembers = Guild.Users.Where(user => user.Roles.Any(role => role.Name == SofaRoleName)).ToArray();
+            SocketGuildUser[] sofaMembers = [.. Guild.Users.Where(user => user.Roles.Any(role => role.Name == SofaRoleName))];
             foreach (SocketGuildUser member in sofaMembers)
             {
                 SofaMembers.Add(member, null);
             }
             RofaMembers = [];
-            SocketGuildUser[] rofaMembers = Guild.Users.Where(user => user.Roles.Any(role => role.Name == RofaRoleName)).ToArray();
+            SocketGuildUser[] rofaMembers = [.. Guild.Users.Where(user => user.Roles.Any(role => role.Name == RofaRoleName))];
             foreach (SocketGuildUser member in rofaMembers)
             {
                 if (!member.Roles.Any(role => role.Name == SofaRoleName))

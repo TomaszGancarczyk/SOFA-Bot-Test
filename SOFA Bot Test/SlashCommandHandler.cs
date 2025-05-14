@@ -30,7 +30,7 @@ namespace SOFA_Bot_Test
                     Stats player = await ApiHandler.GetPlayerStats(playerName);
                     if (player != null)
                     {
-                        embed = await StatsHandler.CreateStatsMessage(command, player);
+                        embed = await StatsHandler.CreateStatsMessage(player);
                     }
                     else
                     {
@@ -81,14 +81,14 @@ namespace SOFA_Bot_Test
                     {
                         if (user.Roles.Any(role => role.Name == roleName))
                         {
-                            QuestionHandler.DeleteReminderMessage();
+                            _ = QuestionHandler.DeleteReminderMessage();
                             if (command.Data.Options.First().Value.ToString() == "1")
                             {
-                                BotHandler.StartAttendanceEvent(true);
+                                _ = BotHandler.StartAttendanceEvent(true);
                             }
                             else if (command.Data.Options.First().Value.ToString() == "0")
                             {
-                                BotHandler.StartAttendanceEvent(false);
+                                _ = BotHandler.StartAttendanceEvent(false);
                             }
                             hasPermission = true;
                             embed = await GenericResponse.Success.NewSignup();

@@ -41,7 +41,7 @@ namespace SOFA_Bot_Test.Attendance
             Dictionary<SocketGuildUser, bool?> sofaMembers = MemberHandler.GetSofaMembers();
             Dictionary<SocketGuildUser, bool?> rofaMembers = MemberHandler.GetRofaMembers();
             Dictionary<SocketGuildUser, bool?> unassignedMembers = MemberHandler.GetUnassignedMembers();
-            int[] totalPresentAbsentUnsigned = { 0, 0, 0 };
+            int[] totalPresentAbsentUnsigned = [0, 0, 0];
             AddPresentAbsentUnsigned(totalPresentAbsentUnsigned, sofaMembers);
             AddPresentAbsentUnsigned(totalPresentAbsentUnsigned, unassignedMembers);
             if (EventType == "Golden Drop")
@@ -75,7 +75,7 @@ namespace SOFA_Bot_Test.Attendance
             {
                 SocketRole role;
                 string squadMembers;
-                List<ulong> handledMembersId = new();
+                List<ulong> handledMembersId = [];
                 for (int i = 1; i <= 6; i++)
                 {
                     squadMembers = "";
@@ -86,7 +86,7 @@ namespace SOFA_Bot_Test.Attendance
                             squadMembers += AddMemberAndStatus(member.Value, member.Key.DisplayName);
                             handledMembersId.Add(member.Key.Id);
                         }
-                    if (squadMembers.Count() > 0)
+                    if (squadMembers.Length > 0)
                         embed.AddField($"Squad {i}", squadMembers, true);
                 }
                 role = BotHandler.GetRole($"SOFA Reserve");
@@ -94,7 +94,7 @@ namespace SOFA_Bot_Test.Attendance
                 foreach (var member in sofaMembers)
                     if (member.Key.Roles.Contains(role) && !handledMembersId.Contains(member.Key.Id))
                         squadMembers += AddMemberAndStatus(member.Value, member.Key.DisplayName);
-                if (squadMembers.Count() > 0)
+                if (squadMembers.Length > 0)
                     embed.AddField($"Reserve", squadMembers, true);
                 if (unassignedMembers.Count > 0)
                 {
@@ -135,21 +135,24 @@ namespace SOFA_Bot_Test.Attendance
             EmbedBuilder embed = new();
             if (status == "Present")
             {
-                embed.WithColor(Color.Green);
-                embed.WithTitle($"Signed Up for {EventMessageTitle}");
+                embed
+                    .WithColor(Color.Green)
+                    .WithTitle($"Signed Up for {EventMessageTitle}");
             }
             if (status == "Absent")
             {
-                embed.WithColor(Color.Red);
-                embed.WithTitle($"Signed Off for {EventMessageTitle}");
+                embed
+                    .WithColor(Color.Red)
+                    .WithTitle($"Signed Off for {EventMessageTitle}");
             }
             return embed;
         }
         internal async static Task<EmbedBuilder> CreateWrongSignupMesasage()
         {
             EmbedBuilder embed = new();
-            embed.WithColor(Color.DarkGrey);
-            embed.WithTitle($"This is signup is closed");
+            embed
+                .WithColor(Color.DarkGrey)
+                .WithTitle($"This is signup is closed");
             return embed;
         }
         private static string AddMemberAndStatus(bool? status, string displayName)

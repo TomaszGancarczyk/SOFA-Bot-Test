@@ -5,17 +5,18 @@ namespace SOFA_Bot_Test.PlayerStats
 {
     internal class StatsHandler
     {
-        internal async static Task<EmbedBuilder> CreateStatsMessage(SocketSlashCommand command, Stats player)
+        internal async static Task<EmbedBuilder> CreateStatsMessage(Stats player)
         {
             EmbedBuilder embed = new();
-            embed.WithColor(Color.Green);
+            embed.WithColor(Color.Green)
+                .WithTitle($"{player.Username}");
             return embed;
         }
         internal async static Task<EmbedBuilder> CreateStatsErrorMessage(SocketSlashCommand command)
         {
             EmbedBuilder embed = new();
-            embed.WithColor(Color.Red);
-            embed.WithTitle($"Couldn't find player {command.Data.Options.First().Value.ToString}");
+            embed.WithColor(Color.Red)
+                .WithTitle($"Couldn't find player {command.Data.Options.First().Value.ToString}");
             return embed;
         }
     }
