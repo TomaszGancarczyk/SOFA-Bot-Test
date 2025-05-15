@@ -2,8 +2,28 @@
 {
     internal class Stats
     {
-        public string Uuid { get; set; }
-        public string Username { get; set; }
+        internal string Uuid { get; set; }
+        //image
+        internal string Username { get; set; }
+        internal string Faction { get; set; }
+        internal string Clan { get; set; }
+        internal string ClanRank { get; set; }
+        internal string Playtime { get; set; }
+        internal string JoinedGame { get; set; }
+        internal string LastLogin { get; set; }
+        internal string Kills { get; set; }
+        internal string Deaths { get; set; }
+        internal string Assists { get; set; }
+        internal string Suicides { get; set; }
+        internal string ArtifactsFound { get; set; }
+        internal string HighestMoney { get; set; }
+        internal string MoneyMade { get; set; }
+        internal string BoltsThrown { get; set; }
+        internal string MutantKills { get; set; }
+        internal string NpcKills { get; set; }
+        internal string DeliveriesMade { get; set; }
+        internal string CachesFound { get; set; }
+        internal string SignalsFound { get; set; }
     }
 
 

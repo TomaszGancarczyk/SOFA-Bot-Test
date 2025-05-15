@@ -14,11 +14,10 @@ namespace SOFA_Bot_Test.Attendance
             ReminderPermission = status;
             return Task.CompletedTask;
         }
-        internal static async void Handle(TimeSpan reminderTimeSpan)
+        internal static async void Handle()
         {
             if (ReminderPermission)
             {
-                Task.Delay(reminderTimeSpan).Wait();
                 string eventType = CreateMessage.GetEventType();
                 List<SocketGuildUser> offMembers = [];
                 if (eventType == "Tournament" || eventType == "Base Capture")
@@ -31,13 +30,13 @@ namespace SOFA_Bot_Test.Attendance
                             offMembers.Add(member.Key);
                 }
                 foreach (var member in offMembers)
-                    await SendReminder(member);
+                    await SendReminder(member, eventType);
             }
         }
-        private static async Task SendReminder(SocketGuildUser member)
+        private static async Task SendReminder(SocketGuildUser member, string eventType)
         {
             logger.LogInformation("{Time} - Sending reminder to {member}", DateTime.Now, member.DisplayName);
-            string message = "Don't forget to signup :3";
+            string message = $"Don't forget to signup for {eventType} :3";
             await member.SendMessageAsync(message);
         }
         internal static async Task<EmbedBuilder> CreateSignupCommandResponse(bool status)

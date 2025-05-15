@@ -26,7 +26,7 @@ namespace SOFA_Bot_Test
                         await command.FollowupAsync(embed: embed.Build());
                         break;
                     }
-                    logger.LogInformation("{Time} - User {user} asked for stats for {player}", DateTime.Now, command.User.GlobalName, playerName);
+                    logger.LogInformation("{Time} - User {user} used stats for {player}", DateTime.Now, command.User.GlobalName, playerName);
                     Stats player = await ApiHandler.GetPlayerStats(playerName);
                     if (player != null)
                     {
@@ -40,6 +40,7 @@ namespace SOFA_Bot_Test
                     break;
                 case "reminder-message":
                     await command.DeferAsync(ephemeral: true);
+                    logger.LogInformation("{Time} - User {user} used reminder-message", DateTime.Now, command.User.GlobalName);
                     hasPermission = false;
                     privilegedRoles = BotInfo.GetPrivilegedRoleNames();
                     user = await BotHandler.GetGuildUserByName(command.User.GlobalName);
@@ -73,6 +74,7 @@ namespace SOFA_Bot_Test
                     break;
                 case "create-signup":
                     await command.DeferAsync(ephemeral: true);
+                    logger.LogInformation("{Time} - User {user} used create-signups", DateTime.Now, command.User.GlobalName);
                     hasPermission = false;
                     privilegedRoles = BotInfo.GetPrivilegedRoleNames();
                     user = await BotHandler.GetGuildUserByName(command.User.GlobalName);

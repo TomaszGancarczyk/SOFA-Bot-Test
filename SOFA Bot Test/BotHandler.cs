@@ -89,10 +89,13 @@ namespace SOFA_Bot_Test
             CurrentMessage = await MessageHandler.CreateMesage(QuestionChannel, SignupsChannel, GoldenDropChannel);
             TimeSpan reminderTimeSpan = eventDateTime - DateTime.Now.AddHours(1);
             if (reminderTimeSpan > TimeSpan.Zero)
-                Reminder.Handle(reminderTimeSpan);
+            {
+                Task.Delay(reminderTimeSpan).Wait();
+                Reminder.Handle();
+            }
             else
                 logger.LogWarning("{Time} - reminderTimeSpan is less than 0", DateTime.Now);
-            TimeSpan eventCloseTimeSpan = eventDateTime - DateTime.Now.AddMinutes(20);
+            TimeSpan eventCloseTimeSpan = eventDateTime - DateTime.Now.AddMinutes(15);
             if (eventCloseTimeSpan > TimeSpan.Zero)
                 Task.Delay(eventCloseTimeSpan).Wait();
             else
@@ -103,20 +106,25 @@ namespace SOFA_Bot_Test
             Task.Delay(7200000).Wait();
         }
 
-        //TODO handle player stats from API call
-        //     waiting for API token
+        //TODO
+        // handle player stats from API call
+        //      Stats class data types
+        //      waiting for API token
+        // expand signup response message?
+        // try catch reminder message (can't send to all members)
 
         //TODO Testing
-        //     
-        // test people changing roles mid signup
-        // test spamming signup button
+        //
         // test handle a lot of people in one tab
+        // test people changing roles mid signup
+        // --test spamming question button--
+        // --test spamming signup button--
         // test /reminder
-        //     test functionality
+        //      test functionality
         //          if its sent for correct events
-        //          if enabling/disabling works
-        //     --permissions are working--
-        //     --response is working--
+        //          --enabling/disabling is working--
+        //      --permissions are working--
+        //      --response is working--
         // test if there are no visual bugs for messages
     }
 }

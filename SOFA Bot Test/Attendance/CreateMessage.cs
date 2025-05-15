@@ -106,7 +106,7 @@ namespace SOFA_Bot_Test.Attendance
                     embed.AddField("Unassigned", $"{unassignedField}", true);
                 }
             }
-            string footerMessage = $"{totalPresentAbsentUnsigned[0]} Present, {totalPresentAbsentUnsigned[1]} Absent, {totalPresentAbsentUnsigned[2]} Unsigned";
+            string footerMessage = $"____________________________________________________________________________________________________\n{totalPresentAbsentUnsigned[0]} Present, {totalPresentAbsentUnsigned[1]} Absent, {totalPresentAbsentUnsigned[2]} Unsigned";
             embed.WithFooter(footerMessage);
             return embed;
         }
