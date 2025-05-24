@@ -11,7 +11,7 @@ namespace SOFA_Bot_Test.Attendance
         {
             logger.LogInformation("{Time} - Starting message creation", DateTime.Now);
             string eventType = await QuestionHandler.HandleEventQuestion(questionChannel);
-            CreateMessage.SetEventType(eventType);
+            SignupMessage.SetEventType(eventType);
             IMessage eventMessage = null;
             if (eventType == "Day Off")
             {
@@ -20,7 +20,7 @@ namespace SOFA_Bot_Test.Attendance
             else
             {
                 MemberHandler.SetMembers();
-                EmbedBuilder embedMessage = await CreateMessage.CreateAttendanceMessage();
+                EmbedBuilder embedMessage = await SignupMessage.CreateSignupMessage();
                 ComponentBuilder messageButton = await CreateButton.CreateAttendanceButton();
                 if (eventType == "Golden Drop")
                 {

@@ -27,7 +27,8 @@ namespace SOFA_Bot_Test
                         break;
                     }
                     logger.LogInformation("{Time} - User {user} used stats for {player}", DateTime.Now, command.User.GlobalName, playerName);
-                    Stats player = await ApiHandler.GetPlayerStats(playerName);
+                    Stats player = Stats.CreateTestPlayer();
+                    //Stats player = await ApiHandler.GetPlayerStats(playerName);
                     if (player != null)
                     {
                         embed = await StatsHandler.CreateStatsMessage(player);

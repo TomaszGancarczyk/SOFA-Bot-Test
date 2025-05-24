@@ -1,4 +1,7 @@
-﻿namespace SOFA_Bot_Test.PlayerStats
+﻿using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
+
+namespace SOFA_Bot_Test.PlayerStats
 {
     internal class Stats
     {
@@ -7,32 +10,63 @@
         internal string Username { get; set; }
         internal string Faction { get; set; }
         internal string Clan { get; set; }
+        internal string ClanTag { get; set; }
         internal string ClanRank { get; set; }
-        internal string Playtime { get; set; }
-        internal string JoinedGame { get; set; }
-        internal string LastLogin { get; set; }
-        internal string Kills { get; set; }
-        internal string Deaths { get; set; }
-        internal string Assists { get; set; }
-        internal string Suicides { get; set; }
-        internal string ArtifactsFound { get; set; }
-        internal string HighestMoney { get; set; }
-        internal string MoneyMade { get; set; }
-        internal string BoltsThrown { get; set; }
-        internal string MutantKills { get; set; }
-        internal string NpcKills { get; set; }
-        internal string DeliveriesMade { get; set; }
-        internal string CachesFound { get; set; }
-        internal string SignalsFound { get; set; }
+        internal int TimesJoinedClan { get; set; }
+        internal int PlaytimeHours { get; set; }
+        internal DateOnly JoinedGame { get; set; }
+        internal DateOnly LastLogin { get; set; }
+        internal int Kills { get; set; }
+        internal int Deaths { get; set; }
+        internal int Assists { get; set; }
+        internal double TotalKD { get; set; }
+        internal double SessionKD { get; set; }
+        internal int Suicides { get; set; }
+        internal int ArtifactsFound { get; set; }
+        internal int HighestMoney { get; set; }
+        //internal int MoneyMade { get; set; }
+        internal int BoltsThrown { get; set; }
+        internal int MutantKills { get; set; }
+        internal int NpcKills { get; set; }
+        internal int DeliveriesMade { get; set; }
+        internal int CachesFound { get; set; }
+        internal int SignalsFound { get; set; }
+
+        internal static Stats CreateTestPlayer()
+        {
+            var player = new Stats();
+            player.Uuid = "id";
+            player.Username = "username";
+            player.Faction = "Rise";
+            player.Clan = "SOFA";
+            player.ClanTag = "[TAG]";
+            player.ClanRank = "Colonel";
+            player.TimesJoinedClan = 5;
+            player.PlaytimeHours = 500;
+            player.JoinedGame = DateOnly.FromDateTime(DateTime.Now.AddDays(-1));
+            player.LastLogin = DateOnly.FromDateTime(DateTime.Now);
+            player.Kills = 69;
+            player.Deaths = 420;
+            player.Assists = 1;
+            player.TotalKD = player.Kills / player.Deaths;
+            player.SessionKD = 10 / 500;
+            player.Suicides = 10000;
+            player.ArtifactsFound = 0;
+            player.HighestMoney = 69420;
+            player.BoltsThrown = 10;
+            player.MutantKills = 10000000;
+            player.NpcKills = 100;
+            player.DeliveriesMade = 0;
+            player.CachesFound = 2179846;
+            player.SignalsFound = 54321;
+            return player;
+        }
     }
 
 
 
 
-
-
-    //internal class PlayerStats
-    //{
+    //  PlayerStats
     //    public string Uuid { get; set; }
     //    public string Username { get; set; }
     //    public string Status { get; set; }
@@ -41,16 +75,16 @@
     //    public List<string> DisplayedAchievements { get; set; }
     //    public Clan Clan { get; set; }
     //    public List<Stat> Stats { get; set; }
-    //}
-    ///// PlayerStats -> Clan
-    //internal class Clan
-    //{
+    //
+    //          PlayerStats -> Clan
+    //
+    //  Clan
     //    public Info info { get; set; }
     //    public Member member { get; set; }
-    //}
-    ///// PlayerStats -> Clan -> Info
-    //internal class Info
-    //{
+    //
+    //          PlayerStats -> Clan -> Info
+    //
+    //  Info
     //    public string id { get; set; }
     //    public string name { get; set; }
     //    public string tag { get; set; }
@@ -61,19 +95,18 @@
     //    public string description { get; set; }
     //    public string leader { get; set; }
     //    public int memberCount { get; set; }
-    //}
-    ///// PlayerStats -> Clan -> Member
-    //internal class Member
-    //{
+    //
+    //          PlayerStats -> Clan -> Member
+    //
+    //  Member
     //    public string name { get; set; }
     //    public string rank { get; set; }
     //    public DateTime joinTime { get; set; }
-    //}
-    ///// PlayerStats -> Stat
-    //internal class Stat
-    //{
+    //
+    //          PlayerStats -> Stat
+    //
+    //  Stat
     //    public string id { get; set; }
     //    public string type { get; set; }
     //    public JToken value { get; set; }
-    //}
 }

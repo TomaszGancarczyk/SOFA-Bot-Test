@@ -100,7 +100,7 @@ namespace SOFA_Bot_Test
                 Task.Delay(eventCloseTimeSpan).Wait();
             else
                 logger.LogWarning("{Time} - eventCloseTimeSpan is less than 0", DateTime.Now);
-            EmbedBuilder closedMessage = await CreateMessage.CloseAttendanceMessage();
+            EmbedBuilder closedMessage = await SignupMessage.CloseSignupMessage();
             await CurrentMessage.Channel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
             CurrentMessage = null;
             Task.Delay(7200000).Wait();
@@ -108,10 +108,8 @@ namespace SOFA_Bot_Test
 
         //TODO
         // handle player stats from API call
-        //      Stats class data types
-        //      waiting for API token
         // expand signup response message?
-        // try catch reminder message (can't send to all members)
+        // try catch reminder message (if can't send to all members)
 
         //TODO Testing
         //

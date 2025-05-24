@@ -18,7 +18,7 @@ namespace SOFA_Bot_Test.Attendance
         {
             if (ReminderPermission)
             {
-                string eventType = CreateMessage.GetEventType();
+                string eventType = SignupMessage.GetEventType();
                 List<SocketGuildUser> offMembers = [];
                 if (eventType == "Tournament" || eventType == "Base Capture")
                 {

@@ -4,17 +4,17 @@ using Microsoft.Extensions.Logging;
 
 namespace SOFA_Bot_Test.Attendance
 {
-    internal class CreateMessage
+    internal class SignupMessage
     {
         private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Attendance");
         private static string EventType;
         private static string EventMessageTitle;
-        internal async static Task<EmbedBuilder> CreateAttendanceMessage()
+        internal async static Task<EmbedBuilder> CreateSignupMessage()
         {
             logger.LogInformation("{Time} - Creating {eventType} message", DateTime.Now, EventType);
-            return await UpdateAttendanceMessage();
+            return await UpdateSignupMessage();
         }
-        internal async static Task<EmbedBuilder> UpdateAttendanceMessage()
+        internal async static Task<EmbedBuilder> UpdateSignupMessage()
         {
             EmbedBuilder embed = new() { };
             DateTime eventDateTime = Timer.GetEventDateTime();
@@ -124,26 +124,27 @@ namespace SOFA_Bot_Test.Attendance
             }
             return totalPresentAbsentUnsigned;
         }
-        internal async static Task<EmbedBuilder> CloseAttendanceMessage()
+        internal async static Task<EmbedBuilder> CloseSignupMessage()
         {
-            EmbedBuilder embed = await UpdateAttendanceMessage();
+            EmbedBuilder embed = await UpdateSignupMessage();
             embed.WithTitle($"{EventMessageTitle} - Signups closed");
             return embed;
         }
         internal async static Task<EmbedBuilder> CreateConfirmationMesasage(string status)
         {
             EmbedBuilder embed = new();
+            DayOfWeek eventDayOfWeek = Timer.GetEventDateTime().DayOfWeek;
             if (status == "Present")
             {
                 embed
                     .WithColor(Color.Green)
-                    .WithTitle($"Signed Up for {EventMessageTitle}");
+                    .WithTitle($"Signed Up for {eventDayOfWeek} {EventMessageTitle}");
             }
             if (status == "Absent")
             {
                 embed
                     .WithColor(Color.Red)
-                    .WithTitle($"Signed Off for {EventMessageTitle}");
+                    .WithTitle($"Signed Off for {eventDayOfWeek} {EventMessageTitle}");
             }
             return embed;
         }

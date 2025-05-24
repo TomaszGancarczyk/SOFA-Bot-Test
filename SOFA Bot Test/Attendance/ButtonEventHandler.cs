@@ -50,8 +50,8 @@ namespace SOFA_Bot_Test.Attendance
                     {
                         logger.LogInformation("{Time} - {User} clicked present on the signup", DateTime.Now, component.User.GlobalName);
                         MemberHandler.SetMemberStatus(component.User, true);
-                        updatedMessage = await CreateMessage.UpdateAttendanceMessage();
-                        confirmationMessage = await CreateMessage.CreateConfirmationMesasage("Present");
+                        updatedMessage = await SignupMessage.UpdateSignupMessage();
+                        confirmationMessage = await SignupMessage.CreateConfirmationMesasage("Present");
                         await component.UpdateAsync(message => message.Embed = updatedMessage.Build());
                         await component.FollowupAsync(embed: confirmationMessage.Build(), ephemeral: true);
                         BotHandler.SetCurrentMessage(component.Message);
@@ -71,8 +71,8 @@ namespace SOFA_Bot_Test.Attendance
                     {
                         logger.LogInformation("{Time} - {User} clicked absent on the signup", DateTime.Now, component.User.GlobalName);
                         MemberHandler.SetMemberStatus(component.User, false);
-                        updatedMessage = await CreateMessage.UpdateAttendanceMessage();
-                        confirmationMessage = await CreateMessage.CreateConfirmationMesasage("Absent");
+                        updatedMessage = await SignupMessage.UpdateSignupMessage();
+                        confirmationMessage = await SignupMessage.CreateConfirmationMesasage("Absent");
                         await component.UpdateAsync(message => message.Embed = updatedMessage.Build());
                         await component.FollowupAsync(embed: confirmationMessage.Build(), ephemeral: true);
                         BotHandler.SetCurrentMessage(component.Message);
@@ -87,7 +87,7 @@ namespace SOFA_Bot_Test.Attendance
         private static async void RespondWithOldSignupError(SocketMessageComponent component)
         {
             logger.LogInformation("{Time} - {User} interacted with old signup", DateTime.Now, component.User.GlobalName);
-            EmbedBuilder message = await CreateMessage.CreateWrongSignupMesasage();
+            EmbedBuilder message = await SignupMessage.CreateWrongSignupMesasage();
             await component.RespondAsync(embed: message.Build(), ephemeral: true);
         }
     }
