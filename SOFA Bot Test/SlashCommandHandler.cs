@@ -18,7 +18,7 @@ namespace SOFA_Bot_Test
             switch (command.Data.Name)
             {
                 case "stats":
-                    await command.DeferAsync();
+                    await command.DeferAsync(ephemeral: true);
                     string playerName = command.Data.Options.First().Value.ToString();
                     if (playerName == null)
                     {
@@ -32,12 +32,16 @@ namespace SOFA_Bot_Test
                     if (player != null)
                     {
                         embed = await StatsHandler.CreateStatsMessage(player);
+                        string factionImage = await StatsHandler.GetFactionImage(player.Faction);
+                        embed.WithThumbnailUrl($"attachment://{player.Faction.ToLower()}.webp");
+                        await command.FollowupAsync($"Listing stats for {player.Username}");
+                        await command.Channel.SendFileAsync(factionImage, embed: embed.Build());
                     }
                     else
                     {
                         embed = await GenericResponse.Error.CantFindPlayer(command);
+                        await command.FollowupAsync(embed: embed.Build());
                     }
-                    await command.FollowupAsync(embed: embed.Build());
                     break;
                 case "reminder-message":
                     await command.DeferAsync(ephemeral: true);

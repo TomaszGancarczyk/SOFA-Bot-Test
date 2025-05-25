@@ -34,20 +34,22 @@ namespace SOFA_Bot_Test.PlayerStats
 
         internal static Stats CreateTestPlayer()
         {
-            var player = new Stats();
-            player.Uuid = "id";
-            player.Username = "username";
-            player.Faction = "Rise";
-            player.Clan = "SOFA";
-            player.ClanTag = "[TAG]";
-            player.ClanRank = "Colonel";
-            player.TimesJoinedClan = 5;
-            player.PlaytimeHours = 500;
-            player.JoinedGame = DateOnly.FromDateTime(DateTime.Now.AddDays(-1));
-            player.LastLogin = DateOnly.FromDateTime(DateTime.Now);
-            player.Kills = 69;
-            player.Deaths = 420;
-            player.Assists = 1;
+            var player = new Stats
+            {
+                Uuid = "id",
+                Username = "username",
+                Faction = "Rise",
+                Clan = "SOFA",
+                ClanTag = "[TAG]",
+                ClanRank = "Colonel",
+                TimesJoinedClan = 5,
+                PlaytimeHours = 500,
+                JoinedGame = DateOnly.FromDateTime(DateTime.Now.AddDays(-1)),
+                LastLogin = DateOnly.FromDateTime(DateTime.Now),
+                Kills = 69,
+                Deaths = 420,
+                Assists = 1
+            };
             player.TotalKD = player.Kills / player.Deaths;
             player.SessionKD = 10 / 500;
             player.Suicides = 10000;

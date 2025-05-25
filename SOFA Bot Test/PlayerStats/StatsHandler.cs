@@ -1,6 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using System.Reactive.Joins;
+using System.Web;
 
 namespace SOFA_Bot_Test.PlayerStats
 {
@@ -9,43 +9,44 @@ namespace SOFA_Bot_Test.PlayerStats
         internal async static Task<EmbedBuilder> CreateStatsMessage(Stats player)
         {
             EmbedBuilder embed = new();
-            IEmote factionEmote = new Emoji("⚫");
             switch (player.Faction)
             {
                 case "Rise":
                     embed.WithColor(Color.Green);
-                    factionEmote = new Emoji("🟢");
                     break;
                 case "Frontier":
                     embed.WithColor(Color.Red);
-                    factionEmote = new Emoji("🔴");
                     break;
                 case "Covenant":
                     embed.WithColor(Color.Purple);
-                    factionEmote = new Emoji("🟣");
                     break;
                 case "Mercenaries":
                     embed.WithColor(Color.Blue);
-                    factionEmote = new Emoji("🔵");
+                    break;
+                case "Stalkers":
+                    embed.WithColor(Color.Gold);
+                    break;
+                case "Bandits":
+                    embed.WithColor(Color.LightGrey);
                     break;
             }
             string clanString = "";
             string clansJoinedString = "";
-            EmbedFieldBuilder GameTimeField = new EmbedFieldBuilder()
+            EmbedFieldBuilder GameTimeField = new()
             {
                 Name = $"Game Time",
                 Value = $"- {player.PlaytimeHours} hours since {player.JoinedGame}\n" +
                 $"- Last login: {player.LastLogin}",
                 IsInline = false,
             };
-            EmbedFieldBuilder PveField = new EmbedFieldBuilder()
+            EmbedFieldBuilder PveField = new()
             {
                 Name = $"PVE",
                 Value = $"- NPC Kills: {player.NpcKills}\n" +
                 $"- MutantKills: {player.MutantKills}",
                 IsInline = false,
             };
-            EmbedFieldBuilder PvpField = new EmbedFieldBuilder()
+            EmbedFieldBuilder PvpField = new()
             {
                 Name = $"PVP",
                 Value = $"- Kills: {player.Kills}\n" +
@@ -56,7 +57,7 @@ namespace SOFA_Bot_Test.PlayerStats
                 $"- Session K/D: {player.SessionKD}",
                 IsInline = false,
             };
-            EmbedFieldBuilder OtherField = new EmbedFieldBuilder()
+            EmbedFieldBuilder OtherField = new()
             {
                 Name = $"Other",
                 Value = $"- Highest Money: {player.HighestMoney}\n" +
@@ -72,16 +73,18 @@ namespace SOFA_Bot_Test.PlayerStats
                 clanString = $"**{player.ClanRank} of {player.ClanTag} {player.Clan}**\n";
             if (player.TimesJoinedClan != null)
                 clansJoinedString = $"and member of {player.TimesJoinedClan - 1} clans before that\n";
-            PveField.Name = "PVE";
-            PvpField.Name = "PVP";
-            OtherField.Name = "Other";
 
             embed
-                .WithTitle($"{factionEmote} {player.Faction} **member** {player.Username}")
+                .WithTitle($"{player.Faction} **member** {player.Username}")
                 .WithDescription($"{clanString}" + $"{clansJoinedString}")
-                .WithFields(GameTimeField, PveField, PvpField, OtherField);
+                .WithFields(GameTimeField, PvpField, PveField, OtherField);
 
             return embed;
+        }
+        internal async static Task<string> GetFactionImage(string faction)
+        {
+            string factionImage = $"..\\..\\..\\Images\\{faction.ToLower()}.webp";
+            return factionImage;
         }
         internal async static Task<EmbedBuilder> CreateStatsErrorMessage(SocketSlashCommand command)
         {

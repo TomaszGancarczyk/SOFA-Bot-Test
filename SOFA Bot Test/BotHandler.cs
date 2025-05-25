@@ -108,6 +108,7 @@ namespace SOFA_Bot_Test
 
         //TODO
         // handle player stats from API call
+        //      change stats message to have faction image instead of emoji
         // expand signup response message?
         // try catch reminder message (if can't send to all members)
 
