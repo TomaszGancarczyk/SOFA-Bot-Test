@@ -5,7 +5,6 @@ namespace SOFA_Bot_Test.Attendance
 {
     public class CreateButton
     {
-        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Attendance");
         private static readonly List<DayOfWeek> TournamentDays =
         [
             DayOfWeek.Thursday,
@@ -45,7 +44,7 @@ namespace SOFA_Bot_Test.Attendance
             ComponentBuilder button = new ComponentBuilder()
                 .WithButton("Present", "presentButton", ButtonStyle.Success)
                 .WithButton("Absent", "absentButton", ButtonStyle.Danger);
-            logger.LogInformation("{Time} - Created buttons", DateTime.Now);
+            Logger.LogInformation($"Created buttons");
             return button;
         }
     }

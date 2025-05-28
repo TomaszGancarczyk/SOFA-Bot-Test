@@ -1,16 +1,16 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
+using System.Net;
 
 namespace SOFA_Bot_Test.Attendance
 {
     internal class Reminder
     {
-        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Attendance");
         private static bool ReminderPermission = false;
         internal static Task SetReminderPermission(bool status)
         {
-            logger.LogInformation("{Time} - Setting reminders to {status}", DateTime.Now, status);
+            Logger.LogInformation($"Setting reminders to {status}");
             ReminderPermission = status;
             return Task.CompletedTask;
         }
@@ -35,9 +35,17 @@ namespace SOFA_Bot_Test.Attendance
         }
         private static async Task SendReminder(SocketGuildUser member, string eventType)
         {
-            logger.LogInformation("{Time} - Sending reminder to {member}", DateTime.Now, member.DisplayName);
+            Logger.LogInformation($"Sending reminder to {member.DisplayName}");
             string message = $"Don't forget to signup for {eventType} :3";
-            await member.SendMessageAsync(message);
+            IDMChannel channel = await member.CreateDMChannelAsync();
+            try
+            {
+                await channel.SendMessageAsync(message);
+            }
+            catch (Discord.Net.HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
+            {
+                Logger.LogWarning($"Cannot send reminder message to {member.DisplayName}");
+            }
         }
         internal static async Task<EmbedBuilder> CreateSignupCommandResponse(bool status)
         {

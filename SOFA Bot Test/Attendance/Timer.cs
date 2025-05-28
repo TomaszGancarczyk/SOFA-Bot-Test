@@ -5,7 +5,6 @@ namespace SOFA_Bot_Test.Attendance
     internal class Timer
     {
         private static DateTime EventDateTime;
-        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
         internal static DateTime GetEventDateTime()
         {
             return EventDateTime;
@@ -28,7 +27,7 @@ namespace SOFA_Bot_Test.Attendance
                 eventDateTime = eventDateTime.AddHours(1);
             }
             if (eventDateTime < DateTime.Now)
-                logger.LogInformation("{Time} - Event date time set for {eventDateTime}", DateTime.Now, eventDateTime);
+                Logger.LogInformation($"Event date time set for {eventDateTime}");
             EventDateTime = eventDateTime;
         }
         private static DateOnly GetTimeChangeDateFromLastDayOfMonth(DateOnly date)

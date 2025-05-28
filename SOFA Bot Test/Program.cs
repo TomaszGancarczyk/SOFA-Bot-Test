@@ -9,11 +9,9 @@ namespace SOFA_Bot_Test
     {
         private readonly DiscordSocketClient Discord;
         private static readonly string Token = BotInfo.GetDiscordToken();
-        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
-
         static Task Main()
         {
-            logger.LogInformation("{Time} - [SOFA] Signups Bot is starting", DateTime.Now);
+            Logger.LogInformation($"[SOFA] Signups Bot is starting");
             new Program().StartBotAsync().GetAwaiter().GetResult();
             return Task.CompletedTask;
         }
@@ -39,7 +37,7 @@ namespace SOFA_Bot_Test
             {
                 Discord.ButtonExecuted += ButtonEventHandler.Handler;
                 Discord.SlashCommandExecuted += SlashCommandHandler.Handler;
-                logger.LogInformation("{Time} - [SOFA] Signups Bot is running", DateTime.Now);
+                Logger.LogInformation($"[SOFA] Signups Bot is running");
                 return Task.CompletedTask;
             };
             await Task.Delay(3000);
@@ -82,7 +80,7 @@ namespace SOFA_Bot_Test
             }
             catch (Exception e)
             {
-                logger.LogCritical("{error}", e.ToString());
+                Logger.LogCritical($"{e}");
             }
         }
     }

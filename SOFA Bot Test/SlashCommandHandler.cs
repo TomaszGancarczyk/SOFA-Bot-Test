@@ -8,7 +8,6 @@ namespace SOFA_Bot_Test
 {
     internal class SlashCommandHandler
     {
-        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
         public static async Task Handler(SocketSlashCommand command)
         {
             EmbedBuilder embed;
@@ -26,7 +25,7 @@ namespace SOFA_Bot_Test
                         await command.FollowupAsync(embed: embed.Build());
                         break;
                     }
-                    logger.LogInformation("{Time} - User {user} used stats for {player}", DateTime.Now, command.User.GlobalName, playerName);
+                    Logger.LogInformation($"User {command.User.GlobalName} used stats for {playerName}");
                     Stats player = Stats.CreateTestPlayer();
                     //Stats player = await ApiHandler.GetPlayerStats(playerName);
                     if (player != null)
@@ -45,7 +44,7 @@ namespace SOFA_Bot_Test
                     break;
                 case "reminder-message":
                     await command.DeferAsync(ephemeral: true);
-                    logger.LogInformation("{Time} - User {user} used reminder-message", DateTime.Now, command.User.GlobalName);
+                    Logger.LogInformation($"User {command.User.GlobalName} used reminder-message");
                     hasPermission = false;
                     privilegedRoles = BotInfo.GetPrivilegedRoleNames();
                     user = await BotHandler.GetGuildUserByName(command.User.GlobalName);
@@ -79,7 +78,7 @@ namespace SOFA_Bot_Test
                     break;
                 case "create-signup":
                     await command.DeferAsync(ephemeral: true);
-                    logger.LogInformation("{Time} - User {user} used create-signups", DateTime.Now, command.User.GlobalName);
+                    Logger.LogInformation($"User {command.User.GlobalName} used create-signups");
                     hasPermission = false;
                     privilegedRoles = BotInfo.GetPrivilegedRoleNames();
                     user = await BotHandler.GetGuildUserByName(command.User.GlobalName);

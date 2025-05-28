@@ -5,17 +5,15 @@ namespace SOFA_Bot_Test.Attendance
 {
     internal class MessageHandler
     {
-        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Attendance");
-
         internal async static Task<IMessage> CreateMesage(IMessageChannel questionChannel, IMessageChannel clanWarChannel, IMessageChannel goldenDropChannel)
         {
-            logger.LogInformation("{Time} - Starting message creation", DateTime.Now);
+            Logger.LogInformation($"Starting message creation");
             string eventType = await QuestionHandler.HandleEventQuestion(questionChannel);
             SignupMessage.SetEventType(eventType);
             IMessage eventMessage = null;
             if (eventType == "Day Off")
             {
-                logger.LogInformation("{Time} - We don't play tomorrow", DateTime.Now);
+                Logger.LogInformation($"We don't play tomorrow");
             }
             else
             {
@@ -30,7 +28,7 @@ namespace SOFA_Bot_Test.Attendance
                 {
                     eventMessage = await clanWarChannel.SendMessageAsync("", false, embedMessage.Build(), null, null, null, messageButton.Build());
                 }
-                logger.LogInformation("{Time} - Signup message is sent", DateTime.Now);
+                Logger.LogInformation($"Signup message is sent");
             }
             return eventMessage;
         }

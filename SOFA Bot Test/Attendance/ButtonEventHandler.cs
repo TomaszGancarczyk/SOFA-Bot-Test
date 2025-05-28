@@ -6,8 +6,6 @@ namespace SOFA_Bot_Test.Attendance
 {
     internal class ButtonEventHandler
     {
-        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Attendance");
-
         public static async Task Handler(SocketMessageComponent component)
         {
             EmbedBuilder updatedMessage;
@@ -16,27 +14,27 @@ namespace SOFA_Bot_Test.Attendance
             switch (component.Data.CustomId)
             {
                 case "tournamentButton":
-                    logger.LogInformation("{Time} - Got tournament response to event question", DateTime.Now);
+                    Logger.LogInformation($"Got tournament response to event question");
                     QuestionHandler.SetQuestionAnswear("Tournament");
                     component.Message.DeleteAsync().Wait();
                     break;
                 case "goldenDropButton":
-                    logger.LogInformation("{Time} - Got golden drop response to event question", DateTime.Now);
+                    Logger.LogInformation($"Got golden drop response to event question");
                     QuestionHandler.SetQuestionAnswear("Golden Drop");
                     component.Message.DeleteAsync().Wait();
                     break;
                 case "baseCaptureButton":
-                    logger.LogInformation("{Time} - Got base capture response to event question", DateTime.Now);
+                    Logger.LogInformation($"Got base capture response to event question");
                     QuestionHandler.SetQuestionAnswear("Base Capture");
                     component.Message.DeleteAsync().Wait();
                     break;
                 case "dayOffButton":
-                    logger.LogInformation("{Time} - Got day off response to event question", DateTime.Now);
+                    Logger.LogInformation($"Got day off response to event question");
                     QuestionHandler.SetQuestionAnswear("Day Off");
                     component.Message.DeleteAsync().Wait();
                     break;
                 case "brawlButton":
-                    logger.LogInformation("{Time} - Got brawl response to event question", DateTime.Now);
+                    Logger.LogInformation($"Got brawl response to event question");
                     QuestionHandler.SetQuestionAnswear("Brawl");
                     component.Message.DeleteAsync().Wait();
                     break;
@@ -48,7 +46,7 @@ namespace SOFA_Bot_Test.Attendance
                     }
                     else if (component.Message.Id == currentMessageId)
                     {
-                        logger.LogInformation("{Time} - {User} clicked present on the signup", DateTime.Now, component.User.GlobalName);
+                        Logger.LogInformation($"{component.User.GlobalName} clicked present on the signup");
                         MemberHandler.SetMemberStatus(component.User, true);
                         updatedMessage = await SignupMessage.UpdateSignupMessage();
                         confirmationMessage = await SignupMessage.CreateConfirmationMesasage("Present");
@@ -69,7 +67,7 @@ namespace SOFA_Bot_Test.Attendance
                     }
                     else if (component.Message.Id == currentMessageId)
                     {
-                        logger.LogInformation("{Time} - {User} clicked absent on the signup", DateTime.Now, component.User.GlobalName);
+                        Logger.LogInformation($"{component.User.GlobalName} clicked absent on the signup");
                         MemberHandler.SetMemberStatus(component.User, false);
                         updatedMessage = await SignupMessage.UpdateSignupMessage();
                         confirmationMessage = await SignupMessage.CreateConfirmationMesasage("Absent");
@@ -86,7 +84,7 @@ namespace SOFA_Bot_Test.Attendance
         }
         private static async void RespondWithOldSignupError(SocketMessageComponent component)
         {
-            logger.LogInformation("{Time} - {User} interacted with old signup", DateTime.Now, component.User.GlobalName);
+            Logger.LogInformation($"{component.User.GlobalName} interacted with old signup");
             EmbedBuilder message = await SignupMessage.CreateWrongSignupMesasage();
             await component.RespondAsync(embed: message.Build(), ephemeral: true);
         }

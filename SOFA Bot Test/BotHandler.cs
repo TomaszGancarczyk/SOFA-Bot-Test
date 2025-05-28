@@ -7,7 +7,7 @@ namespace SOFA_Bot_Test
 {
     internal class BotHandler
     {
-        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
+        private static readonly ILogger Logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
         private static SocketGuild Guild;
         private static IMessageChannel QuestionChannel;
         private static IMessageChannel SignupsChannel;
@@ -19,34 +19,34 @@ namespace SOFA_Bot_Test
             Guild = discord.GetGuild(BotInfo.GetGuildId());
             if (Guild == null)
             {
-                logger.LogCritical("{Time} - Guild not found", DateTime.Now);
+                Logger.LogCritical($"Guild not found");
                 throw new ArgumentException("Guild not found");
             }
-            logger.LogInformation("{Time} - Found Guild: {Guild.Name}", DateTime.Now, Guild.Name);
+            Logger.LogInformation($"Found Guild: {Guild.Name}");
 
             QuestionChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetQuestionChannelId());
             if (QuestionChannel == null)
             {
-                logger.LogCritical("{Time} - Quesion channel not found", DateTime.Now);
+                Logger.LogCritical($"Quesion channel not found", DateTime.Now);
                 throw new ArgumentException("Question channel not found");
             }
-            logger.LogInformation("{Time} - Found Question Channel: {Channel.Name}", DateTime.Now, QuestionChannel.Name);
+            Logger.LogInformation($"Found Question Channel: {QuestionChannel.Name}");
 
             SignupsChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetSignupsChannelId());
             if (SignupsChannel == null)
             {
-                logger.LogCritical("{Time} - Signups channel not found", DateTime.Now);
+                Logger.LogCritical($"Signups channel not found", DateTime.Now);
                 throw new ArgumentException("Signups channel not found");
             }
-            logger.LogInformation("{Time} - Found Signups Channel: {Channel.Name}", DateTime.Now, SignupsChannel.Name);
+            Logger.LogInformation($"Found Signups Channel: {SignupsChannel.Name}");
 
             GoldenDropChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetGoldenDropChannelId());
             if (GoldenDropChannel == null)
             {
-                logger.LogCritical("{Time} - Golden Drop channel not found", DateTime.Now);
+                Logger.LogCritical($"Golden Drop channel not found", DateTime.Now);
                 throw new ArgumentException("Golden Drop channel not found");
             }
-            logger.LogInformation("{Time} - Found Golden Drop Channel: {Channel.Name}", DateTime.Now, GoldenDropChannel.Name);
+            Logger.LogInformation($"Found Golden Drop Channel: {GoldenDropChannel.Name}");
 
             StartEvent();
         }
@@ -81,9 +81,9 @@ namespace SOFA_Bot_Test
         }
         internal async static Task StartAttendanceEvent(bool isToday)
         {
-            logger.LogInformation("{Time} - Starting event", DateTime.Now);
+            Logger.LogInformation($"Starting event", DateTime.Now);
             CurrentMessage = null;
-            logger.LogInformation("{Time} - Getting event date time", DateTime.Now);
+            Logger.LogInformation($"Getting event date time", DateTime.Now);
             Attendance.Timer.SetEventDateTimeForNextDay(isToday);
             var eventDateTime = Attendance.Timer.GetEventDateTime();
             CurrentMessage = await MessageHandler.CreateMesage(QuestionChannel, SignupsChannel, GoldenDropChannel);
@@ -94,12 +94,12 @@ namespace SOFA_Bot_Test
                 Reminder.Handle();
             }
             else
-                logger.LogWarning("{Time} - reminderTimeSpan is less than 0", DateTime.Now);
+                Logger.LogWarning($"reminderTimeSpan is less than 0", DateTime.Now);
             TimeSpan eventCloseTimeSpan = eventDateTime - DateTime.Now.AddMinutes(15);
             if (eventCloseTimeSpan > TimeSpan.Zero)
                 Task.Delay(eventCloseTimeSpan).Wait();
             else
-                logger.LogWarning("{Time} - eventCloseTimeSpan is less than 0", DateTime.Now);
+                Logger.LogWarning($"eventCloseTimeSpan is less than 0", DateTime.Now);
             EmbedBuilder closedMessage = await SignupMessage.CloseSignupMessage();
             await CurrentMessage.Channel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
             CurrentMessage = null;
@@ -108,9 +108,8 @@ namespace SOFA_Bot_Test
 
         //TODO
         // handle player stats from API call
-        //      change stats message to have faction image instead of emoji
         // expand signup response message?
-        // try catch reminder message (if can't send to all members)
+        // Logger class + logging to file
 
         //TODO Testing
         //

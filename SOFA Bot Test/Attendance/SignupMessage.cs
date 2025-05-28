@@ -6,12 +6,11 @@ namespace SOFA_Bot_Test.Attendance
 {
     internal class SignupMessage
     {
-        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Attendance");
         private static string EventType;
         private static string EventMessageTitle;
         internal async static Task<EmbedBuilder> CreateSignupMessage()
         {
-            logger.LogInformation("{Time} - Creating {eventType} message", DateTime.Now, EventType);
+            Logger.LogInformation($"Creating {EventType} message");
             return await UpdateSignupMessage();
         }
         internal async static Task<EmbedBuilder> UpdateSignupMessage()
@@ -115,12 +114,15 @@ namespace SOFA_Bot_Test.Attendance
 
             foreach (var member in memberDict)
             {
-                if (member.Value == true)
-                    totalPresentAbsentUnsigned[0] = totalPresentAbsentUnsigned[0] + 1;
-                if (member.Value == false)
-                    totalPresentAbsentUnsigned[1] = totalPresentAbsentUnsigned[1] + 1;
-                if (member.Value == null)
-                    totalPresentAbsentUnsigned[2] = totalPresentAbsentUnsigned[2] + 1;
+                if (!member.Key.IsBot)
+                {
+                    if (member.Value == true)
+                        totalPresentAbsentUnsigned[0] = totalPresentAbsentUnsigned[0] + 1;
+                    if (member.Value == false)
+                        totalPresentAbsentUnsigned[1] = totalPresentAbsentUnsigned[1] + 1;
+                    if (member.Value == null)
+                        totalPresentAbsentUnsigned[2] = totalPresentAbsentUnsigned[2] + 1;
+                }
             }
             return totalPresentAbsentUnsigned;
         }

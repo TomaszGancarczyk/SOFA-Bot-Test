@@ -5,7 +5,6 @@ namespace SOFA_Bot_Test.Attendance
 {
     internal class MemberHandler
     {
-        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Attendance");
         private static readonly SocketGuild Guild = BotHandler.GetGuild();
         private static readonly string SofaRoleName = BotInfo.GetSofaRoleName();
         private static Dictionary<SocketGuildUser, bool?> SofaMembers;
@@ -68,7 +67,7 @@ namespace SOFA_Bot_Test.Attendance
                 UnassignedMembers.Add(newMember, status);
             }
 
-            logger.LogInformation("{Time} - Setting status {status} for {member}", DateTime.Now, status, member.GlobalName);
+            Logger.LogInformation($"Setting status {status} for {member.GlobalName}");
         }
     }
 }

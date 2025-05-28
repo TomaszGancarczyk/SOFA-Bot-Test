@@ -6,7 +6,6 @@ namespace SOFA_Bot_Test
 {
     internal class GenericResponse
     {
-        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Player Stats");
         internal class Error
         {
             internal async static Task<EmbedBuilder> CantFindPlayer(SocketSlashCommand command)

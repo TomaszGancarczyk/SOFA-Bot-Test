@@ -5,7 +5,6 @@ namespace SOFA_Bot_Test.Attendance
 {
     internal class QuestionHandler
     {
-        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Attendance");
         private static bool WaitingForQuestionResponse;
         private static string QuestionResponse;
         private static IMessage CurrentQuestionMessage = null;
@@ -24,7 +23,7 @@ namespace SOFA_Bot_Test.Attendance
             if (eventDateTime.Day == DateTime.Now.AddDays(1).Day) eventDateTimeDay = "tomorrow";
             CurrentQuestionMessage = null;
             WaitingForQuestionResponse = true;
-            logger.LogInformation("{Time} - Sending question for event", DateTime.Now);
+            Logger.LogInformation($"Sending question for event");
             string questionMessageContent = $"## What do we play {eventDateTimeDay}?";
             ComponentBuilder component = CreateButton.CreateQuestionButtons();
             CurrentQuestionMessage = await questionChannel.SendMessageAsync(questionMessageContent, components: component.Build());
@@ -38,7 +37,7 @@ namespace SOFA_Bot_Test.Attendance
         {
             if (CurrentQuestionMessage != null)
             {
-                logger.LogInformation("{Time} - Deleting question message", DateTime.Now);
+                Logger.LogInformation($"Deleting question message");
                 await CurrentQuestionMessage.DeleteAsync();
                 CurrentQuestionMessage = null;
             }
