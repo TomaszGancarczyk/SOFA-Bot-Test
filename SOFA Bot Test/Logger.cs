@@ -5,8 +5,9 @@ namespace SOFA_Bot_Test
     {
         //private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Log");
         private static Serilog.Core.Logger log = new LoggerConfiguration()
-            .WriteTo.File("log.txt", outputTemplate: "{dd:MM:yyyy HH:mm:ss} [{Level:u3}] {SourceContext}: {Message:lj}{NewLine}{Exception}")
-            .WriteTo.Console(outputTemplate: "{dd:MM:yyyy HH:mm:ss} [{Level:u3}] {SourceContext}: {Message:lj}{NewLine}{Exception}")
+            .WriteTo.File("log.txt")
+            .WriteTo.File("log_warnings.txt", restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Warning)
+            .WriteTo.Console()
             .CreateLogger();
 
         internal static void LogCritical(string message)
