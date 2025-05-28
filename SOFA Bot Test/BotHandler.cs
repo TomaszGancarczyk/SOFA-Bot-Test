@@ -1,13 +1,11 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using Microsoft.Extensions.Logging;
 using SOFA_Bot_Test.Attendance;
 
 namespace SOFA_Bot_Test
 {
     internal class BotHandler
     {
-        private static readonly ILogger Logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
         private static SocketGuild Guild;
         private static IMessageChannel QuestionChannel;
         private static IMessageChannel SignupsChannel;
@@ -27,7 +25,7 @@ namespace SOFA_Bot_Test
             QuestionChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetQuestionChannelId());
             if (QuestionChannel == null)
             {
-                Logger.LogCritical($"Quesion channel not found", DateTime.Now);
+                Logger.LogCritical($"Quesion channel not found");
                 throw new ArgumentException("Question channel not found");
             }
             Logger.LogInformation($"Found Question Channel: {QuestionChannel.Name}");
@@ -35,7 +33,7 @@ namespace SOFA_Bot_Test
             SignupsChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetSignupsChannelId());
             if (SignupsChannel == null)
             {
-                Logger.LogCritical($"Signups channel not found", DateTime.Now);
+                Logger.LogCritical($"Signups channel not found");
                 throw new ArgumentException("Signups channel not found");
             }
             Logger.LogInformation($"Found Signups Channel: {SignupsChannel.Name}");
@@ -43,7 +41,7 @@ namespace SOFA_Bot_Test
             GoldenDropChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetGoldenDropChannelId());
             if (GoldenDropChannel == null)
             {
-                Logger.LogCritical($"Golden Drop channel not found", DateTime.Now);
+                Logger.LogCritical($"Golden Drop channel not found");
                 throw new ArgumentException("Golden Drop channel not found");
             }
             Logger.LogInformation($"Found Golden Drop Channel: {GoldenDropChannel.Name}");
@@ -81,9 +79,9 @@ namespace SOFA_Bot_Test
         }
         internal async static Task StartAttendanceEvent(bool isToday)
         {
-            Logger.LogInformation($"Starting event", DateTime.Now);
+            Logger.LogInformation($"Starting event");
             CurrentMessage = null;
-            Logger.LogInformation($"Getting event date time", DateTime.Now);
+            Logger.LogInformation($"Getting event date time");
             Attendance.Timer.SetEventDateTimeForNextDay(isToday);
             var eventDateTime = Attendance.Timer.GetEventDateTime();
             CurrentMessage = await MessageHandler.CreateMesage(QuestionChannel, SignupsChannel, GoldenDropChannel);
@@ -94,12 +92,12 @@ namespace SOFA_Bot_Test
                 Reminder.Handle();
             }
             else
-                Logger.LogWarning($"reminderTimeSpan is less than 0", DateTime.Now);
+                Logger.LogWarning($"reminderTimeSpan is less than 0");
             TimeSpan eventCloseTimeSpan = eventDateTime - DateTime.Now.AddMinutes(15);
             if (eventCloseTimeSpan > TimeSpan.Zero)
                 Task.Delay(eventCloseTimeSpan).Wait();
             else
-                Logger.LogWarning($"eventCloseTimeSpan is less than 0", DateTime.Now);
+                Logger.LogWarning($"eventCloseTimeSpan is less than 0");
             EmbedBuilder closedMessage = await SignupMessage.CloseSignupMessage();
             await CurrentMessage.Channel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
             CurrentMessage = null;

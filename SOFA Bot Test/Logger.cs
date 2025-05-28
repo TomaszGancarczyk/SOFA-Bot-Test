@@ -1,27 +1,29 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using Serilog;
 namespace SOFA_Bot_Test
 {
     internal class Logger
     {
-        private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Program");
+        //private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Log");
+        private static Serilog.Core.Logger log = new LoggerConfiguration()
+            .WriteTo.File("log.txt", outputTemplate: "{dd:MM:yyyy HH:mm:ss} [{Level:u3}] {SourceContext}: {Message:lj}{NewLine}{Exception}")
+            .WriteTo.Console(outputTemplate: "{dd:MM:yyyy HH:mm:ss} [{Level:u3}] {SourceContext}: {Message:lj}{NewLine}{Exception}")
+            .CreateLogger();
+
         internal static void LogCritical(string message)
         {
-            logger.LogCritical("{DateTime.Now} - {message}", DateTime.Now, message);
+            log.Fatal("{DateTime.Now} - {message}", DateTime.Now.ToString("dd:MM:yyyy HH:mm:ss"), message);
+        }
+        internal static void LogError (string message)
+        {
+            log.Error("{DateTime.Now} - {message}", DateTime.Now.ToString("dd:MM:yyyy HH:mm:ss"), message);
         }
         internal static void LogWarning(string message)
         {
-            logger.LogWarning("{DateTime.Now} - {message}", DateTime.Now, message);
+            log.Warning("{DateTime.Now} - {message}", DateTime.Now.ToString("dd:MM:yyyy HH:mm:ss"), message);
         }
         internal static void LogInformation(string message)
         {
-            logger.LogInformation("{DateTime.Now} - {message}", DateTime.Now, message);
+            log.Information("{DateTime.Now} - {message}", DateTime.Now.ToString("dd:MM:yyyy HH:mm:ss"), message);
         }
-
     }
 }

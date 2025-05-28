@@ -1,6 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using Microsoft.Extensions.Logging;
+
 using SOFA_Bot_Test.Attendance;
 using SOFA_Bot_Test.PlayerStats;
 
