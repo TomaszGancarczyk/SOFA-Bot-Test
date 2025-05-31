@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using System.Data;
 
 
 namespace SOFA_Bot_Test.Attendance
@@ -9,18 +10,13 @@ namespace SOFA_Bot_Test.Attendance
         public static async Task Handler(SocketMessageComponent component)
         {
             EmbedBuilder updatedMessage;
-            EmbedBuilder confirmationMessage;
+            EmbedBuilder message;
             ulong? currentMessageId;
             switch (component.Data.CustomId)
             {
                 case "tournamentButton":
                     Logger.LogInformation($"Got tournament response to event question");
                     QuestionHandler.SetQuestionAnswear("Tournament");
-                    component.Message.DeleteAsync().Wait();
-                    break;
-                case "goldenDropButton":
-                    Logger.LogInformation($"Got golden drop response to event question");
-                    QuestionHandler.SetQuestionAnswear("Golden Drop");
                     component.Message.DeleteAsync().Wait();
                     break;
                 case "baseCaptureButton":
@@ -39,52 +35,56 @@ namespace SOFA_Bot_Test.Attendance
                     component.Message.DeleteAsync().Wait();
                     break;
                 case "presentButton":
+                    message = null;
                     currentMessageId = BotHandler.GetCurrentMessageId();
                     if (currentMessageId == null)
-                    {
                         RespondWithOldSignupError(component);
-                    }
                     else if (component.Message.Id == currentMessageId)
                     {
                         Logger.LogInformation($"{component.User.GlobalName} clicked present on the signup");
-                        MemberHandler.SetMemberStatus(component.User, true);
+                        message = await MemberHandler.SetMemberStatus(component.User, true);
+                        if (message != null)
+                        {
+                            await component.RespondAsync(embed: message.Build(), ephemeral: true);
+                            break;
+                        }
                         updatedMessage = await SignupMessage.UpdateSignupMessage();
-                        confirmationMessage = await SignupMessage.CreateConfirmationMesasage("Present");
+                        message = await SignupMessage.CreateConfirmationMesasage("Present");
                         await component.UpdateAsync(message => message.Embed = updatedMessage.Build());
-                        await component.FollowupAsync(embed: confirmationMessage.Build(), ephemeral: true);
+                        await component.FollowupAsync(embed: message.Build(), ephemeral: true);
                         BotHandler.SetCurrentMessage(component.Message);
                     }
                     else
-                    {
                         RespondWithOldSignupError(component);
-                    }
                     break;
                 case "absentButton":
+                    message = null;
                     currentMessageId = BotHandler.GetCurrentMessageId();
                     if (currentMessageId == null)
-                    {
                         RespondWithOldSignupError(component);
-                    }
                     else if (component.Message.Id == currentMessageId)
                     {
                         Logger.LogInformation($"{component.User.GlobalName} clicked absent on the signup");
-                        MemberHandler.SetMemberStatus(component.User, false);
+                        message = await MemberHandler.SetMemberStatus(component.User, false);
+                        if (message != null)
+                        {
+                            await component.RespondAsync(embed: message.Build(), ephemeral: true);
+                            break;
+                        }
                         updatedMessage = await SignupMessage.UpdateSignupMessage();
-                        confirmationMessage = await SignupMessage.CreateConfirmationMesasage("Absent");
+                        message = await SignupMessage.CreateConfirmationMesasage("Absent");
                         await component.UpdateAsync(message => message.Embed = updatedMessage.Build());
-                        await component.FollowupAsync(embed: confirmationMessage.Build(), ephemeral: true);
+                        await component.FollowupAsync(embed: message.Build(), ephemeral: true);
                         BotHandler.SetCurrentMessage(component.Message);
                     }
                     else
-                    {
                         RespondWithOldSignupError(component);
-                    }
                     break;
             }
         }
         private static async void RespondWithOldSignupError(SocketMessageComponent component)
         {
-            Logger.LogInformation($"{component.User.GlobalName} interacted with old signup");
+            Logger.LogWarning($"{component.User.GlobalName} interacted with old signup");
             EmbedBuilder message = await SignupMessage.CreateWrongSignupMesasage();
             await component.RespondAsync(embed: message.Build(), ephemeral: true);
         }

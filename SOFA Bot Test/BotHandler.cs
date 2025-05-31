@@ -9,7 +9,6 @@ namespace SOFA_Bot_Test
         private static SocketGuild Guild;
         private static IMessageChannel QuestionChannel;
         private static IMessageChannel SignupsChannel;
-        private static IMessageChannel GoldenDropChannel;
         private static IMessage? CurrentMessage;
 
         internal static void InitializeBotHandler(DiscordSocketClient discord)
@@ -37,14 +36,6 @@ namespace SOFA_Bot_Test
                 throw new ArgumentException("Signups channel not found");
             }
             Logger.LogInformation($"Found Signups Channel: {SignupsChannel.Name}");
-
-            GoldenDropChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetGoldenDropChannelId());
-            if (GoldenDropChannel == null)
-            {
-                Logger.LogCritical($"Golden Drop channel not found");
-                throw new ArgumentException("Golden Drop channel not found");
-            }
-            Logger.LogInformation($"Found Golden Drop Channel: {GoldenDropChannel.Name}");
 
             StartEvent();
         }
@@ -84,7 +75,7 @@ namespace SOFA_Bot_Test
             Logger.LogInformation($"Getting event date time");
             Attendance.Timer.SetEventDateTimeForNextDay(isToday);
             var eventDateTime = Attendance.Timer.GetEventDateTime();
-            CurrentMessage = await MessageHandler.CreateMesage(QuestionChannel, SignupsChannel, GoldenDropChannel);
+            CurrentMessage = await MessageHandler.CreateMesage(QuestionChannel, SignupsChannel);
             TimeSpan reminderTimeSpan = eventDateTime - DateTime.Now.AddHours(1);
             if (reminderTimeSpan > TimeSpan.Zero)
             {
@@ -106,8 +97,8 @@ namespace SOFA_Bot_Test
 
         //TODO
         // handle player stats from API call
+        // expand signup reminder message?
         // expand signup response message?
-        // Logger class + logging to file
 
         //TODO Testing
         //

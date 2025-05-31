@@ -12,9 +12,6 @@ namespace SOFA_Bot_Test.Attendance
             DayOfWeek.Saturday,
             DayOfWeek.Sunday
         ];
-        private static readonly List<DayOfWeek> GoldenDropDays =
-        [
-        ];
         private static readonly List<DayOfWeek> BaseCaptureDays =
         [
             DayOfWeek.Sunday
@@ -26,10 +23,6 @@ namespace SOFA_Bot_Test.Attendance
             if (TournamentDays.Contains(eventDayOfWeek))
             {
                 component.WithButton("Tournament", "tournamentButton", emote: new Emoji("⚔️"));
-            }
-            if (GoldenDropDays.Contains(eventDayOfWeek))
-            {
-                component.WithButton("Golden Drop", "goldenDropButton", emote: new Emoji("📦"));
             }
             if (BaseCaptureDays.Contains(eventDayOfWeek))
             {

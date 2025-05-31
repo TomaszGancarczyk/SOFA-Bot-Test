@@ -25,9 +25,6 @@ namespace SOFA_Bot_Test.Attendance
                     foreach (var member in MemberHandler.GetSofaMembers())
                         if (member.Value == null)
                             offMembers.Add(member.Key);
-                    foreach (var member in MemberHandler.GetUnassignedMembers())
-                        if (member.Value == null)
-                            offMembers.Add(member.Key);
                 }
                 foreach (var member in offMembers)
                     await SendReminder(member, eventType);
@@ -44,7 +41,7 @@ namespace SOFA_Bot_Test.Attendance
             }
             catch (Discord.Net.HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
             {
-                Logger.LogWarning($"Cannot send reminder message to {member.DisplayName}");
+                Logger.LogError($"Cannot send reminder message to {member.DisplayName}");
             }
         }
         internal static async Task<EmbedBuilder> CreateSignupCommandResponse(bool status)

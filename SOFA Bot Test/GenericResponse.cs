@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using SOFA_Bot_Test.Attendance;
 
 
 namespace SOFA_Bot_Test
@@ -27,6 +28,13 @@ namespace SOFA_Bot_Test
                 EmbedBuilder embed = new();
                 embed.WithColor(Color.Red);
                 embed.WithTitle($"The field was empty");
+                return embed;
+            }
+            internal static async Task<EmbedBuilder> NoSignupPermission(SocketUser user)
+            {
+                EmbedBuilder embed = new();
+                embed.WithColor(Color.Red);
+                embed.WithTitle($"You don't have permission to use this signup");
                 return embed;
             }
         }

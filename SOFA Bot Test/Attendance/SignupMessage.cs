@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using System.Collections.Generic;
 
 
 namespace SOFA_Bot_Test.Attendance
@@ -23,9 +24,6 @@ namespace SOFA_Bot_Test.Attendance
                 case "Tournament":
                     embed.WithColor(Color.DarkGreen);
                     break;
-                case "Golden Drop":
-                    embed.WithColor(Color.Gold);
-                    break;
                 case "Base Capture":
                     embed.WithColor(Color.LightOrange);
                     break;
@@ -38,73 +36,46 @@ namespace SOFA_Bot_Test.Attendance
                 .WithTitle(EventMessageTitle)
                 .WithDescription($"<t:{eventUnix}:D><t:{eventUnix}:t> - <t:{eventUnix}:R>");
             Dictionary<SocketGuildUser, bool?> sofaMembers = MemberHandler.GetSofaMembers();
-            Dictionary<SocketGuildUser, bool?> rofaMembers = MemberHandler.GetRofaMembers();
-            Dictionary<SocketGuildUser, bool?> unassignedMembers = MemberHandler.GetUnassignedMembers();
             int[] totalPresentAbsentUnsigned = [0, 0, 0];
             AddPresentAbsentUnsigned(totalPresentAbsentUnsigned, sofaMembers);
-            AddPresentAbsentUnsigned(totalPresentAbsentUnsigned, unassignedMembers);
-            if (EventType == "Golden Drop")
+            SocketRole role;
+            string squadMembers;
+            List<ulong> handledMembersId = [];
+
+            for (int i = 1; i <= 6; i++)
             {
-                AddPresentAbsentUnsigned(totalPresentAbsentUnsigned, rofaMembers);
-                string sofaField = "";
-                foreach (var member in sofaMembers)
-                {
-                    sofaField += AddMemberAndStatus(member.Value, member.Key.DisplayName);
-                }
-                if (sofaField.Length > 0)
-                    embed.AddField("SOFA", $"{sofaField}", true);
-                string rofaField = "";
-                foreach (var member in rofaMembers)
-                {
-                    rofaField += AddMemberAndStatus(member.Value, member.Key.DisplayName);
-                }
-                if (rofaField.Length > 0)
-                    embed.AddField("ROFA", $"{rofaField}", true);
-                if (unassignedMembers.Count > 0)
-                {
-                    string unassignedField = "";
-                    foreach (var member in unassignedMembers)
-                    {
-                        unassignedField += AddMemberAndStatus(member.Value, member.Key.DisplayName);
-                    }
-                    embed.AddField("Unassigned", $"{unassignedField}", true);
-                }
-            }
-            else
-            {
-                SocketRole role;
-                string squadMembers;
-                List<ulong> handledMembersId = [];
-                for (int i = 1; i <= 6; i++)
-                {
-                    squadMembers = "";
-                    role = BotHandler.GetRole($"Squad {i}");
-                    foreach (var member in sofaMembers)
-                        if (member.Key.Roles.Contains(role) && !handledMembersId.Contains(member.Key.Id))
-                        {
-                            squadMembers += AddMemberAndStatus(member.Value, member.Key.DisplayName);
-                            handledMembersId.Add(member.Key.Id);
-                        }
-                    if (squadMembers.Length > 0)
-                        embed.AddField($"Squad {i}", squadMembers, true);
-                }
-                role = BotHandler.GetRole($"SOFA Reserve");
                 squadMembers = "";
+                role = BotHandler.GetRole($"Squad {i}");
                 foreach (var member in sofaMembers)
                     if (member.Key.Roles.Contains(role) && !handledMembersId.Contains(member.Key.Id))
-                        squadMembers += AddMemberAndStatus(member.Value, member.Key.DisplayName);
-                if (squadMembers.Length > 0)
-                    embed.AddField($"Reserve", squadMembers, true);
-                if (unassignedMembers.Count > 0)
-                {
-                    string unassignedField = "";
-                    foreach (var member in rofaMembers)
                     {
-                        unassignedField += AddMemberAndStatus(member.Value, member.Key.DisplayName);
+                        squadMembers += AddMemberAndStatus(member.Value, member.Key.DisplayName);
+                        handledMembersId.Add(member.Key.Id);
                     }
-                    embed.AddField("Unassigned", $"{unassignedField}", true);
+                if (squadMembers.Length > 0)
+                {
+                    embed.AddField($"Squad {i}", squadMembers, true);
                 }
             }
+
+            role = BotHandler.GetRole($"SOFA Reserve");
+            squadMembers = "";
+            foreach (var member in sofaMembers)
+                if (member.Key.Roles.Contains(role) && !handledMembersId.Contains(member.Key.Id))
+                {
+                    squadMembers += AddMemberAndStatus(member.Value, member.Key.DisplayName);
+                    handledMembersId.Add(member.Key.Id);
+                }
+            if (squadMembers.Length > 0)
+                embed.AddField($"Reserve", squadMembers, true);
+
+            squadMembers = "";
+            foreach (var member in sofaMembers)
+                if (!handledMembersId.Contains(member.Key.Id))
+                    squadMembers += AddMemberAndStatus(member.Value, member.Key.DisplayName);
+            if (squadMembers.Length > 0)
+                embed.AddField($"Unassigned", squadMembers, true);
+
             string footerMessage = $"____________________________________________________________________________________________________\n{totalPresentAbsentUnsigned[0]} Present, {totalPresentAbsentUnsigned[1]} Absent, {totalPresentAbsentUnsigned[2]} Unsigned";
             embed.WithFooter(footerMessage);
             return embed;
@@ -117,11 +88,11 @@ namespace SOFA_Bot_Test.Attendance
                 if (!member.Key.IsBot)
                 {
                     if (member.Value == true)
-                        totalPresentAbsentUnsigned[0] = totalPresentAbsentUnsigned[0] + 1;
+                        totalPresentAbsentUnsigned[0] += 1;
                     if (member.Value == false)
-                        totalPresentAbsentUnsigned[1] = totalPresentAbsentUnsigned[1] + 1;
+                        totalPresentAbsentUnsigned[1] += 1;
                     if (member.Value == null)
-                        totalPresentAbsentUnsigned[2] = totalPresentAbsentUnsigned[2] + 1;
+                        totalPresentAbsentUnsigned[2] += 1;
                 }
             }
             return totalPresentAbsentUnsigned;
@@ -156,6 +127,14 @@ namespace SOFA_Bot_Test.Attendance
             embed
                 .WithColor(Color.DarkGrey)
                 .WithTitle($"This is signup is closed");
+            return embed;
+        }
+        internal async static Task<EmbedBuilder> CreateNoPermissionMessage()
+        {
+            EmbedBuilder embed = new();
+            embed
+                .WithColor(Color.DarkGrey)
+                .WithTitle($"No permission to interact with this signup");
             return embed;
         }
         private static string AddMemberAndStatus(bool? status, string displayName)
