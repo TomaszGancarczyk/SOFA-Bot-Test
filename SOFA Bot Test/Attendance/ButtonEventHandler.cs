@@ -48,9 +48,9 @@ namespace SOFA_Bot_Test.Attendance
                             break;
                         }
                         updatedMessage = await SignupMessage.UpdateSignupMessage();
-                        message = await SignupMessage.CreateConfirmationMesasage("Present");
-                        await component.UpdateAsync(message => message.Embed = updatedMessage.Build());
-                        await component.FollowupAsync(embed: message.Build(), ephemeral: true);
+                        //message = await SignupMessage.CreateConfirmationMesasage("Present");
+                        await component.UpdateAsync(attendanceMessage => attendanceMessage.Embed = updatedMessage.Build());
+                        //await component.FollowupAsync(embed: message.Build(), ephemeral: true);
                         BotHandler.SetCurrentMessage(component.Message);
                     }
                     else
@@ -71,9 +71,9 @@ namespace SOFA_Bot_Test.Attendance
                             break;
                         }
                         updatedMessage = await SignupMessage.UpdateSignupMessage();
-                        message = await SignupMessage.CreateConfirmationMesasage("Absent");
-                        await component.UpdateAsync(message => message.Embed = updatedMessage.Build());
-                        await component.FollowupAsync(embed: message.Build(), ephemeral: true);
+                        //message = await SignupMessage.CreateConfirmationMesasage("Absent");
+                        await component.UpdateAsync(attendanceMessage => attendanceMessage.Embed = updatedMessage.Build());
+                        //await component.FollowupAsync(embed: message.Build(), ephemeral: true);
                         BotHandler.SetCurrentMessage(component.Message);
                     }
                     else

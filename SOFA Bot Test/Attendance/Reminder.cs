@@ -43,7 +43,7 @@ namespace SOFA_Bot_Test.Attendance
             }
             else
             {
-                string message = $"Don't forget to signup for {eventType} :3\n\nhttps://cdn.discordapp.com/attachments/1212775170087981066/1370073772257841255/9tau56.gif?ex=683d2762&is=683bd5e2&hm=c96633b107a2305067024a0ee72b43abd714f47a7bed503fcc30b19641f2cc05&";
+                string message = $"Don't forget to signup for {eventType} :3\n{reminderMessageLink}\nhttps://cdn.discordapp.com/attachments/1212775170087981066/1370073772257841255/9tau56.gif?ex=683d2762&is=683bd5e2&hm=c96633b107a2305067024a0ee72b43abd714f47a7bed503fcc30b19641f2cc05&";
                 IDMChannel channel = await member.CreateDMChannelAsync();
                 try
                 {
