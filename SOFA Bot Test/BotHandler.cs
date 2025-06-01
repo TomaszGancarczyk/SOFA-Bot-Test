@@ -48,14 +48,19 @@ namespace SOFA_Bot_Test
         {
             return Guild;
         }
-        internal static void SetCurrentMessage(IMessage message)
-        {
-            CurrentMessage = message;
-        }
         internal static ulong? GetCurrentMessageId()
         {
             if (CurrentMessage == null) return null;
             else return CurrentMessage.Id;
+        }
+        internal static void SetCurrentMessage(IMessage message)
+        {
+            CurrentMessage = message;
+        }
+        internal static ulong? GetSignupsChannelId()
+        {
+            if (SignupsChannel == null) return null;
+            else return SignupsChannel.Id;
         }
         private async static void StartEvent()
         {
@@ -98,6 +103,7 @@ namespace SOFA_Bot_Test
         //TODO
         // handle player stats from API call
         // expand signup reminder message?
+        //      check if gif, signup link, reminder message works
         // expand signup response message?
 
         //TODO Testing

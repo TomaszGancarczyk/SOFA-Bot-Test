@@ -32,7 +32,7 @@ namespace SOFA_Bot_Test.Attendance
             SocketGuildUser guildUser = Guild.Users.FirstOrDefault(user => user.Id == member.Id);
             if (guildUser.Roles.All(role => role.Name != SofaRoleName))
             {
-                EmbedBuilder message = await GenericResponse.Error.NoSignupPermission(member);
+                EmbedBuilder message = await GenericResponse.Error.NoSignupPermission();
                 Logger.LogError($"{member.GlobalName} has no permission to use signups");
                 return message;
             }

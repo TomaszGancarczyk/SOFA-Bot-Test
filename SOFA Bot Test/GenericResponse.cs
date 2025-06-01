@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using SOFA_Bot_Test.Attendance;
 
 
 namespace SOFA_Bot_Test
@@ -30,7 +29,7 @@ namespace SOFA_Bot_Test
                 embed.WithTitle($"The field was empty");
                 return embed;
             }
-            internal static async Task<EmbedBuilder> NoSignupPermission(SocketUser user)
+            internal static async Task<EmbedBuilder> NoSignupPermission()
             {
                 EmbedBuilder embed = new();
                 embed.WithColor(Color.Red);

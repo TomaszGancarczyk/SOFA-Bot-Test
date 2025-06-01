@@ -1,7 +1,4 @@
-﻿using System.Numerics;
-using System.Reflection.Metadata.Ecma335;
-
-namespace SOFA_Bot_Test.PlayerStats
+﻿namespace SOFA_Bot_Test.PlayerStats
 {
     internal class Stats
     {

@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using System.Web;
 
 namespace SOFA_Bot_Test.PlayerStats
 {
@@ -71,7 +70,7 @@ namespace SOFA_Bot_Test.PlayerStats
 
             if (player.Clan != null)
                 clanString = $"**{player.ClanRank} of {player.ClanTag} {player.Clan}**\n";
-            if (player.TimesJoinedClan != null)
+            if (player.TimesJoinedClan > 0)
                 clansJoinedString = $"and member of {player.TimesJoinedClan - 1} clans before that\n";
 
             embed

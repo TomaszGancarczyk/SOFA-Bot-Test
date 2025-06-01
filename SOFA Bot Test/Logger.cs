@@ -4,7 +4,7 @@ namespace SOFA_Bot_Test
     internal class Logger
     {
         //private static readonly ILogger logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger("Log");
-        private static Serilog.Core.Logger log = new LoggerConfiguration()
+        private static readonly Serilog.Core.Logger log = new LoggerConfiguration()
             .WriteTo.File("log.txt")
             .WriteTo.File("log_warnings.txt", restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Warning)
             .WriteTo.Console()
@@ -14,7 +14,7 @@ namespace SOFA_Bot_Test
         {
             log.Fatal("{DateTime.Now} - {message}", DateTime.Now.ToString("dd:MM:yyyy HH:mm:ss"), message);
         }
-        internal static void LogError (string message)
+        internal static void LogError(string message)
         {
             log.Error("{DateTime.Now} - {message}", DateTime.Now.ToString("dd:MM:yyyy HH:mm:ss"), message);
         }

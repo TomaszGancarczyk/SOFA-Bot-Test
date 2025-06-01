@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using System.Data;
 
 
 namespace SOFA_Bot_Test.Attendance
