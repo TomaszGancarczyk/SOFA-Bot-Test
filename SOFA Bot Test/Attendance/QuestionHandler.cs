@@ -6,8 +6,8 @@ namespace SOFA_Bot_Test.Attendance
     internal class QuestionHandler
     {
         private static bool WaitingForQuestionResponse;
-        private static string QuestionResponse;
-        private static IMessage CurrentQuestionMessage = null;
+        private static string? QuestionResponse;
+        private static IMessage? CurrentQuestionMessage = null;
 
         internal static void SetQuestionAnswear(string questionResponse)
         {

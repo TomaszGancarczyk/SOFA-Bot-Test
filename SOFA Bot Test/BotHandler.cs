@@ -6,9 +6,9 @@ namespace SOFA_Bot_Test
 {
     internal class BotHandler
     {
-        private static SocketGuild Guild;
-        private static IMessageChannel QuestionChannel;
-        private static IMessageChannel SignupsChannel;
+        private static SocketGuild? Guild;
+        private static IMessageChannel? QuestionChannel;
+        private static IMessageChannel? SignupsChannel;
         private static IMessage? CurrentMessage;
 
         internal static void InitializeBotHandler(DiscordSocketClient discord)
@@ -42,7 +42,22 @@ namespace SOFA_Bot_Test
 
         internal static SocketRole GetRole(string roleName)
         {
-            return Guild.Roles.FirstOrDefault(role => role.Name == roleName);
+            if (Guild != null)
+            {
+                SocketRole? role = Guild.Roles.FirstOrDefault(role => role.Name == roleName);
+                if (role != null)
+                    return role;
+                else
+                {
+                    Logger.LogError($"Cannot get role with name {roleName}");
+                    return null;
+                }
+            }
+            else
+            {
+                Logger.LogCritical($"Cannot get Guild");
+                return null;
+            }
         }
         internal static SocketGuild GetGuild()
         {
@@ -71,7 +86,22 @@ namespace SOFA_Bot_Test
         }
         internal async static Task<SocketGuildUser> GetGuildUserByName(string userName)
         {
-            return Guild.Users.FirstOrDefault(user => user.GlobalName == userName);
+            if (Guild != null)
+            {
+                SocketGuildUser? user = Guild.Users.FirstOrDefault(user => user.GlobalName == userName);
+                if (user != null)
+                    return user;
+                else
+                {
+                    Logger.LogError($"Cannot find user with the name {userName}");
+                    return null;
+                }
+            }
+            else
+            {
+                Logger.LogCritical($"Cannot get Guild");
+                return null;
+            }
         }
         internal async static Task StartAttendanceEvent(bool isToday)
         {
@@ -80,7 +110,21 @@ namespace SOFA_Bot_Test
             Logger.LogInformation($"Getting event date time");
             Attendance.Timer.SetEventDateTimeForNextDay(isToday);
             var eventDateTime = Attendance.Timer.GetEventDateTime();
-            CurrentMessage = await MessageHandler.CreateMesage(QuestionChannel, SignupsChannel);
+            if (QuestionChannel != null && SignupsChannel != null)
+                CurrentMessage = await MessageHandler.CreateMesage(QuestionChannel, SignupsChannel);
+            else
+            {
+                if (QuestionChannel == null)
+                {
+                    Logger.LogError("QuestionChannel is null");
+                    return;
+                }
+                if (SignupsChannel == null)
+                {
+                    Logger.LogError("SignupsChannel is null");
+                    return;
+                }
+            }
             TimeSpan reminderTimeSpan = eventDateTime - DateTime.Now.AddHours(1);
             if (reminderTimeSpan > TimeSpan.Zero)
             {
@@ -95,29 +139,19 @@ namespace SOFA_Bot_Test
             else
                 Logger.LogWarning($"eventCloseTimeSpan is less than 0");
             EmbedBuilder closedMessage = await SignupMessage.CloseSignupMessage();
-            await CurrentMessage.Channel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
+            if (CurrentMessage != null)
+                await CurrentMessage.Channel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
+            else
+                Logger.LogError("CurrentMessage is null for signup message");
             CurrentMessage = null;
             Task.Delay(7200000).Wait();
         }
 
         //TODO
         // handle player stats from API call
-        // expand signup reminder message?
-        //      check if gif, signup link, reminder message works
-        // expand signup response message?
+        // log all people who didnt signed up to file to export to excel
 
         //TODO Testing
-        //
         // test handle a lot of people in one tab
-        // test people changing roles mid signup
-        // --test spamming question button--
-        // --test spamming signup button--
-        // test /reminder
-        //      test functionality
-        //          if its sent for correct events
-        //          --enabling/disabling is working--
-        //      --permissions are working--
-        //      --response is working--
-        // test if there are no visual bugs for messages
     }
 }

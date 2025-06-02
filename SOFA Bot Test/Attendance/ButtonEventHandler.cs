@@ -9,7 +9,7 @@ namespace SOFA_Bot_Test.Attendance
         public static async Task Handler(SocketMessageComponent component)
         {
             EmbedBuilder updatedMessage;
-            EmbedBuilder message;
+            EmbedBuilder? message;
             ulong? currentMessageId;
             switch (component.Data.CustomId)
             {

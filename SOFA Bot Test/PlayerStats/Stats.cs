@@ -2,32 +2,31 @@
 {
     internal class Stats
     {
-        internal string Uuid { get; set; }
+        internal required string Uuid { get; set; }
         //image
-        internal string Username { get; set; }
-        internal string Faction { get; set; }
-        internal string Clan { get; set; }
-        internal string ClanTag { get; set; }
-        internal string ClanRank { get; set; }
-        internal int TimesJoinedClan { get; set; }
-        internal int PlaytimeHours { get; set; }
-        internal DateOnly JoinedGame { get; set; }
-        internal DateOnly LastLogin { get; set; }
-        internal int Kills { get; set; }
-        internal int Deaths { get; set; }
-        internal int Assists { get; set; }
+        internal required string Username { get; set; }
+        internal required string Faction { get; set; }
+        internal required string Clan { get; set; }
+        internal required string ClanTag { get; set; }
+        internal required string ClanRank { get; set; }
+        internal required int TimesJoinedClan { get; set; }
+        internal required int PlaytimeHours { get; set; }
+        internal required DateOnly JoinedGame { get; set; }
+        internal required DateOnly LastLogin { get; set; }
+        internal required int Kills { get; set; }
+        internal required int Deaths { get; set; }
+        internal required int Assists { get; set; }
         internal double TotalKD { get; set; }
         internal double SessionKD { get; set; }
-        internal int Suicides { get; set; }
-        internal int ArtifactsFound { get; set; }
-        internal int HighestMoney { get; set; }
-        //internal int MoneyMade { get; set; }
-        internal int BoltsThrown { get; set; }
-        internal int MutantKills { get; set; }
-        internal int NpcKills { get; set; }
-        internal int DeliveriesMade { get; set; }
-        internal int CachesFound { get; set; }
-        internal int SignalsFound { get; set; }
+        internal required int Suicides { get; set; }
+        internal required int ArtifactsFound { get; set; }
+        internal required int HighestMoney { get; set; }
+        internal required int BoltsThrown { get; set; }
+        internal required int MutantKills { get; set; }
+        internal required int NpcKills { get; set; }
+        internal required int DeliveriesMade { get; set; }
+        internal required int CachesFound { get; set; }
+        internal required int SignalsFound { get; set; }
 
         internal static Stats CreateTestPlayer()
         {
@@ -45,19 +44,19 @@
                 LastLogin = DateOnly.FromDateTime(DateTime.Now),
                 Kills = 69,
                 Deaths = 420,
-                Assists = 1
+                Assists = 1,
+                TotalKD = 69/420,
+                SessionKD = 10 / 500,
+                Suicides = 10000,
+                ArtifactsFound = 0,
+                HighestMoney = 69420,
+                BoltsThrown = 10,
+                MutantKills = 10000000,
+                NpcKills = 100,
+                DeliveriesMade = 0,
+                CachesFound = 2179846,
+                SignalsFound = 54321
             };
-            player.TotalKD = player.Kills / player.Deaths;
-            player.SessionKD = 10 / 500;
-            player.Suicides = 10000;
-            player.ArtifactsFound = 0;
-            player.HighestMoney = 69420;
-            player.BoltsThrown = 10;
-            player.MutantKills = 10000000;
-            player.NpcKills = 100;
-            player.DeliveriesMade = 0;
-            player.CachesFound = 2179846;
-            player.SignalsFound = 54321;
             return player;
         }
     }

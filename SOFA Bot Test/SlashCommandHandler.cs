@@ -10,7 +10,7 @@ namespace SOFA_Bot_Test
     {
         public static async Task Handler(SocketSlashCommand command)
         {
-            EmbedBuilder embed;
+            EmbedBuilder? embed;
             string[] privilegedRoles;
             SocketGuildUser user;
             bool hasPermission;
@@ -18,7 +18,7 @@ namespace SOFA_Bot_Test
             {
                 case "stats":
                     await command.DeferAsync(ephemeral: true);
-                    string playerName = command.Data.Options.First().Value.ToString();
+                    string? playerName = command.Data.Options.First().Value.ToString();
                     if (playerName == null)
                     {
                         embed = await GenericResponse.Error.Null();
@@ -74,7 +74,10 @@ namespace SOFA_Bot_Test
                     {
                         embed = await GenericResponse.Error.NoPermission();
                     }
-                    await command.FollowupAsync(embed: embed.Build());
+                    if (embed != null)
+                        await command.FollowupAsync(embed: embed.Build());
+                    else
+                        Logger.LogError("Couldn't get embed to respond to /reminder-message");
                     break;
                 case "create-signup":
                     await command.DeferAsync(ephemeral: true);
@@ -105,7 +108,10 @@ namespace SOFA_Bot_Test
                     {
                         embed = await GenericResponse.Error.NoPermission();
                     }
-                    await command.FollowupAsync(embed: embed.Build());
+                    if (embed != null)
+                        await command.FollowupAsync(embed: embed.Build());
+                    else
+                        Logger.LogError("Couldn't get embed to respond to /reminder-message");
                     break;
             }
         }

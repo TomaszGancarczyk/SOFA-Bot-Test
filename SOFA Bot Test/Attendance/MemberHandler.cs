@@ -8,14 +8,27 @@ namespace SOFA_Bot_Test.Attendance
     {
         private static readonly SocketGuild Guild = BotHandler.GetGuild();
         private static readonly string SofaRoleName = BotInfo.GetSofaRoleName();
-        private static Dictionary<SocketGuildUser, bool?> SofaMembers;
+        private static Dictionary<SocketGuildUser, bool?>? SofaMembers;
         internal static SocketRole GetRole(string roleName)
         {
-            return Guild.Roles.FirstOrDefault(role => role.Name == roleName);
+            SocketRole? role = Guild.Roles.FirstOrDefault(role => role.Name == roleName);
+            if (role != null)
+                return role;
+            else
+            {
+                Logger.LogCritical($"Couldn't get role {roleName} in MembersHandler.GetRole");
+                return null;
+            }
         }
         internal static Dictionary<SocketGuildUser, bool?> GetSofaMembers()
         {
-            return SofaMembers;
+            if (SofaMembers != null)
+                return SofaMembers;
+            else
+            {
+                Logger.LogError("SofaMembers is null");
+                return null;
+            }
         }
         internal static void SetMembers()
         {
@@ -29,8 +42,18 @@ namespace SOFA_Bot_Test.Attendance
         }
         internal static async Task<EmbedBuilder> SetMemberStatus(SocketUser member, bool status)
         {
-            SocketGuildUser guildUser = Guild.Users.FirstOrDefault(user => user.Id == member.Id);
-            if (guildUser.Roles.All(role => role.Name != SofaRoleName))
+            SocketGuildUser? guildUser = Guild.Users.FirstOrDefault(user => user.Id == member.Id);
+            if (guildUser == null)
+            {
+                Logger.LogError($"Cannot find membert with the name {member.GlobalName}");
+                return null;
+            }
+            else if (SofaMembers == null)
+            {
+                Logger.LogError($"SofaMembers is null");
+                return null;
+            }
+            else if (guildUser.Roles.All(role => role.Name != SofaRoleName))
             {
                 EmbedBuilder message = await GenericResponse.Error.NoSignupPermission();
                 Logger.LogError($"{member.GlobalName} has no permission to use signups");
@@ -38,9 +61,14 @@ namespace SOFA_Bot_Test.Attendance
             }
             else if (SofaMembers.Keys.Where(user => user.Id == member.Id) != null)
             {
-                SocketGuildUser key = SofaMembers.Keys.FirstOrDefault(user => user.Id == member.Id);
-                SofaMembers[key] = status;
-                Logger.LogInformation($"Setting status {status} for {member.GlobalName}");
+                SocketGuildUser? key = SofaMembers.Keys.FirstOrDefault(user => user.Id == member.Id);
+                if (key != null)
+                {
+                    SofaMembers[key] = status;
+                    Logger.LogInformation($"Setting status {status} for {member.GlobalName}");
+                }
+                else
+                    Logger.LogError($"Cannot find sofa member in SofaMembers with the name {member.GlobalName}");
                 return null;
             }
             else

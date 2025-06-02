@@ -6,8 +6,8 @@ namespace SOFA_Bot_Test.Attendance
 {
     internal class SignupMessage
     {
-        private static string EventType;
-        private static string EventMessageTitle;
+        private static string? EventType;
+        private static string? EventMessageTitle;
         internal async static Task<EmbedBuilder> CreateSignupMessage()
         {
             Logger.LogInformation($"Creating {EventType} message");
