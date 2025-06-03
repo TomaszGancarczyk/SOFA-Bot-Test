@@ -96,7 +96,7 @@ namespace SOFA_Bot_Test.Attendance
             }
             return totalPresentAbsentUnsigned;
         }
-        internal async static Task<EmbedBuilder> CloseSignupMessage()
+        internal async static Task<EmbedBuilder> GetClosedSignupMessage()
         {
             EmbedBuilder embed = await UpdateSignupMessage();
             embed.WithTitle($"{EventMessageTitle} - Signups closed");

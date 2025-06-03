@@ -37,7 +37,7 @@ namespace SOFA_Bot_Test
             }
             Logger.LogInformation($"Found Signups Channel: {SignupsChannel.Name}");
 
-            StartEvent();
+            _ = StartEvent();
         }
 
         internal static SocketRole GetRole(string roleName)
@@ -77,11 +77,14 @@ namespace SOFA_Bot_Test
             if (SignupsChannel == null) return null;
             else return SignupsChannel.Id;
         }
-        private async static void StartEvent()
+        private async static Task StartEvent()
         {
             while (true)
             {
-                await StartAttendanceEvent(false);
+                if (BotHandler.GetCurrentMessageId() == null)
+                    await StartAttendanceEvent(false);
+                else
+                    await Task.Delay(60000);
             }
         }
         internal async static Task<SocketGuildUser> GetGuildUserByName(string userName)
@@ -107,11 +110,15 @@ namespace SOFA_Bot_Test
         {
             Logger.LogInformation($"Starting event");
             CurrentMessage = null;
+            ulong? localCurrentMessageId = null;
             Logger.LogInformation($"Getting event date time");
             Attendance.Timer.SetEventDateTimeForNextDay(isToday);
             var eventDateTime = Attendance.Timer.GetEventDateTime();
             if (QuestionChannel != null && SignupsChannel != null)
+            {
                 CurrentMessage = await MessageHandler.CreateMesage(QuestionChannel, SignupsChannel);
+                localCurrentMessageId = CurrentMessage.Id;
+            }
             else
             {
                 if (QuestionChannel == null)
@@ -129,18 +136,27 @@ namespace SOFA_Bot_Test
             if (reminderTimeSpan > TimeSpan.Zero)
             {
                 Task.Delay(reminderTimeSpan).Wait();
-                Reminder.Handle();
+                if (CurrentMessage.Id == localCurrentMessageId)
+                    Reminder.Handle();
+                else return;
             }
             else
                 Logger.LogWarning($"reminderTimeSpan is less than 0");
             TimeSpan eventCloseTimeSpan = eventDateTime - DateTime.Now.AddMinutes(15);
             if (eventCloseTimeSpan > TimeSpan.Zero)
-                Task.Delay(eventCloseTimeSpan).Wait();
+                if (CurrentMessage.Id == localCurrentMessageId)
+                    Task.Delay(eventCloseTimeSpan).Wait();
+                else return;
             else
                 Logger.LogWarning($"eventCloseTimeSpan is less than 0");
-            EmbedBuilder closedMessage = await SignupMessage.CloseSignupMessage();
+            EmbedBuilder closedMessage = await SignupMessage.GetClosedSignupMessage();
             if (CurrentMessage != null)
-                await CurrentMessage.Channel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
+            {
+
+                if (CurrentMessage.Id == localCurrentMessageId)
+                    await CurrentMessage.Channel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
+                else return;
+            }
             else
                 Logger.LogError("CurrentMessage is null for signup message");
             CurrentMessage = null;
@@ -149,7 +165,7 @@ namespace SOFA_Bot_Test
 
         //TODO
         // handle player stats from API call
-        // log all people who didnt signed up to file to export to excel
+        // log all people who didnt signed up to to google sheets
 
         //TODO Testing
         // test handle a lot of people in one tab

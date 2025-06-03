@@ -9,10 +9,16 @@ namespace SOFA_Bot_Test.Attendance
         private static string? QuestionResponse;
         private static IMessage? CurrentQuestionMessage = null;
 
-        internal static void SetQuestionAnswear(string questionResponse)
+        internal static void SetQuestionAnswear(ulong questionMessageId, string questionResponse)
         {
-            QuestionResponse = questionResponse;
-            WaitingForQuestionResponse = false;
+            if (CurrentQuestionMessage != null)
+                if (questionMessageId == CurrentQuestionMessage.Id)
+                {
+                    QuestionResponse = questionResponse;
+                    WaitingForQuestionResponse = false;
+                }
+                else Logger.LogError($"Got response from question message that has different ID than CurrentQuestionMessage");
+            else Logger.LogError($"CurrentQuestionMessage is null");
         }
 
         internal async static Task<string> HandleEventQuestion(IMessageChannel questionChannel)
@@ -33,7 +39,7 @@ namespace SOFA_Bot_Test.Attendance
             }
             return QuestionResponse;
         }
-        internal async static Task DeleteReminderMessage()
+        internal async static Task DeleteQuestionMessage()
         {
             if (CurrentQuestionMessage != null)
             {

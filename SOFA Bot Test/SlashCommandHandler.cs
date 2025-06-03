@@ -90,7 +90,7 @@ namespace SOFA_Bot_Test
                     {
                         if (user.Roles.Any(role => role.Name == roleName))
                         {
-                            _ = QuestionHandler.DeleteReminderMessage();
+                            _ = QuestionHandler.DeleteQuestionMessage();
                             if (command.Data.Options.First().Value.ToString() == "1")
                             {
                                 _ = BotHandler.StartAttendanceEvent(true);
