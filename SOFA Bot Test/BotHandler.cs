@@ -2,6 +2,7 @@
 using Discord.WebSocket;
 using SOFA_Bot_Test.Attendance;
 
+
 namespace SOFA_Bot_Test
 {
     internal class BotHandler
@@ -82,9 +83,12 @@ namespace SOFA_Bot_Test
             while (true)
             {
                 if (BotHandler.GetCurrentMessageId() == null)
+                {
                     await StartAttendanceEvent(false);
+                    Task.Delay(7200000).Wait();
+                }
                 else
-                    await Task.Delay(60000);
+                    Task.Delay(60000).Wait();
             }
         }
         internal async static Task<SocketGuildUser> GetGuildUserByName(string userName)
@@ -108,16 +112,25 @@ namespace SOFA_Bot_Test
         }
         internal async static Task StartAttendanceEvent(bool isToday)
         {
-            Logger.LogInformation($"Starting event");
+            Logger.LogInformation($"/ Starting event");
             CurrentMessage = null;
             ulong? localCurrentMessageId = null;
-            Logger.LogInformation($"Getting event date time");
-            Attendance.Timer.SetEventDateTimeForNextDay(isToday);
-            var eventDateTime = Attendance.Timer.GetEventDateTime();
+            Logger.LogInformation($"Setting and getting event date time");
+            await Attendance.Timer.SetEventDateTime(isToday);
+            DateTime eventDateTime = Attendance.Timer.GetEventDateTime();
             if (QuestionChannel != null && SignupsChannel != null)
             {
-                CurrentMessage = await MessageHandler.CreateMesage(QuestionChannel, SignupsChannel);
-                localCurrentMessageId = CurrentMessage.Id;
+                IMessage? tempCurrentMessage = await MessageHandler.ValidateAndCreateMesage(QuestionChannel, SignupsChannel);
+                if (tempCurrentMessage != null)
+                {
+                    CurrentMessage = tempCurrentMessage;
+                    localCurrentMessageId = CurrentMessage.Id;
+                }
+                else
+                {
+                    Logger.LogError("CurrentMessage is null");
+                    return;
+                }
             }
             else
             {
@@ -132,42 +145,63 @@ namespace SOFA_Bot_Test
                     return;
                 }
             }
-            TimeSpan reminderTimeSpan = eventDateTime - DateTime.Now.AddHours(1);
-            if (reminderTimeSpan > TimeSpan.Zero)
+            if (ValidateCurrentMessage(localCurrentMessageId))
             {
-                Task.Delay(reminderTimeSpan).Wait();
-                if (CurrentMessage.Id == localCurrentMessageId)
+                TimeSpan reminderTimeSpan = eventDateTime - DateTime.Now.AddHours(1);
+                if (reminderTimeSpan > TimeSpan.Zero)
+                {
+                    Logger.LogInformation($"Waiting for {reminderTimeSpan.ToString()} for reminder");
+                    Task.Delay(reminderTimeSpan).Wait();
                     Reminder.Handle();
-                else return;
+                }
+                else
+                    Logger.LogWarning($"reminderTimeSpan is less than 0");
             }
-            else
-                Logger.LogWarning($"reminderTimeSpan is less than 0");
-            TimeSpan eventCloseTimeSpan = eventDateTime - DateTime.Now.AddMinutes(15);
-            if (eventCloseTimeSpan > TimeSpan.Zero)
-                if (CurrentMessage.Id == localCurrentMessageId)
-                    Task.Delay(eventCloseTimeSpan).Wait();
-                else return;
-            else
-                Logger.LogWarning($"eventCloseTimeSpan is less than 0");
-            EmbedBuilder closedMessage = await SignupMessage.GetClosedSignupMessage();
-            if (CurrentMessage != null)
+            else return;
+            if (ValidateCurrentMessage(localCurrentMessageId))
             {
-
-                if (CurrentMessage.Id == localCurrentMessageId)
-                    await CurrentMessage.Channel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
-                else return;
+                TimeSpan eventCloseTimeSpan = eventDateTime - DateTime.Now.AddMinutes(15);
+                if (eventCloseTimeSpan > TimeSpan.Zero)
+                {
+                    Logger.LogInformation($"Waiting for {eventCloseTimeSpan.ToString()} for closing event");
+                    Task.Delay(eventCloseTimeSpan).Wait();
+                }
+                else
+                    Logger.LogWarning($"eventCloseTimeSpan is less than 0");
+                EmbedBuilder closedMessage = await SignupMessage.GetClosedSignupMessage();
+                await CurrentMessage.Channel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
             }
-            else
-                Logger.LogError("CurrentMessage is null for signup message");
-            CurrentMessage = null;
-            Task.Delay(7200000).Wait();
+            else return;
+            if (ValidateCurrentMessage(localCurrentMessageId))
+            {
+                CurrentMessage = null;
+                TimeSpan eventTimeSpan = eventDateTime - DateTime.Now;
+                if (eventTimeSpan > TimeSpan.Zero)
+                {
+                    Logger.LogInformation($"Waiting for {eventTimeSpan.ToString()} for finishing signup pipeline");
+                    Task.Delay(eventTimeSpan).Wait();
+                }
+                else
+                    Logger.LogError($"eventTimeSpan is less than 0");
+            }
+            else return;
+            Logger.LogInformation("\\ Signup event finished");
         }
 
+        private static bool ValidateCurrentMessage(ulong? localCurrentMessageId)
+        {
+            if (localCurrentMessageId != null && CurrentMessage != null && CurrentMessage.Id == localCurrentMessageId)
+                return true;
+            return false;
+        }
         //TODO
         // handle player stats from API call
         // log all people who didnt signed up to to google sheets
+        // add people for reminder exceptions
+        // /create-signup when waiting for question response new message may be created
 
         //TODO Testing
         // test handle a lot of people in one tab
+        // test but up for multiple days
     }
 }

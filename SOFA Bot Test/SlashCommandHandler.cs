@@ -1,8 +1,8 @@
 ﻿using Discord;
 using Discord.WebSocket;
-
 using SOFA_Bot_Test.Attendance;
 using SOFA_Bot_Test.PlayerStats;
+
 
 namespace SOFA_Bot_Test
 {
