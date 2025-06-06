@@ -2,7 +2,7 @@
 using Discord.WebSocket;
 
 
-namespace SOFA_Bot_Test
+namespace FOFA_Bot
 {
     internal class GenericResponse
     {

@@ -1,9 +1,9 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using SOFA_Bot_Test.Attendance;
+using FOFA_Bot.Attendance;
 
 
-namespace SOFA_Bot_Test
+namespace FOFA_Bot
 {
     internal class BotHandler
     {
