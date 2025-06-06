@@ -11,7 +11,7 @@ namespace SOFA_Bot_Test
         private static readonly string Token = BotInfo.GetDiscordToken();
         static Task Main()
         {
-            Logger.LogInformation($"[SOFA] Signups Bot is starting");
+            Logger.LogInformation($"[FOFA] Bot is starting");
             new Program().StartBotAsync().GetAwaiter().GetResult();
             return Task.CompletedTask;
         }
@@ -37,7 +37,7 @@ namespace SOFA_Bot_Test
             {
                 Discord.ButtonExecuted += ButtonEventHandler.Handler;
                 Discord.SlashCommandExecuted += SlashCommandHandler.Handler;
-                Logger.LogInformation($"[SOFA] Signups Bot is running");
+                Logger.LogInformation($"[FOFA] Bot is running");
                 return Task.CompletedTask;
             };
             await Task.Delay(3000);
