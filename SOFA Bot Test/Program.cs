@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
-
 using SOFA_Bot_Test.Attendance;
+
 
 namespace SOFA_Bot_Test
 {
@@ -18,7 +18,7 @@ namespace SOFA_Bot_Test
 
         internal Program()
         {
-            var config = new DiscordSocketConfig
+            DiscordSocketConfig? config = new DiscordSocketConfig
             {
                 AlwaysDownloadUsers = true,
                 MessageCacheSize = 100,
@@ -46,11 +46,11 @@ namespace SOFA_Bot_Test
         }
         private async Task DiscordReady()
         {
-            var statsCommand = new Discord.SlashCommandBuilder()
+            SlashCommandBuilder? statsCommand = new Discord.SlashCommandBuilder()
                 .WithName("stats")
                 .WithDescription("Lists player's stalcraft stats")
                 .AddOption("player", ApplicationCommandOptionType.String, "The name of a player whos stats you want to see", isRequired: true);
-            var reminderMessageCommand = new Discord.SlashCommandBuilder()
+            SlashCommandBuilder? reminderMessageCommand = new Discord.SlashCommandBuilder()
                 .WithName("reminder-message")
                 .WithDescription("Sets status of reminder messages, true = messages are sent")
                 .AddOption(new SlashCommandOptionBuilder()
@@ -61,7 +61,7 @@ namespace SOFA_Bot_Test
                     .AddChoice("No", 0)
                     .WithType(ApplicationCommandOptionType.Integer)
                 );
-            var createSignupCommand = new Discord.SlashCommandBuilder()
+            SlashCommandBuilder? createSignupCommand = new Discord.SlashCommandBuilder()
                 .WithName("create-signup")
                 .WithDescription("Create new signup for next day")
                 .AddOption(new SlashCommandOptionBuilder()

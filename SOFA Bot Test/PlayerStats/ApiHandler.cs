@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Net.Http.Headers;
 
+
 namespace SOFA_Bot_Test.PlayerStats
 {
     internal class ApiHandler
@@ -44,13 +45,14 @@ namespace SOFA_Bot_Test.PlayerStats
         }
         private static async Task<Stats> ConvertJsonStringToPlayerStats(string jsonString)
         {
-            dynamic dynamicStats = JsonConvert.DeserializeObject(jsonString);
-            Stats stats = new()
-            {
-                Uuid = dynamicStats.uuid,
-                Username = dynamicStats.username
-            };
-            return stats;
+            dynamic? dynamicStats = JsonConvert.DeserializeObject(jsonString);
+            //Stats stats = new()
+            //{
+            //    Uuid = dynamicStats.uuid,
+            //    Username = dynamicStats.username
+            //};
+            //return stats;
+            return null;
         }
     }
 }

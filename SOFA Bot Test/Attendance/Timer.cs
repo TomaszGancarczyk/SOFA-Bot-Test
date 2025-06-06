@@ -1,6 +1,4 @@
-﻿
-
-namespace SOFA_Bot_Test.Attendance
+﻿namespace SOFA_Bot_Test.Attendance
 {
     internal class Timer
     {
@@ -9,7 +7,7 @@ namespace SOFA_Bot_Test.Attendance
         {
             return EventDateTime;
         }
-        internal static void SetEventDateTimeForNextDay(bool isToday)
+        internal async static Task SetEventDateTime(bool isToday)
         {
             DateOnly eventDate = DateOnly.FromDateTime(DateTime.Now);
             if (!isToday)

@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
-
 using System.Net;
+
 
 namespace SOFA_Bot_Test.Attendance
 {
@@ -33,7 +33,7 @@ namespace SOFA_Bot_Test.Attendance
         private static async Task SendReminder(SocketGuildUser member, string eventType)
         {
             Logger.LogInformation($"Sending reminder to {member.DisplayName}");
-            ulong guildId = BotHandler.GetGuild().Id;
+            ulong? guildId = BotHandler.GetGuild().Id;
             ulong? signupsChannelId = BotHandler.GetSignupsChannelId();
             ulong? currentmessageId = BotHandler.GetCurrentMessageId();
             string reminderMessageLink = $"https://discord.com/channels/{guildId}/{signupsChannelId}/{currentmessageId}";
