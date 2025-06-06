@@ -150,7 +150,7 @@ namespace SOFA_Bot_Test
                 TimeSpan reminderTimeSpan = eventDateTime - DateTime.Now.AddHours(1);
                 if (reminderTimeSpan > TimeSpan.Zero)
                 {
-                    Logger.LogInformation($"Waiting for {reminderTimeSpan.ToString()} for reminder");
+                    Logger.LogInformation($"Waiting for {reminderTimeSpan} for reminder");
                     Task.Delay(reminderTimeSpan).Wait();
                     Reminder.Handle();
                 }
@@ -163,7 +163,7 @@ namespace SOFA_Bot_Test
                 TimeSpan eventCloseTimeSpan = eventDateTime - DateTime.Now.AddMinutes(15);
                 if (eventCloseTimeSpan > TimeSpan.Zero)
                 {
-                    Logger.LogInformation($"Waiting for {eventCloseTimeSpan.ToString()} for closing event");
+                    Logger.LogInformation($"Waiting for {eventCloseTimeSpan} for closing event");
                     Task.Delay(eventCloseTimeSpan).Wait();
                 }
                 else
@@ -175,10 +175,18 @@ namespace SOFA_Bot_Test
             if (ValidateCurrentMessage(localCurrentMessageId))
             {
                 CurrentMessage = null;
+                Dictionary<SocketGuildUser, bool?> sofaMembersDict = await MemberHandler.GetSofaMembers();
+                List<string>? sofaUnassignedMembers = [];
+                foreach (var member in sofaMembersDict)
+                {
+                    if (member.Value == null) sofaUnassignedMembers.Add(member.Key.GlobalName);
+                }
+                if (sofaUnassignedMembers != null)
+                    await AttendanceGoogleSheet.HandleUnsignedUsers(sofaUnassignedMembers);
                 TimeSpan eventTimeSpan = eventDateTime - DateTime.Now;
                 if (eventTimeSpan > TimeSpan.Zero)
                 {
-                    Logger.LogInformation($"Waiting for {eventTimeSpan.ToString()} for finishing signup pipeline");
+                    Logger.LogInformation($"Waiting for {eventTimeSpan} for finishing signup pipeline");
                     Task.Delay(eventTimeSpan).Wait();
                 }
                 else
@@ -194,14 +202,18 @@ namespace SOFA_Bot_Test
                 return true;
             return false;
         }
+
         //TODO
         // handle player stats from API call
         // log all people who didnt signed up to to google sheets
         // add people for reminder exceptions
+
+        //TODO Known Bugs
         // /create-signup when waiting for question response new message may be created
 
         //TODO Testing
+        // test AttendanceGoogleSheets.cs
         // test handle a lot of people in one tab
-        // test but up for multiple days
+        // test bot up for multiple days
     }
 }

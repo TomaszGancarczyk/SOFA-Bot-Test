@@ -22,7 +22,8 @@ namespace SOFA_Bot_Test.Attendance
                 List<SocketGuildUser> offMembers = [];
                 if (eventType == "Tournament" || eventType == "Base Capture")
                 {
-                    foreach (var member in MemberHandler.GetSofaMembers())
+                    var sofaMembers = await MemberHandler.GetSofaMembers();
+                    foreach (var member in sofaMembers)
                         if (member.Value == null)
                             offMembers.Add(member.Key);
                 }

@@ -34,7 +34,7 @@ namespace SOFA_Bot_Test.Attendance
             embed
                 .WithTitle(EventMessageTitle)
                 .WithDescription($"<t:{eventUnix}:D><t:{eventUnix}:t> - <t:{eventUnix}:R>");
-            Dictionary<SocketGuildUser, bool?> sofaMembers = MemberHandler.GetSofaMembers();
+            Dictionary<SocketGuildUser, bool?> sofaMembers = await MemberHandler.GetSofaMembers();
             int[] totalPresentAbsentUnsigned = [0, 0, 0];
             AddPresentAbsentUnsigned(totalPresentAbsentUnsigned, sofaMembers);
             SocketRole role;
