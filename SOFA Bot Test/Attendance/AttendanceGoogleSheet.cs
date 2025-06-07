@@ -18,10 +18,7 @@ namespace SOFA_Bot_Test.Attendance
                 return;
             else
                 await SaveNamesToBotSignupsSheet(userNames, currentSheetRow);
-
-
             return;
-            //date - user - user - user
         }
         private static int? ReadAndUpdateSheetRowFile(string filePath)
         {
@@ -53,13 +50,15 @@ namespace SOFA_Bot_Test.Attendance
         {
             SheetsService? service = await GetSheetService();
             string sheetId = "1ZC__GnEiITdrm8Wc6k-GBlkDG3Xpt2nzEnm2n6HZRb8/edit?gid=0#gid=0";
-            //string newRange = GetRange(service, sheetId);
-            //IList<IList<Object>> objNeRecords = GenerateData();
-            //UpdatGoogleSheetinBatch(objNeRecords, SheetId, newRange, service);
+            string newRange = await GetRange(currentRow, userNames.Count + 1);
+            IList<IList<Object>> objNeRecords = await GenerateData(userNames);
+            await UpdatGoogleSheet(objNeRecords, sheetId, newRange, service);
+            Logger.LogInformation($"Finished updating sheet");
             return;
         }
         private async static Task<SheetsService?> GetSheetService()
         {
+            Logger.LogInformation($"Getting sheet service");
             string clientId = BotInfo.GetSheetClientId();
             string clientSecret = BotInfo.GetSheetClientSecret();
             string[] scopes = { SheetsService.Scope.Spreadsheets };
@@ -80,6 +79,29 @@ namespace SOFA_Bot_Test.Attendance
                 ApplicationName = "FOFA Bot"
             });
             return service;
+        }
+        private async static Task<string> GetRange(int? currentRow, int numberOfCollumns)
+        {
+            char lastCollumnChar = (char)('A' - 1 + numberOfCollumns);
+            return ($"A{currentRow}:{lastCollumnChar}{currentRow}");
+        }
+        private async static Task<IList<IList<Object>>> GenerateData(List<string> userNames)
+        {
+            Logger.LogInformation($"Generating data for the sheet");
+            List<IList<Object>> fullObject = new List<IList<Object>>();
+            IList<Object> objectLine = [];
+            objectLine.Add(DateTime.Now.ToString("MM MM yyyy"));
+            foreach (string userName in userNames)
+                objectLine.Add(userName);
+            return fullObject;
+        }
+        private async static Task UpdatGoogleSheet(IList<IList<Object>> values, string spreadsheetId, string range, SheetsService service)
+        {
+            Logger.LogInformation($"Updating google sheet");
+            SpreadsheetsResource.ValuesResource.AppendRequest request = service.Spreadsheets.Values.Append(new ValueRange() { Values = values }, spreadsheetId, range);
+            request.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
+            request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
+            AppendValuesResponse? response = request.Execute();
         }
     }
 }

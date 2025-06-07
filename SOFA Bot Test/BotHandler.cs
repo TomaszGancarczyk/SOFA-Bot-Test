@@ -181,7 +181,7 @@ namespace SOFA_Bot_Test
                 {
                     if (member.Value == null) sofaUnassignedMembers.Add(member.Key.GlobalName);
                 }
-                if (sofaUnassignedMembers != null)
+                if (sofaUnassignedMembers.Count > 0)
                     await AttendanceGoogleSheet.HandleUnsignedUsers(sofaUnassignedMembers);
                 TimeSpan eventTimeSpan = eventDateTime - DateTime.Now;
                 if (eventTimeSpan > TimeSpan.Zero)
@@ -205,7 +205,6 @@ namespace SOFA_Bot_Test
 
         //TODO
         // handle player stats from API call
-        // log all people who didnt signed up to to google sheets
         // add people for reminder exceptions
 
         //TODO Known Bugs
@@ -215,5 +214,8 @@ namespace SOFA_Bot_Test
         // test AttendanceGoogleSheets.cs
         // test handle a lot of people in one tab
         // test bot up for multiple days
+        // test loging all people who didnt signed up to to google sheets
+        //      test if file updates correctly
+        //      test if sheet updates correctly
     }
 }

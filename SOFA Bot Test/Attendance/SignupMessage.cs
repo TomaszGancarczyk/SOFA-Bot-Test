@@ -40,7 +40,13 @@ namespace SOFA_Bot_Test.Attendance
             SocketRole role;
             string squadMembers;
             List<ulong> handledMembersId = [];
-
+            List<IEmote> squadEmotes = [];
+            squadEmotes.Add(new Emoji("🟦"));
+            squadEmotes.Add(new Emoji("🟥"));
+            squadEmotes.Add(new Emoji("🟫"));
+            squadEmotes.Add(new Emoji("🟩"));
+            squadEmotes.Add(new Emoji("🟨"));
+            squadEmotes.Add(new Emoji("🟪"));
             for (int i = 1; i <= 6; i++)
             {
                 squadMembers = "";
@@ -53,7 +59,7 @@ namespace SOFA_Bot_Test.Attendance
                     }
                 if (squadMembers.Length > 0)
                 {
-                    embed.AddField($"Squad {i}", squadMembers, true);
+                    embed.AddField($"{squadEmotes[i - 1]} Squad {i}", squadMembers, true);
                 }
             }
 
@@ -66,14 +72,14 @@ namespace SOFA_Bot_Test.Attendance
                     handledMembersId.Add(member.Key.Id);
                 }
             if (squadMembers.Length > 0)
-                embed.AddField($"Reserve", squadMembers, true);
+                embed.AddField($"{new Emoji("⬜")} Reserve", squadMembers, true);
 
             squadMembers = "";
             foreach (var member in sofaMembers)
                 if (!handledMembersId.Contains(member.Key.Id))
                     squadMembers += AddMemberAndStatus(member.Value, member.Key.DisplayName);
             if (squadMembers.Length > 0)
-                embed.AddField($"Unassigned", squadMembers, true);
+                embed.AddField($"{new Emoji("⬜")} Unassigned", squadMembers, true);
 
             string footerMessage = $"____________________________________________________________________________________________________\n{totalPresentAbsentUnsigned[0]} Present, {totalPresentAbsentUnsigned[1]} Absent, {totalPresentAbsentUnsigned[2]} Unsigned";
             embed.WithFooter(footerMessage);
