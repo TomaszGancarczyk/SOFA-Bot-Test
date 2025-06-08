@@ -5,7 +5,7 @@ using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Util.Store;
 
 
-namespace SOFA_Bot_Test.Attendance
+namespace FOFA_Bot.Attendance
 {
     internal class AttendanceGoogleSheet
     {
