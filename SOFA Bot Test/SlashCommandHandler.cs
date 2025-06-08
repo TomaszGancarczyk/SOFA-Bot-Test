@@ -90,6 +90,7 @@ namespace FOFA_Bot
                     {
                         if (user.Roles.Any(role => role.Name == roleName))
                         {
+                            //TODO
                             _ = QuestionHandler.DeleteQuestionMessage();
                             if (command.Data.Options.First().Value.ToString() == "1")
                             {

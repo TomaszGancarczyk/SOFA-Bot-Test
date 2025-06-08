@@ -20,23 +20,27 @@ namespace FOFA_Bot.Attendance
                 else Logger.LogError($"Got response from question message that has different ID than CurrentQuestionMessage");
             else Logger.LogError($"CurrentQuestionMessage is null");
         }
-        internal async static Task<string> HandleEventQuestion(IMessageChannel questionChannel)
+        internal async static Task<string?> HandleEventQuestion(IMessageChannel questionChannel)
         {
+            CurrentQuestionMessage = null;
             DateTime eventDateTime = Timer.GetEventDateTime();
             string eventDateTimeDay = "";
             if (eventDateTime.Day == DateTime.Now.Day) eventDateTimeDay = "today";
             if (eventDateTime.Day == DateTime.Now.AddDays(1).Day) eventDateTimeDay = "tomorrow";
-            CurrentQuestionMessage = null;
             WaitingForQuestionResponse = true;
             Logger.LogInformation($"Sending question for event");
             string questionMessageContent = $"## What do we play {eventDateTimeDay}?";
             ComponentBuilder component = CreateButton.CreateQuestionButtons();
-            CurrentQuestionMessage = await questionChannel.SendMessageAsync(questionMessageContent, components: component.Build());
+            IMessage? localCurrentQuestionMessage = await questionChannel.SendMessageAsync(questionMessageContent, components: component.Build());
+            CurrentQuestionMessage = localCurrentQuestionMessage;
             while (WaitingForQuestionResponse)
             {
                 await Task.Delay(1000);
             }
-            return QuestionResponse;
+            if (CurrentQuestionMessage != null && QuestionResponse != null && localCurrentQuestionMessage.Id == CurrentQuestionMessage.Id)
+                return QuestionResponse;
+            else
+                return null;
         }
         internal async static Task DeleteQuestionMessage()
         {

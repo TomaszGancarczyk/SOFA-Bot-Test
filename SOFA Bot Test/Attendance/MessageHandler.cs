@@ -9,8 +9,11 @@ namespace FOFA_Bot.Attendance
         internal async static Task<IMessage?> ValidateAndCreateMesage(IMessageChannel questionChannel, IMessageChannel clanWarChannel)
         {
             Logger.LogInformation($"Starting message creation");
-            string eventType = await QuestionHandler.HandleEventQuestion(questionChannel);
-            SignupMessage.SetEventType(eventType);
+            string? eventType = await QuestionHandler.HandleEventQuestion(questionChannel);
+            if (eventType != null)
+                SignupMessage.SetEventType(eventType);
+            else
+                return null;
             IMessage? response;
             if (ResponseTime == null)
             {

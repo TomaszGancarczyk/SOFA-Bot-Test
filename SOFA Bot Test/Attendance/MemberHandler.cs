@@ -20,10 +20,10 @@ namespace FOFA_Bot.Attendance
                 return null;
             }
         }
-        internal static Dictionary<SocketGuildUser, bool?> GetSofaMembers()
+        internal static Task<Dictionary<SocketGuildUser, bool?>> GetSofaMembers()
         {
             if (SofaMembers != null)
-                return SofaMembers;
+                return Task.FromResult(SofaMembers);
             else
             {
                 Logger.LogError("SofaMembers is null");
