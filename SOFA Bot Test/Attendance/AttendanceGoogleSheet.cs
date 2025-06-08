@@ -12,7 +12,7 @@ namespace SOFA_Bot_Test.Attendance
         internal async static Task HandleUnsignedUsers(List<string> userNames)
         {
             Logger.LogInformation($"{userNames.Count} members didn't signed up");
-            string LastSheetRowPath = "LastSheetRow.txt";
+            string LastSheetRowPath = "..\\..\\..\\Attendance\\LastSheetRow.txt";
             int? currentSheetRow = ReadAndUpdateSheetRowFile(LastSheetRowPath);
             if (currentSheetRow == null)
                 return;
@@ -35,7 +35,7 @@ namespace SOFA_Bot_Test.Attendance
                 {
                     int lastSheetRow = Int32.Parse(lastSheetRowString);
                     Logger.LogInformation($"with the last row being {lastSheetRow}");
-                    File.WriteAllText(filePath, lastSheetRow + 1.ToString());
+                    File.WriteAllText(filePath, $"{lastSheetRow + 1}");
                     return lastSheetRow + 1;
                 }
                 catch
@@ -49,7 +49,7 @@ namespace SOFA_Bot_Test.Attendance
         private async static Task SaveNamesToBotSignupsSheet(List<string> userNames, int? currentRow)
         {
             SheetsService? service = await GetSheetService();
-            string sheetId = "1ZC__GnEiITdrm8Wc6k-GBlkDG3Xpt2nzEnm2n6HZRb8/edit?gid=0#gid=0";
+            string sheetId = "1ZC__GnEiITdrm8Wc6k-GBlkDG3Xpt2nzEnm2n6HZRb8";
             string newRange = await GetRange(currentRow, userNames.Count + 1);
             IList<IList<Object>> objNeRecords = await GenerateData(userNames);
             await UpdatGoogleSheet(objNeRecords, sheetId, newRange, service);
@@ -90,9 +90,10 @@ namespace SOFA_Bot_Test.Attendance
             Logger.LogInformation($"Generating data for the sheet");
             List<IList<Object>> fullObject = new List<IList<Object>>();
             IList<Object> objectLine = [];
-            objectLine.Add(DateTime.Now.ToString("MM MM yyyy"));
+            objectLine.Add(DateTime.Now.ToString("dd/MM/yyyy"));
             foreach (string userName in userNames)
                 objectLine.Add(userName);
+            fullObject.Add(objectLine);
             return fullObject;
         }
         private async static Task UpdatGoogleSheet(IList<IList<Object>> values, string spreadsheetId, string range, SheetsService service)
