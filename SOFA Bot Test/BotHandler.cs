@@ -117,8 +117,7 @@ namespace SOFA_Bot_Test
             ulong? localCurrentMessageId = null;
             Logger.LogInformation($"Setting and getting event date time");
             await Attendance.Timer.SetEventDateTime(isToday);
-            //DateTime eventDateTime = Attendance.Timer.GetEventDateTime();
-            DateTime eventDateTime = DateTime.Now.AddMinutes(3);
+            DateTime eventDateTime = Attendance.Timer.GetEventDateTime();
             if (QuestionChannel != null && SignupsChannel != null)
             {
                 IMessage? tempCurrentMessage = await MessageHandler.ValidateAndCreateMesage(QuestionChannel, SignupsChannel);
@@ -214,8 +213,5 @@ namespace SOFA_Bot_Test
         //TODO Testing
         // test handle a lot of people in one tab
         // test bot up for multiple days
-        // test loging all people who didnt signed up to to google sheets
-        //      test if file updates correctly
-        //      test if sheet updates correctly
     }
 }
