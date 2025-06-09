@@ -80,22 +80,25 @@ namespace SOFA_Bot_Test
         }
         private async static Task StartEvent()
         {
+            await StartAttendanceEvent(false);
             while (true)
             {
-                if (BotHandler.GetCurrentMessageId() == null)
+                if (BotHandler.GetCurrentMessageId() != null)
+                {
+                    Task.Delay(60000).Wait();
+                }
+                Task.Delay(7200000).Wait();
+                if (BotHandler.GetCurrentMessageId() != null)
                 {
                     await StartAttendanceEvent(false);
-                    Task.Delay(7200000).Wait();
                 }
-                else
-                    Task.Delay(60000).Wait();
             }
         }
         internal async static Task<SocketGuildUser> GetGuildUserByName(string userName)
         {
             if (Guild != null)
             {
-                SocketGuildUser? user = Guild.Users.FirstOrDefault(user => user.GlobalName == userName);
+                SocketGuildUser? user = Guild.Users.FirstOrDefault(user => user.Username == userName);
                 if (user != null)
                     return user;
                 else
@@ -179,7 +182,7 @@ namespace SOFA_Bot_Test
                 List<string>? sofaUnassignedMembers = [];
                 foreach (var member in sofaMembersDict)
                 {
-                    if (member.Value == null) sofaUnassignedMembers.Add(member.Key.GlobalName);
+                    if (member.Value == null) sofaUnassignedMembers.Add(member.Key.Username);
                 }
                 if (sofaUnassignedMembers.Count > 0)
                     await AttendanceGoogleSheet.HandleUnsignedUsers(sofaUnassignedMembers);
@@ -204,13 +207,16 @@ namespace SOFA_Bot_Test
         }
 
         //TODO
-        // handle player stats from API call
+        //cooldown for new signup doesnt work when using /createsignup(it creates one immiedietly)
         // add people for reminder exceptions
+        // handle player stats from API call
+
 
         //TODO Known Bugs
         // /create-signup when waiting for question response new message may be created
 
         //TODO Testing
+        // test if base cap eventDateTime is 1 hour earlier
         // test handle a lot of people in one tab
         // test bot up for multiple days
     }

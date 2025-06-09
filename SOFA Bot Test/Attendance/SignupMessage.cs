@@ -54,7 +54,7 @@ namespace SOFA_Bot_Test.Attendance
                 foreach (var member in sofaMembers)
                     if (member.Key.Roles.Contains(role) && !handledMembersId.Contains(member.Key.Id))
                     {
-                        squadMembers += AddMemberAndStatus(member.Value, member.Key.DisplayName);
+                        squadMembers += AddMemberAndStatus(member.Value, member.Key.Username);
                         handledMembersId.Add(member.Key.Id);
                     }
                 if (squadMembers.Length > 0)
@@ -68,7 +68,7 @@ namespace SOFA_Bot_Test.Attendance
             foreach (var member in sofaMembers)
                 if (member.Key.Roles.Contains(role) && !handledMembersId.Contains(member.Key.Id))
                 {
-                    squadMembers += AddMemberAndStatus(member.Value, member.Key.DisplayName);
+                    squadMembers += AddMemberAndStatus(member.Value, member.Key.Username);
                     handledMembersId.Add(member.Key.Id);
                 }
             if (squadMembers.Length > 0)
@@ -77,7 +77,7 @@ namespace SOFA_Bot_Test.Attendance
             squadMembers = "";
             foreach (var member in sofaMembers)
                 if (!handledMembersId.Contains(member.Key.Id))
-                    squadMembers += AddMemberAndStatus(member.Value, member.Key.DisplayName);
+                    squadMembers += AddMemberAndStatus(member.Value, member.Key.Username);
             if (squadMembers.Length > 0)
                 embed.AddField($"{new Emoji("⬜")} Unassigned", squadMembers, true);
 
@@ -142,11 +142,11 @@ namespace SOFA_Bot_Test.Attendance
                 .WithTitle($"No permission to interact with this signup");
             return embed;
         }
-        private static string AddMemberAndStatus(bool? status, string displayName)
+        private static string AddMemberAndStatus(bool? status, string Username)
         {
-            if (status == null) return $"{new Emoji("⚫")} {displayName}\n";
-            else if (status == true) return $"{new Emoji("🟢")} {displayName}\n";
-            else if (status == false) return $"{new Emoji("🔴")} {displayName}\n";
+            if (status == null) return $"{new Emoji("⚫")} {Username}\n";
+            else if (status == true) return $"{new Emoji("🟢")} {Username}\n";
+            else if (status == false) return $"{new Emoji("🔴")} {Username}\n";
             return null;
         }
         internal static void SetEventType(string eventType)
