@@ -33,7 +33,8 @@ namespace SOFA_Bot_Test.Attendance
             EventMessageTitle = $"{eventDateTime.DayOfWeek} {EventType}";
             embed
                 .WithTitle(EventMessageTitle)
-                .WithDescription($"<t:{eventUnix}:D><t:{eventUnix}:t> - <t:{eventUnix}:R>");
+                .WithDescription($"<t:{eventUnix}:D><t:{eventUnix}:t> - <t:{eventUnix}:R>\n" +
+                $"Lineup: https://discord.com/channels/710884253457711134/1272270948115939339");
             Dictionary<SocketGuildUser, bool?> sofaMembers = await MemberHandler.GetSofaMembers();
             int[] totalPresentAbsentUnsigned = [0, 0, 0];
             AddPresentAbsentUnsigned(totalPresentAbsentUnsigned, sofaMembers);

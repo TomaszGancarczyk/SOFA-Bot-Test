@@ -16,19 +16,22 @@ namespace SOFA_Bot_Test.Attendance
         [
             DayOfWeek.Sunday
         ];
+        private static readonly List<DayOfWeek> BrawlDays =
+        [
+            DayOfWeek.Monday,
+            DayOfWeek.Tuesday,
+            DayOfWeek.Wednesday,
+        ];
         internal static ComponentBuilder CreateQuestionButtons()
         {
             DayOfWeek eventDayOfWeek = Timer.GetEventDateTime().DayOfWeek;
             ComponentBuilder component = new();
             if (TournamentDays.Contains(eventDayOfWeek))
-            {
                 component.WithButton("Tournament", "tournamentButton", emote: new Emoji("⚔️"));
-            }
             if (BaseCaptureDays.Contains(eventDayOfWeek))
-            {
                 component.WithButton("Base Capture", "baseCaptureButton", emote: new Emoji("👑"));
-            }
-            component.WithButton("Brawl", "brawlButton", emote: new Emoji("💵"));
+            if (BrawlDays.Contains(eventDayOfWeek))
+                component.WithButton("Brawl", "brawlButton", emote: new Emoji("💵"));
             component.WithButton("Day Off", "dayOffButton", emote: new Emoji("🏖️"));
             return component;
         }

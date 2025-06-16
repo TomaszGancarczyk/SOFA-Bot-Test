@@ -66,6 +66,14 @@ namespace SOFA_Bot_Test.Attendance
                 {
                     SofaMembers[key] = status;
                     Logger.LogInformation($"Setting status {status} for {member.Username}");
+                    if (status == false)
+                    {
+                        EmbedBuilder embed = new();
+                        embed.WithColor(Color.Red);
+                        embed.WithTitle($"Don't forget to type in leave :3\n" +
+                            $"https://discord.com/channels/710884253457711134/1170461909829566485");
+                        return embed;
+                    }
                 }
                 else
                     Logger.LogError($"Cannot find sofa member in SofaMembers with the name {member.Username}");

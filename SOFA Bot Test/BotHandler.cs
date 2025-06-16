@@ -207,13 +207,13 @@ namespace SOFA_Bot_Test
         }
 
         //TODO
-        //cooldown for new signup doesnt work when using /createsignup(it creates one immiedietly)
         // add people for reminder exceptions
         // handle player stats from API call
 
 
         //TODO Known Bugs
         // /create-signup when waiting for question response new message may be created
+
 
         //TODO Testing
         // test if base cap eventDateTime is 1 hour earlier
