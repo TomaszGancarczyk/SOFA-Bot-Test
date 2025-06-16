@@ -33,7 +33,7 @@ namespace FOFA_Bot.Attendance
         }
         private static async Task SendReminder(SocketGuildUser member, string eventType)
         {
-            Logger.LogInformation($"Sending reminder to {member.DisplayName}");
+            Logger.LogInformation($"Sending reminder to {member.Username}");
             ulong? guildId = BotHandler.GetGuild().Id;
             ulong? signupsChannelId = BotHandler.GetSignupsChannelId();
             ulong? currentmessageId = BotHandler.GetCurrentMessageId();
@@ -52,7 +52,7 @@ namespace FOFA_Bot.Attendance
                 }
                 catch (Discord.Net.HttpException ex) when (ex.HttpCode == HttpStatusCode.Forbidden)
                 {
-                    Logger.LogError($"Cannot send reminder message to {member.DisplayName}");
+                    Logger.LogError($"Cannot send reminder message to {member.Username}");
                 }
                 await channel.CloseAsync();
             }

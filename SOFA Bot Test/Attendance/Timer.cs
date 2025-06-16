@@ -21,9 +21,9 @@
             DateOnly cetStartDate = GetTimeChangeDateFromLastDayOfMonth(lastDayOfOctober);
             TimeOnly timeChangeTime = new(1, 00);
             if (eventDateTime > cestStartDate.ToDateTime(timeChangeTime) && eventDateTime < cetStartDate.ToDateTime(timeChangeTime))
-            {
                 eventDateTime = eventDateTime.AddHours(1);
-            }
+            if (QuestionHandler.GetQuestionResponse() == "Base Capture")
+                eventDateTime = eventDateTime.AddHours(-1);
             if (eventDateTime < DateTime.Now)
                 Logger.LogInformation($"Event date time set for {eventDateTime}");
             EventDateTime = eventDateTime;

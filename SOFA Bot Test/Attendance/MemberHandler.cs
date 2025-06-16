@@ -45,7 +45,7 @@ namespace FOFA_Bot.Attendance
             SocketGuildUser? guildUser = Guild.Users.FirstOrDefault(user => user.Id == member.Id);
             if (guildUser == null)
             {
-                Logger.LogError($"Cannot find membert with the name {member.GlobalName}");
+                Logger.LogError($"Cannot find membert with the name {member.Username}");
                 return null;
             }
             else if (SofaMembers == null)
@@ -56,7 +56,7 @@ namespace FOFA_Bot.Attendance
             else if (guildUser.Roles.All(role => role.Name != SofaRoleName))
             {
                 EmbedBuilder message = await GenericResponse.Error.NoSignupPermission();
-                Logger.LogError($"{member.GlobalName} has no permission to use signups");
+                Logger.LogError($"{member.Username} has no permission to use signups");
                 return message;
             }
             else if (SofaMembers.Keys.Where(user => user.Id == member.Id) != null)
@@ -65,16 +65,16 @@ namespace FOFA_Bot.Attendance
                 if (key != null)
                 {
                     SofaMembers[key] = status;
-                    Logger.LogInformation($"Setting status {status} for {member.GlobalName}");
+                    Logger.LogInformation($"Setting status {status} for {member.Username}");
                 }
                 else
-                    Logger.LogError($"Cannot find sofa member in SofaMembers with the name {member.GlobalName}");
+                    Logger.LogError($"Cannot find sofa member in SofaMembers with the name {member.Username}");
                 return null;
             }
             else
             {
                 SofaMembers.Add(guildUser, status);
-                Logger.LogInformation($"Addin {member.GlobalName} to member list with status {status}");
+                Logger.LogInformation($"Addin {member.Username} to member list with status {status}");
                 return null;
             }
         }

@@ -51,5 +51,11 @@ namespace FOFA_Bot.Attendance
                 CurrentQuestionMessage = null;
             }
         }
+        internal static string? GetQuestionResponse()
+        {
+            if (QuestionResponse != null)
+                return QuestionResponse;
+            else return null;
+        }
     }
 }

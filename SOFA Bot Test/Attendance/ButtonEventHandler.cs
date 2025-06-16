@@ -40,7 +40,7 @@ namespace FOFA_Bot.Attendance
                         RespondWithOldSignupError(component);
                     else if (component.Message.Id == currentMessageId)
                     {
-                        Logger.LogInformation($"{component.User.GlobalName} clicked present on the signup");
+                        Logger.LogInformation($"{component.User.Username} clicked present on the signup");
                         message = await MemberHandler.SetMemberStatus(component.User, true);
                         if (message != null)
                         {
@@ -63,7 +63,7 @@ namespace FOFA_Bot.Attendance
                         RespondWithOldSignupError(component);
                     else if (component.Message.Id == currentMessageId)
                     {
-                        Logger.LogInformation($"{component.User.GlobalName} clicked absent on the signup");
+                        Logger.LogInformation($"{component.User.Username} clicked absent on the signup");
                         message = await MemberHandler.SetMemberStatus(component.User, false);
                         if (message != null)
                         {
@@ -83,7 +83,7 @@ namespace FOFA_Bot.Attendance
         }
         private static async void RespondWithOldSignupError(SocketMessageComponent component)
         {
-            Logger.LogWarning($"{component.User.GlobalName} interacted with old signup");
+            Logger.LogWarning($"{component.User.Username} interacted with old signup");
             EmbedBuilder message = await SignupMessage.CreateWrongSignupMesasage();
             await component.RespondAsync(embed: message.Build(), ephemeral: true);
         }

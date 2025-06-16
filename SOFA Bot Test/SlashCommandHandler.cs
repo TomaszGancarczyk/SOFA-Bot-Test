@@ -25,7 +25,7 @@ namespace FOFA_Bot
                         await command.FollowupAsync(embed: embed.Build());
                         break;
                     }
-                    Logger.LogInformation($"User {command.User.GlobalName} used stats for {playerName}");
+                    Logger.LogInformation($"User {command.User.Username} used stats for {playerName}");
                     Stats player = Stats.CreateTestPlayer();
                     //Stats player = await ApiHandler.GetPlayerStats(playerName);
                     if (player != null)
@@ -44,10 +44,10 @@ namespace FOFA_Bot
                     break;
                 case "reminder-message":
                     await command.DeferAsync(ephemeral: true);
-                    Logger.LogInformation($"User {command.User.GlobalName} used reminder-message");
+                    Logger.LogInformation($"User {command.User.Username} used reminder-message");
                     hasPermission = false;
                     privilegedRoles = BotInfo.GetPrivilegedRoleNames();
-                    user = await BotHandler.GetGuildUserByName(command.User.GlobalName);
+                    user = await BotHandler.GetGuildUserByName(command.User.Username);
                     embed = null;
                     foreach (string roleName in privilegedRoles)
                     {
@@ -81,10 +81,10 @@ namespace FOFA_Bot
                     break;
                 case "create-signup":
                     await command.DeferAsync(ephemeral: true);
-                    Logger.LogInformation($"User {command.User.GlobalName} used create-signups");
+                    Logger.LogInformation($"User {command.User.Username} used create-signups");
                     hasPermission = false;
                     privilegedRoles = BotInfo.GetPrivilegedRoleNames();
-                    user = await BotHandler.GetGuildUserByName(command.User.GlobalName);
+                    user = await BotHandler.GetGuildUserByName(command.User.Username);
                     embed = null;
                     foreach (string roleName in privilegedRoles)
                     {
