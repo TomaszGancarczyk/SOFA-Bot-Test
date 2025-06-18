@@ -3,7 +3,7 @@
 
 namespace SOFA_Bot_Test.Attendance
 {
-    internal class MessageHandler
+    internal class AttendanceMessageHandler
     {
         private static DateTime? ResponseTime = null;
         internal async static Task<IMessage?> ValidateAndCreateMesage(IMessageChannel questionChannel, IMessageChannel clanWarChannel)

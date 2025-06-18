@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using SOFA_Bot_Test.Attendance;
+using SOFA_Bot_Test.Nades;
 
 
 namespace SOFA_Bot_Test
@@ -10,6 +11,7 @@ namespace SOFA_Bot_Test
         private static SocketGuild? Guild;
         private static IMessageChannel? QuestionChannel;
         private static IMessageChannel? SignupsChannel;
+        private static IMessageChannel? NadeChannel;
         private static IMessage? CurrentMessage;
 
         internal static void InitializeBotHandler(DiscordSocketClient discord)
@@ -36,7 +38,14 @@ namespace SOFA_Bot_Test
                 Logger.LogCritical($"Signups channel not found");
                 throw new ArgumentException("Signups channel not found");
             }
-            Logger.LogInformation($"Found Signups Channel: {SignupsChannel.Name}");
+
+            NadeChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetNadeChannelId());
+            if (NadeChannel == null)
+            {
+                Logger.LogCritical($"Nade channel not found");
+                throw new ArgumentException("Nade channel not found");
+            }
+            Logger.LogInformation($"Found Nade Channel: {NadeChannel.Name}");
 
             _ = StartEvent();
         }
@@ -115,6 +124,8 @@ namespace SOFA_Bot_Test
         }
         internal async static Task StartAttendanceEvent(bool isToday)
         {
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
+                _ = NadeHandler.StartNadeEvent();
             Logger.LogInformation($"/ Starting event");
             CurrentMessage = null;
             ulong? localCurrentMessageId = null;
@@ -123,7 +134,7 @@ namespace SOFA_Bot_Test
             DateTime eventDateTime = Attendance.Timer.GetEventDateTime();
             if (QuestionChannel != null && SignupsChannel != null)
             {
-                IMessage? tempCurrentMessage = await MessageHandler.ValidateAndCreateMesage(QuestionChannel, SignupsChannel);
+                IMessage? tempCurrentMessage = await AttendanceMessageHandler.ValidateAndCreateMesage(QuestionChannel, SignupsChannel);
                 if (tempCurrentMessage != null)
                 {
                     CurrentMessage = tempCurrentMessage;
@@ -205,8 +216,16 @@ namespace SOFA_Bot_Test
                 return true;
             return false;
         }
+        internal static IMessageChannel GetNadeChannel()
+        {
+            if (NadeChannel != null)
+                return NadeChannel;
+            else
+                return null;
+        }
 
         //TODO
+        // make nades poll
         // add people for reminder exceptions
         // handle player stats from API call
 

@@ -15,7 +15,7 @@ namespace SOFA_Bot_Test.Attendance
         }
         internal async static Task<EmbedBuilder> UpdateSignupMessage()
         {
-            EmbedBuilder embed = new() { };
+            EmbedBuilder embed = new();
             DateTime eventDateTime = Timer.GetEventDateTime();
             long eventUnix = ((DateTimeOffset)eventDateTime).ToUnixTimeSeconds();
             switch (EventType)
