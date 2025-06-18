@@ -9,7 +9,7 @@ namespace SOFA_Bot_Test.Attendance
 {
     internal class AttendanceGoogleSheet
     {
-        internal async static Task HandleUnsignedUsers(List<string> userNames)
+        internal static async Task HandleUnsignedUsers(List<string> userNames)
         {
             Logger.LogInformation($"{userNames.Count} members didn't signed up");
             string LastSheetRowPath = "..\\..\\..\\Attendance\\LastSheetRow.txt";
@@ -46,19 +46,19 @@ namespace SOFA_Bot_Test.Attendance
             }
         }
 
-        private async static Task SaveNamesToBotSignupsSheet(List<string> userNames, int? currentRow)
+        private static async Task SaveNamesToBotSignupsSheet(List<string> userNames, int? currentRow)
         {
             SheetsService? service = await GetSheetService();
-            string sheetId = "1ZC__GnEiITdrm8Wc6k-GBlkDG3Xpt2nzEnm2n6HZRb8";
+            string sheetId = BotInfo.GetAttendanceSheetId();
             string newRange = await GetRange(currentRow, userNames.Count + 1);
             IList<IList<Object>> objNeRecords = await GenerateData(userNames);
             await UpdatGoogleSheet(objNeRecords, sheetId, newRange, service);
-            Logger.LogInformation($"Finished updating sheet");
+            Logger.LogInformation($"Finished updating attendance sheet");
             return;
         }
-        private async static Task<SheetsService?> GetSheetService()
+        private static async Task<SheetsService?> GetSheetService()
         {
-            Logger.LogInformation($"Getting sheet service");
+            Logger.LogInformation($"Getting attendance sheet service");
             string clientId = BotInfo.GetSheetClientId();
             string clientSecret = BotInfo.GetSheetClientSecret();
             string[] scopes = { SheetsService.Scope.Spreadsheets };
@@ -80,14 +80,14 @@ namespace SOFA_Bot_Test.Attendance
             });
             return service;
         }
-        private async static Task<string> GetRange(int? currentRow, int numberOfCollumns)
+        private static async Task<string> GetRange(int? currentRow, int numberOfCollumns)
         {
             char lastCollumnChar = (char)('A' - 1 + numberOfCollumns);
             return ($"A{currentRow}:{lastCollumnChar}{currentRow}");
         }
-        private async static Task<IList<IList<Object>>> GenerateData(List<string> userNames)
+        private static async Task<IList<IList<Object>>> GenerateData(List<string> userNames)
         {
-            Logger.LogInformation($"Generating data for the sheet");
+            Logger.LogInformation($"Generating data for the attendance sheet");
             List<IList<Object>> fullObject = new List<IList<Object>>();
             IList<Object> objectLine = [];
             objectLine.Add(DateTime.Now.ToString("dd/MM/yyyy"));
@@ -96,13 +96,14 @@ namespace SOFA_Bot_Test.Attendance
             fullObject.Add(objectLine);
             return fullObject;
         }
-        private async static Task UpdatGoogleSheet(IList<IList<Object>> values, string spreadsheetId, string range, SheetsService service)
+        private static async Task UpdatGoogleSheet(IList<IList<Object>> values, string spreadsheetId, string range, SheetsService service)
         {
-            Logger.LogInformation($"Updating google sheet");
-            SpreadsheetsResource.ValuesResource.AppendRequest request = service.Spreadsheets.Values.Append(new ValueRange() { Values = values }, spreadsheetId, range);
+            Logger.LogInformation($"Updating attendance google sheet");
+            var request = service.Spreadsheets.Values.Append(new ValueRange() { Values = values }, spreadsheetId, range);
             request.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
             request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
             AppendValuesResponse? response = request.Execute();
         }
+
     }
 }

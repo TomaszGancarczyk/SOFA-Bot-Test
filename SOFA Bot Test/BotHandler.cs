@@ -87,8 +87,9 @@ namespace SOFA_Bot_Test
             if (SignupsChannel == null) return null;
             else return SignupsChannel.Id;
         }
-        private async static Task StartEvent()
+        private static async Task StartEvent()
         {
+            Task.Delay(6000000).Wait();
             await StartAttendanceEvent(false);
             while (true)
             {
@@ -103,7 +104,7 @@ namespace SOFA_Bot_Test
                 }
             }
         }
-        internal async static Task<SocketGuildUser> GetGuildUserByName(string userName)
+        internal static async Task<SocketGuildUser> GetGuildUserByName(string userName)
         {
             if (Guild != null)
             {
@@ -122,7 +123,7 @@ namespace SOFA_Bot_Test
                 return null;
             }
         }
-        internal async static Task StartAttendanceEvent(bool isToday)
+        internal static async Task StartAttendanceEvent(bool isToday)
         {
             if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
                 _ = NadeHandler.StartNadeEvent();
@@ -224,8 +225,8 @@ namespace SOFA_Bot_Test
                 return null;
         }
 
-        //TODO
-        // make nades poll
+        //TODO Task list
+        // finishe excel for nade poll integration
         // add people for reminder exceptions
         // handle player stats from API call
 
@@ -235,6 +236,18 @@ namespace SOFA_Bot_Test
 
 
         //TODO Testing
+        // 
+        // check if nade poll works
+        //     poll gets created sucessfully
+        //     poll closes properly
+        //     data is valid
+        //     theres no errors when no votes has been cast
+        //   check if theres no errors when closed manualy
+        // check if nade sheet works
+        //   check if sheet gets duplicated
+        //   check if data is valid
+        //   check if sheet gets properly updated
+        // 
         // test if base cap eventDateTime is 1 hour earlier
         // test handle a lot of people in one tab
         // test bot up for multiple days

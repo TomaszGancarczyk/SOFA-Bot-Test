@@ -20,7 +20,7 @@ namespace SOFA_Bot_Test.Attendance
                 else Logger.LogError($"Got response from question message that has different ID than CurrentQuestionMessage");
             else Logger.LogError($"CurrentQuestionMessage is null");
         }
-        internal async static Task<string?> HandleEventQuestion(IMessageChannel questionChannel)
+        internal static async Task<string?> HandleEventQuestion(IMessageChannel questionChannel)
         {
             CurrentQuestionMessage = null;
             DateTime eventDateTime = Timer.GetEventDateTime();
@@ -42,7 +42,7 @@ namespace SOFA_Bot_Test.Attendance
             else
                 return null;
         }
-        internal async static Task DeleteQuestionMessage()
+        internal static async Task DeleteQuestionMessage()
         {
             if (CurrentQuestionMessage != null)
             {

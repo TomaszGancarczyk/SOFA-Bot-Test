@@ -6,7 +6,7 @@ namespace SOFA_Bot_Test.Attendance
     internal class AttendanceMessageHandler
     {
         private static DateTime? ResponseTime = null;
-        internal async static Task<IMessage?> ValidateAndCreateMesage(IMessageChannel questionChannel, IMessageChannel clanWarChannel)
+        internal static async Task<IMessage?> ValidateAndCreateMesage(IMessageChannel questionChannel, IMessageChannel clanWarChannel)
         {
             Logger.LogInformation($"Starting message creation");
             string? eventType = await QuestionHandler.HandleEventQuestion(questionChannel);
@@ -36,7 +36,7 @@ namespace SOFA_Bot_Test.Attendance
                 }
             }
         }
-        private async static Task<IMessage?> CreateMesage(string eventType, IMessageChannel clanWarChannel)
+        private static async Task<IMessage?> CreateMesage(string eventType, IMessageChannel clanWarChannel)
         {
             if (eventType == "Day Off")
             {

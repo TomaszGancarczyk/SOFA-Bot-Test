@@ -20,6 +20,7 @@ namespace SOFA_Bot_Test.Nades
                     break;
                 Task.Delay(18000000).Wait();
             }
+            Logger.LogInformation("Closing nade poll");
             await currentMessage.EndPollAsync(default);
             Task.Delay(60000).Wait();
             List<List<string>> grenadeChoicesNames = await ConvertPollChoicesToList(currentMessage);
@@ -27,6 +28,7 @@ namespace SOFA_Bot_Test.Nades
         }
         private static async Task<PollProperties> CreateNadesMessage()
         {
+            Logger.LogInformation("Creating nade poll");
             var poll = new PollProperties
             {
                 Question = new()
@@ -68,6 +70,7 @@ namespace SOFA_Bot_Test.Nades
         }
         private static async Task<List<List<string>>> ConvertPollChoicesToList(IUserMessage message)
         {
+            Logger.LogInformation("Reading data from nade poll");
             List<List<string>> result = new();
             var pollAnswears = message.Poll.Value.Answers;
             foreach (var answerType in pollAnswears)
