@@ -52,7 +52,7 @@ namespace SOFA_Bot_Test.Attendance
             string sheetId = BotInfo.GetAttendanceSheetId();
             string newRange = await GetRange(currentRow, userNames.Count + 1);
             IList<IList<Object>> objNeRecords = await GenerateData(userNames);
-            await UpdatGoogleSheet(objNeRecords, sheetId, newRange, service);
+            await UpdateGoogleSheet(objNeRecords, sheetId, newRange, service);
             Logger.LogInformation($"Finished updating attendance sheet");
             return;
         }
@@ -96,7 +96,7 @@ namespace SOFA_Bot_Test.Attendance
             fullObject.Add(objectLine);
             return fullObject;
         }
-        private static async Task UpdatGoogleSheet(IList<IList<Object>> values, string spreadsheetId, string range, SheetsService service)
+        private static async Task UpdateGoogleSheet(IList<IList<Object>> values, string spreadsheetId, string range, SheetsService service)
         {
             Logger.LogInformation($"Updating attendance google sheet");
             var request = service.Spreadsheets.Values.Append(new ValueRange() { Values = values }, spreadsheetId, range);

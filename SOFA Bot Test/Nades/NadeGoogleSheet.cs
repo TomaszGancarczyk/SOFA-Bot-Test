@@ -11,12 +11,12 @@ namespace SOFA_Bot_Test.Nades
         internal static async Task SaveNadePollResultsToSheet(List<List<string>> grenadeChoicesNames)
         {
             SheetsService? service = await GetSheetService();
-            string oldSheetId = BotInfo.GetNadeSheetId();
-            string newSheetId = await Duplicate(service, oldSheetId);
+            string sheetId = BotInfo.GetNadeSheetId();
+            string newSheetName = await DuplicateSheetTab(service, sheetId);
             //TODO LOW generate data change values to checkboxes
             IList<IList<Object>> objNeRecords = await GenerateData(grenadeChoicesNames);
-            string newRange = $"B2:G{objNeRecords.Count + 2}";
-            await UpdatGoogleSheet(objNeRecords, newSheetId, newRange, service);
+            string newRange = $"{newSheetName}!A3:G{objNeRecords.Count + 2}";
+            await UpdateGoogleSheet(objNeRecords, sheetId, newRange, service);
             Logger.LogInformation($"Finished updating nade sheet");
             return;
         }
@@ -47,19 +47,23 @@ namespace SOFA_Bot_Test.Nades
         private static async Task<IList<IList<Object>>> GenerateData(List<List<string>> grenadeChoicesNames)
         {
             Logger.LogInformation($"Generating data for the nade sheet");
-            List<IList<Object>> fullObject = new List<IList<Object>>();
-            IList<Object> objectLine = [];
+            List<IList<Object>> fullObject = new();
+            int i = 1;
             List<string> pollAllNames = await GetListOfPollUsers(grenadeChoicesNames);
             foreach (string name in pollAllNames)
             {
+                IList<Object> objectLine = [];
+                objectLine.Add(i);
+                i++;
                 objectLine.Add(name);
                 foreach (List<string> choice in grenadeChoicesNames)
                 {
                     if (choice.Contains(name))
-                        objectLine.Add("TRUE");
+                        objectLine.Add(true);
                     else
-                        objectLine.Add("FALSE");
+                        objectLine.Add(false);
                 }
+                objectLine.Add(false);
                 fullObject.Add(objectLine);
             }
             return fullObject;
@@ -78,9 +82,9 @@ namespace SOFA_Bot_Test.Nades
             Logger.LogInformation($"Found {pollAllNames.Count} users that voited in the poll");
             return pollAllNames;
         }
-        private static async Task<string> Duplicate(SheetsService service, string sheetId)
+        private static async Task<string> DuplicateSheetTab(SheetsService service, string sheetId)
         {
-            Logger.LogInformation($"Starting duplicating sheet for nades");
+            Logger.LogInformation($"Starting duplicating sheet tab for nades");
             string newSheetName = $"{DateTime.Now.ToString("d")}";
             BatchUpdateSpreadsheetRequest batchUpdateSpreadsheetRequest = new BatchUpdateSpreadsheetRequest();
             batchUpdateSpreadsheetRequest.Requests =
@@ -89,17 +93,18 @@ namespace SOFA_Bot_Test.Nades
                 {
                     DuplicateSheet = new DuplicateSheetRequest()
                     {
+                        InsertSheetIndex = 1,
                         NewSheetName = newSheetName,
-                        SourceSheetId = 1
-                    },
-                },
+                        SourceSheetId = 0
+                    }
+                }
             ];
             var request = service.Spreadsheets.BatchUpdate(batchUpdateSpreadsheetRequest, sheetId);
             BatchUpdateSpreadsheetResponse response = request.Execute();
             Logger.LogInformation($"Finished duplicating sheet for nades");
-            return response.SpreadsheetId;
+            return newSheetName;
         }
-        private static async Task UpdatGoogleSheet(IList<IList<Object>> values, string spreadsheetId, string range, SheetsService service)
+        private static async Task UpdateGoogleSheet(IList<IList<Object>> values, string spreadsheetId, string range, SheetsService service)
         {
             Logger.LogInformation($"Updating nades google sheet");
             var request = service.Spreadsheets.Values.Append(new ValueRange() { Values = values }, spreadsheetId, range);

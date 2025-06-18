@@ -226,7 +226,6 @@ namespace SOFA_Bot_Test
         }
 
         //TODO Task list
-        // finishe excel for nade poll integration
         // add people for reminder exceptions
         // handle player stats from API call
 
@@ -243,10 +242,6 @@ namespace SOFA_Bot_Test
         //     data is valid
         //     theres no errors when no votes has been cast
         //   check if theres no errors when closed manualy
-        // check if nade sheet works
-        //   check if sheet gets duplicated
-        //   check if data is valid
-        //   check if sheet gets properly updated
         // 
         // test if base cap eventDateTime is 1 hour earlier
         // test handle a lot of people in one tab
