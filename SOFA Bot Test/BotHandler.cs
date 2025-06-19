@@ -89,7 +89,6 @@ namespace SOFA_Bot_Test
         }
         private static async Task StartEvent()
         {
-            Task.Delay(6000000).Wait();
             await StartAttendanceEvent(false);
             while (true)
             {
@@ -184,7 +183,8 @@ namespace SOFA_Bot_Test
                 else
                     Logger.LogWarning($"eventCloseTimeSpan is less than 0");
                 EmbedBuilder closedMessage = await SignupMessage.GetClosedSignupMessage();
-                await CurrentMessage.Channel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
+                if (CurrentMessage != null)
+                    await CurrentMessage.Channel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
             }
             else return;
             if (ValidateCurrentMessage(localCurrentMessageId))

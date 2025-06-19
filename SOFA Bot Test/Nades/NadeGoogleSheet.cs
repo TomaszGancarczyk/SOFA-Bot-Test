@@ -11,11 +11,16 @@ namespace SOFA_Bot_Test.Nades
         internal static async Task SaveNadePollResultsToSheet(List<List<string>> grenadeChoicesNames)
         {
             SheetsService? service = await GetSheetService();
+            if (service == null)
+            {
+                Logger.LogError("Service for nade sheet is null");
+                return;
+            }
             string sheetId = BotInfo.GetNadeSheetId();
             string newSheetName = await DuplicateSheetTab(service, sheetId);
             //TODO LOW generate data change values to checkboxes
             IList<IList<Object>> objNeRecords = await GenerateData(grenadeChoicesNames);
-            string newRange = $"{newSheetName}!A3:G{objNeRecords.Count + 2}";
+            string newRange = $"{newSheetName}!A3";
             await UpdateGoogleSheet(objNeRecords, sheetId, newRange, service);
             Logger.LogInformation($"Finished updating nade sheet");
             return;
