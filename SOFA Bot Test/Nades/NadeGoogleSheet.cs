@@ -60,7 +60,7 @@ namespace SOFA_Bot_Test.Nades
                 IList<Object> objectLine = [];
                 objectLine.Add(i);
                 i++;
-                objectLine.Add(name);
+                objectLine.Add($"=INDIRECT(CONCAT(\"Data!B\";MATCH(\"{name}\";Data!$A$2:$A$1000;0)+1))");
                 foreach (List<string> choice in grenadeChoicesNames)
                 {
                     if (choice.Contains(name))
@@ -98,14 +98,21 @@ namespace SOFA_Bot_Test.Nades
                 {
                     DuplicateSheet = new DuplicateSheetRequest()
                     {
-                        InsertSheetIndex = 1,
+                        InsertSheetIndex = 2,
                         NewSheetName = newSheetName,
                         SourceSheetId = 0
                     }
                 }
             ];
             var request = service.Spreadsheets.BatchUpdate(batchUpdateSpreadsheetRequest, sheetId);
-            BatchUpdateSpreadsheetResponse response = request.Execute();
+            try
+            {
+                BatchUpdateSpreadsheetResponse response = request.Execute();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogCritical(ex.ToString());
+            }
             Logger.LogInformation($"Finished duplicating sheet for nades");
             return newSheetName;
         }
@@ -114,7 +121,7 @@ namespace SOFA_Bot_Test.Nades
             Logger.LogInformation($"Updating nades google sheet");
             var request = service.Spreadsheets.Values.Append(new ValueRange() { Values = values }, spreadsheetId, range);
             request.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
-            request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
+            request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
             AppendValuesResponse? response = request.Execute();
         }
     }

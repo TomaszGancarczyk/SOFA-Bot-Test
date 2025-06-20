@@ -237,11 +237,11 @@ namespace SOFA_Bot_Test
         //TODO Testing
         // 
         // check if nade poll works
+        //   check if theres no errors when closed manualy
         //     poll gets created sucessfully
         //     poll closes properly
         //     data is valid
         //     theres no errors when no votes has been cast
-        //   check if theres no errors when closed manualy
         // 
         // test if base cap eventDateTime is 1 hour earlier
         // test handle a lot of people in one tab
