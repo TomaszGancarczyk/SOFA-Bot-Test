@@ -7,7 +7,7 @@
         {
             return EventDateTime;
         }
-        internal async static Task SetEventDateTime(bool isToday)
+        internal static async Task SetEventDateTime(bool isToday)
         {
             DateOnly eventDate = DateOnly.FromDateTime(DateTime.Now);
             if (!isToday)

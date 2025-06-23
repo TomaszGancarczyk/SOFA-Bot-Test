@@ -6,7 +6,7 @@ namespace FOFA_Bot.PlayerStats
 {
     internal class StatsHandler
     {
-        internal async static Task<EmbedBuilder> CreateStatsMessage(Stats player)
+        internal static async Task<EmbedBuilder> CreateStatsMessage(Stats player)
         {
             EmbedBuilder embed = new();
             switch (player.Faction)
@@ -81,12 +81,12 @@ namespace FOFA_Bot.PlayerStats
 
             return embed;
         }
-        internal async static Task<string> GetFactionImage(string faction)
+        internal static async Task<string> GetFactionImage(string faction)
         {
             string factionImage = $"..\\..\\..\\Images\\{faction.ToLower()}.webp";
             return factionImage;
         }
-        internal async static Task<EmbedBuilder> CreateStatsErrorMessage(SocketSlashCommand command)
+        internal static async Task<EmbedBuilder> CreateStatsErrorMessage(SocketSlashCommand command)
         {
             EmbedBuilder embed = new();
             embed.WithColor(Color.Red)

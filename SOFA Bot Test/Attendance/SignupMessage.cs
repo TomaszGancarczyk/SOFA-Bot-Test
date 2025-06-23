@@ -8,14 +8,14 @@ namespace FOFA_Bot.Attendance
     {
         private static string? EventType;
         private static string? EventMessageTitle;
-        internal async static Task<EmbedBuilder> CreateSignupMessage()
+        internal static async Task<EmbedBuilder> CreateSignupMessage()
         {
             Logger.LogInformation($"Creating {EventType} message");
             return await UpdateSignupMessage();
         }
-        internal async static Task<EmbedBuilder> UpdateSignupMessage()
+        internal static async Task<EmbedBuilder> UpdateSignupMessage()
         {
-            EmbedBuilder embed = new() { };
+            EmbedBuilder embed = new();
             DateTime eventDateTime = Timer.GetEventDateTime();
             long eventUnix = ((DateTimeOffset)eventDateTime).ToUnixTimeSeconds();
             switch (EventType)
@@ -33,7 +33,8 @@ namespace FOFA_Bot.Attendance
             EventMessageTitle = $"{eventDateTime.DayOfWeek} {EventType}";
             embed
                 .WithTitle(EventMessageTitle)
-                .WithDescription($"<t:{eventUnix}:D><t:{eventUnix}:t> - <t:{eventUnix}:R>");
+                .WithDescription($"<t:{eventUnix}:D><t:{eventUnix}:t> - <t:{eventUnix}:R>\n" +
+                $"Lineup: https://discord.com/channels/710884253457711134/1272270948115939339");
             Dictionary<SocketGuildUser, bool?> sofaMembers = await MemberHandler.GetSofaMembers();
             int[] totalPresentAbsentUnsigned = [0, 0, 0];
             AddPresentAbsentUnsigned(totalPresentAbsentUnsigned, sofaMembers);
@@ -102,13 +103,13 @@ namespace FOFA_Bot.Attendance
             }
             return totalPresentAbsentUnsigned;
         }
-        internal async static Task<EmbedBuilder> GetClosedSignupMessage()
+        internal static async Task<EmbedBuilder> GetClosedSignupMessage()
         {
             EmbedBuilder embed = await UpdateSignupMessage();
             embed.WithTitle($"{EventMessageTitle} - Signups closed");
             return embed;
         }
-        internal async static Task<EmbedBuilder> CreateConfirmationMesasage(string status)
+        internal static async Task<EmbedBuilder> CreateConfirmationMesasage(string status)
         {
             EmbedBuilder embed = new();
             DayOfWeek eventDayOfWeek = Timer.GetEventDateTime().DayOfWeek;
@@ -126,7 +127,7 @@ namespace FOFA_Bot.Attendance
             }
             return embed;
         }
-        internal async static Task<EmbedBuilder> CreateWrongSignupMesasage()
+        internal static async Task<EmbedBuilder> CreateWrongSignupMesasage()
         {
             EmbedBuilder embed = new();
             embed
@@ -134,7 +135,7 @@ namespace FOFA_Bot.Attendance
                 .WithTitle($"This is signup is closed");
             return embed;
         }
-        internal async static Task<EmbedBuilder> CreateNoPermissionMessage()
+        internal static async Task<EmbedBuilder> CreateNoPermissionMessage()
         {
             EmbedBuilder embed = new();
             embed

@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using FOFA_Bot.Attendance;
+using SOFA_Bot_Test.Attendance;
+using SOFA_Bot_Test.Nades;
 
 
 namespace FOFA_Bot
@@ -10,6 +11,7 @@ namespace FOFA_Bot
         private static SocketGuild? Guild;
         private static IMessageChannel? QuestionChannel;
         private static IMessageChannel? SignupsChannel;
+        private static IMessageChannel? NadeChannel;
         private static IMessage? CurrentMessage;
 
         internal static void InitializeBotHandler(DiscordSocketClient discord)
@@ -36,7 +38,14 @@ namespace FOFA_Bot
                 Logger.LogCritical($"Signups channel not found");
                 throw new ArgumentException("Signups channel not found");
             }
-            Logger.LogInformation($"Found Signups Channel: {SignupsChannel.Name}");
+
+            NadeChannel = (IMessageChannel)Guild.GetChannel(BotInfo.GetNadeChannelId());
+            if (NadeChannel == null)
+            {
+                Logger.LogCritical($"Nade channel not found");
+                throw new ArgumentException("Nade channel not found");
+            }
+            Logger.LogInformation($"Found Nade Channel: {NadeChannel.Name}");
 
             _ = StartEvent();
         }
@@ -78,7 +87,7 @@ namespace FOFA_Bot
             if (SignupsChannel == null) return null;
             else return SignupsChannel.Id;
         }
-        private async static Task StartEvent()
+        private static async Task StartEvent()
         {
             await StartAttendanceEvent(false);
             while (true)
@@ -94,7 +103,7 @@ namespace FOFA_Bot
                 }
             }
         }
-        internal async static Task<SocketGuildUser> GetGuildUserByName(string userName)
+        internal static async Task<SocketGuildUser> GetGuildUserByName(string userName)
         {
             if (Guild != null)
             {
@@ -113,8 +122,10 @@ namespace FOFA_Bot
                 return null;
             }
         }
-        internal async static Task StartAttendanceEvent(bool isToday)
+        internal static async Task StartAttendanceEvent(bool isToday)
         {
+            if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
+                _ = NadeHandler.StartNadeEvent();
             Logger.LogInformation($"/ Starting event");
             CurrentMessage = null;
             ulong? localCurrentMessageId = null;
@@ -123,7 +134,7 @@ namespace FOFA_Bot
             DateTime eventDateTime = Attendance.Timer.GetEventDateTime();
             if (QuestionChannel != null && SignupsChannel != null)
             {
-                IMessage? tempCurrentMessage = await MessageHandler.ValidateAndCreateMesage(QuestionChannel, SignupsChannel);
+                IMessage? tempCurrentMessage = await AttendanceMessageHandler.ValidateAndCreateMesage(QuestionChannel, SignupsChannel);
                 if (tempCurrentMessage != null)
                 {
                     CurrentMessage = tempCurrentMessage;
@@ -172,7 +183,8 @@ namespace FOFA_Bot
                 else
                     Logger.LogWarning($"eventCloseTimeSpan is less than 0");
                 EmbedBuilder closedMessage = await SignupMessage.GetClosedSignupMessage();
-                await CurrentMessage.Channel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
+                if (CurrentMessage != null)
+                    await CurrentMessage.Channel.ModifyMessageAsync(CurrentMessage.Id, message => message.Embed = closedMessage.Build());
             }
             else return;
             if (ValidateCurrentMessage(localCurrentMessageId))
@@ -205,9 +217,15 @@ namespace FOFA_Bot
                 return true;
             return false;
         }
+        internal static IMessageChannel GetNadeChannel()
+        {
+            if (NadeChannel != null)
+                return NadeChannel;
+            else
+                return null;
+        }
 
-        //TODO
-        //cooldown for new signup doesnt work when using /createsignup(it creates one immiedietly)
+        //TODO Task list
         // add people for reminder exceptions
         // handle player stats from API call
 
@@ -215,7 +233,16 @@ namespace FOFA_Bot
         //TODO Known Bugs
         // /create-signup when waiting for question response new message may be created
 
+
         //TODO Testing
+        // 
+        // check if nade poll works
+        //   check if theres no errors when closed manualy
+        //     poll gets created sucessfully
+        //     poll closes properly
+        //     data is valid
+        //     theres no errors when no votes has been cast
+        // 
         // test if base cap eventDateTime is 1 hour earlier
         // test handle a lot of people in one tab
         // test bot up for multiple days

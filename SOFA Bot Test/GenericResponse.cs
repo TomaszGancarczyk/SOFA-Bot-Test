@@ -8,21 +8,21 @@ namespace FOFA_Bot
     {
         internal class Error
         {
-            internal async static Task<EmbedBuilder> CantFindPlayer(SocketSlashCommand command)
+            internal static async Task<EmbedBuilder> CantFindPlayer(SocketSlashCommand command)
             {
                 EmbedBuilder embed = new();
                 embed.WithColor(Color.Red);
                 embed.WithTitle($"Couldn't find player {command.Data.Options.First().Value}");
                 return embed;
             }
-            internal async static Task<EmbedBuilder> NoPermission()
+            internal static async Task<EmbedBuilder> NoPermission()
             {
                 EmbedBuilder embed = new();
                 embed.WithColor(Color.Red);
                 embed.WithTitle($"You don't have permission to use this command");
                 return embed;
             }
-            internal async static Task<EmbedBuilder> Null()
+            internal static async Task<EmbedBuilder> Null()
             {
                 EmbedBuilder embed = new();
                 embed.WithColor(Color.Red);
@@ -39,14 +39,14 @@ namespace FOFA_Bot
         }
         internal class Success
         {
-            internal async static Task<EmbedBuilder> NewSignup()
+            internal static async Task<EmbedBuilder> NewSignup()
             {
                 EmbedBuilder embed = new();
                 embed.WithColor(Color.Green);
                 embed.WithTitle($"Creating new signup");
                 return embed;
             }
-            internal async static Task<EmbedBuilder> RemindersChanged(bool status)
+            internal static async Task<EmbedBuilder> RemindersChanged(bool status)
             {
                 EmbedBuilder embed = new();
                 embed.WithColor(Color.Green);
