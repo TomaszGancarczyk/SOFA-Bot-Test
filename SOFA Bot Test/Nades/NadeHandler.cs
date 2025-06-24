@@ -1,6 +1,6 @@
 ﻿using Discord;
 
-namespace SOFA_Bot_Test.Nades
+namespace FOFA_Bot.Nades
 {
     internal class NadeHandler
     {

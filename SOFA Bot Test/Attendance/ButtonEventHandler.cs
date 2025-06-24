@@ -42,16 +42,11 @@ namespace FOFA_Bot.Attendance
                     {
                         Logger.LogInformation($"{component.User.Username} clicked present on the signup");
                         message = await MemberHandler.SetMemberStatus(component.User, true);
-                        if (message != null)
-                        {
-                            await component.RespondAsync(embed: message.Build(), ephemeral: true);
-                            break;
-                        }
                         updatedMessage = await SignupMessage.UpdateSignupMessage();
-                        //message = await SignupMessage.CreateConfirmationMesasage("Present");
                         await component.UpdateAsync(attendanceMessage => attendanceMessage.Embed = updatedMessage.Build());
-                        //await component.FollowupAsync(embed: message.Build(), ephemeral: true);
                         BotHandler.SetCurrentMessage(component.Message);
+                        if (message != null)
+                            await component.RespondAsync(embed: message.Build(), ephemeral: true);
                     }
                     else
                         RespondWithOldSignupError(component);
@@ -65,16 +60,11 @@ namespace FOFA_Bot.Attendance
                     {
                         Logger.LogInformation($"{component.User.Username} clicked absent on the signup");
                         message = await MemberHandler.SetMemberStatus(component.User, false);
-                        if (message != null)
-                        {
-                            await component.RespondAsync(embed: message.Build(), ephemeral: true);
-                            break;
-                        }
                         updatedMessage = await SignupMessage.UpdateSignupMessage();
-                        //message = await SignupMessage.CreateConfirmationMesasage("Absent");
                         await component.UpdateAsync(attendanceMessage => attendanceMessage.Embed = updatedMessage.Build());
-                        //await component.FollowupAsync(embed: message.Build(), ephemeral: true);
                         BotHandler.SetCurrentMessage(component.Message);
+                        if (message != null)
+                            await component.RespondAsync(embed: message.Build(), ephemeral: true);
                     }
                     else
                         RespondWithOldSignupError(component);
