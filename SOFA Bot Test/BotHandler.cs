@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using SOFA_Bot_Test.Attendance;
-using SOFA_Bot_Test.Nades;
+using FOFA_Bot.Attendance;
+using FOFA_Bot.Nades;
 
 
 namespace FOFA_Bot

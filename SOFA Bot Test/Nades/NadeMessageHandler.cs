@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SOFA_Bot_Test.Nades
+namespace FOFA_Bot.Nades
 {
     internal class NadeMessageHandler
     {

@@ -4,7 +4,7 @@ using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Util.Store;
 
-namespace SOFA_Bot_Test.Nades
+namespace FOFA_Bot.Nades
 {
     internal class NadeGoogleSheet
     {
