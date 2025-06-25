@@ -49,6 +49,22 @@ namespace SOFA_Bot_Test
 
             _ = StartEvent();
         }
+        private static async Task StartEvent()
+        {
+            await StartAttendanceEvent(false);
+            while (true)
+            {
+                if (BotHandler.GetCurrentMessageId() != null)
+                {
+                    Task.Delay(60000).Wait();
+                }
+                Task.Delay(7200000).Wait();
+                if (BotHandler.GetCurrentMessageId() != null)
+                {
+                    await StartAttendanceEvent(false);
+                }
+            }
+        }
 
         internal static SocketRole GetRole(string roleName)
         {
@@ -87,22 +103,6 @@ namespace SOFA_Bot_Test
             if (SignupsChannel == null) return null;
             else return SignupsChannel.Id;
         }
-        private static async Task StartEvent()
-        {
-            await StartAttendanceEvent(false);
-            while (true)
-            {
-                if (BotHandler.GetCurrentMessageId() != null)
-                {
-                    Task.Delay(60000).Wait();
-                }
-                Task.Delay(7200000).Wait();
-                if (BotHandler.GetCurrentMessageId() != null)
-                {
-                    await StartAttendanceEvent(false);
-                }
-            }
-        }
         internal static async Task<SocketGuildUser> GetGuildUserByName(string userName)
         {
             if (Guild != null)
@@ -122,6 +122,7 @@ namespace SOFA_Bot_Test
                 return null;
             }
         }
+
         internal static async Task StartAttendanceEvent(bool isToday)
         {
             if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
