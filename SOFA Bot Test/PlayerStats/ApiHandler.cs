@@ -2,7 +2,7 @@
 using System.Net.Http.Headers;
 
 
-namespace SOFA_Bot_Test.PlayerStats
+namespace FOFA_Bot.PlayerStats
 {
     internal class ApiHandler
     {

@@ -1,10 +1,10 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using SOFA_Bot_Test.Attendance;
-using SOFA_Bot_Test.PlayerStats;
+using FOFA_Bot.Attendance;
+using FOFA_Bot.PlayerStats;
 
 
-namespace SOFA_Bot_Test
+namespace FOFA_Bot
 {
     internal class SlashCommandHandler
     {

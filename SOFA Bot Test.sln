@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35303.130
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOFA Bot Test", "SOFA Bot Test\SOFA Bot Test.csproj", "{2D0340B8-9BF4-1327-C208-D7B94560DDE2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FOFA Bot", "SOFA Bot Test\FOFA Bot.csproj", "{2D0340B8-9BF4-1327-C208-D7B94560DDE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

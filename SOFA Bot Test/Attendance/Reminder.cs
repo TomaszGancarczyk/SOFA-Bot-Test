@@ -3,7 +3,7 @@ using Discord.WebSocket;
 using System.Net;
 
 
-namespace SOFA_Bot_Test.Attendance
+namespace FOFA_Bot.Attendance
 {
     internal class Reminder
     {

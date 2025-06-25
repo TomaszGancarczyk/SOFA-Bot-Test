@@ -4,7 +4,7 @@ using SOFA_Bot_Test.Attendance;
 using SOFA_Bot_Test.Nades;
 
 
-namespace SOFA_Bot_Test
+namespace FOFA_Bot
 {
     internal class BotHandler
     {
