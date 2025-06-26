@@ -30,7 +30,7 @@ namespace FOFA_Bot.Nades
             Logger.LogInformation($"Getting nade sheet service");
             string clientId = BotInfo.GetSheetClientId();
             string clientSecret = BotInfo.GetSheetClientSecret();
-            string[] scopes = { SheetsService.Scope.Spreadsheets };
+            string[] scopes = [SheetsService.Scope.Spreadsheets];
             UserCredential? credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                 new ClientSecrets
                 {
@@ -42,7 +42,7 @@ namespace FOFA_Bot.Nades
                 CancellationToken.None,
                 new FileDataStore("GoogleToken"))
                 .Result;
-            SheetsService? service = new SheetsService(new BaseClientService.Initializer()
+            SheetsService? service = new(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "FOFA Bot"
@@ -52,7 +52,7 @@ namespace FOFA_Bot.Nades
         private static async Task<IList<IList<Object>>> GenerateData(List<List<string>> grenadeChoicesNames)
         {
             Logger.LogInformation($"Generating data for the nade sheet");
-            List<IList<Object>> fullObject = new();
+            List<IList<Object>> fullObject = [];
             int i = 1;
             List<string> pollAllNames = await GetListOfPollUsers(grenadeChoicesNames);
             foreach (string name in pollAllNames)
@@ -75,7 +75,7 @@ namespace FOFA_Bot.Nades
         }
         private static async Task<List<string>> GetListOfPollUsers(List<List<string>> grenadeChoicesNames)
         {
-            List<string> pollAllNames = new();
+            List<string> pollAllNames = [];
             foreach (List<string> choice in grenadeChoicesNames)
             {
                 foreach (string choiceName in choice)
@@ -90,20 +90,22 @@ namespace FOFA_Bot.Nades
         private static async Task<string> DuplicateSheetTab(SheetsService service, string sheetId)
         {
             Logger.LogInformation($"Starting duplicating sheet tab for nades");
-            string newSheetName = $"{DateTime.Now.ToString("d")}";
-            BatchUpdateSpreadsheetRequest batchUpdateSpreadsheetRequest = new BatchUpdateSpreadsheetRequest();
-            batchUpdateSpreadsheetRequest.Requests =
-            [
-                new Request()
-                {
-                    DuplicateSheet = new DuplicateSheetRequest()
+            string newSheetName = $"{DateTime.Now:d}";
+            BatchUpdateSpreadsheetRequest batchUpdateSpreadsheetRequest = new()
+            {
+                Requests =
+                [
+                    new Request()
                     {
-                        InsertSheetIndex = 2,
-                        NewSheetName = newSheetName,
-                        SourceSheetId = 0
+                        DuplicateSheet = new DuplicateSheetRequest()
+                        {
+                            InsertSheetIndex = 2,
+                            NewSheetName = newSheetName,
+                            SourceSheetId = 0
+                        }
                     }
-                }
-            ];
+                ]
+            };
             var request = service.Spreadsheets.BatchUpdate(batchUpdateSpreadsheetRequest, sheetId);
             try
             {
@@ -122,7 +124,7 @@ namespace FOFA_Bot.Nades
             var request = service.Spreadsheets.Values.Append(new ValueRange() { Values = values }, spreadsheetId, range);
             request.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
             request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
-            AppendValuesResponse? response = request.Execute();
+            request.Execute();
         }
     }
 }

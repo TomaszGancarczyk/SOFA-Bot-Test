@@ -6,11 +6,12 @@ namespace FOFA_Bot.Attendance
 {
     internal class MemberHandler
     {
-        private static readonly SocketGuild Guild = BotHandler.GetGuild();
+        private static readonly SocketGuild? Guild = BotHandler.GetGuild();
         private static readonly string SofaRoleName = BotInfo.GetSofaRoleName();
         private static Dictionary<SocketGuildUser, bool?>? SofaMembers;
-        internal static SocketRole GetRole(string roleName)
+        internal static SocketRole? GetRole(string roleName)
         {
+            if (Guild == null) return null;
             SocketRole? role = Guild.Roles.FirstOrDefault(role => role.Name == roleName);
             if (role != null)
                 return role;
@@ -33,6 +34,11 @@ namespace FOFA_Bot.Attendance
         internal static void SetMembers()
         {
             SofaMembers = [];
+            if (Guild == null)
+            {
+                Logger.LogError($"Connot set members due to Guild being null");
+                return;
+            }
             SocketGuildUser[] sofaMembers = [.. Guild.Users.Where(user => user.Roles.Any(role => role.Name == SofaRoleName))];
             foreach (SocketGuildUser member in sofaMembers)
             {
@@ -40,8 +46,10 @@ namespace FOFA_Bot.Attendance
                     SofaMembers.Add(member, null);
             }
         }
-        internal static async Task<EmbedBuilder> SetMemberStatus(SocketUser member, bool status)
+        internal static async Task<EmbedBuilder?> SetMemberStatus(SocketUser member, bool status)
         {
+            if (Guild == null)
+                return null;
             SocketGuildUser? guildUser = Guild.Users.FirstOrDefault(user => user.Id == member.Id);
             if (guildUser == null)
             {
