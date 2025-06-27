@@ -84,13 +84,16 @@ namespace FOFA_Bot.Attendance
                     }
                 }
                 else
-                    Logger.LogError($"Cannot find sofa member in SofaMembers with the name {member.Username}");
+                {
+                    Logger.LogWarning($"Cannot find sofa member in SofaMembers with the name {member.Username}, adding new member with status {status}");
+                    SofaMembers.Add(guildUser, status);
+                }
                 return null;
             }
             else
             {
                 SofaMembers.Add(guildUser, status);
-                Logger.LogInformation($"Addin {member.Username} to member list with status {status}");
+                Logger.LogInformation($"Adding {member.Username} to member list with status {status}");
                 return null;
             }
         }
