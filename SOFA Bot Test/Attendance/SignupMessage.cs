@@ -38,8 +38,8 @@ namespace FOFA_Bot.Attendance
             Dictionary<SocketGuildUser, bool?> sofaMembers = await MemberHandler.GetSofaMembers();
             int[] totalPresentAbsentUnsigned = [0, 0, 0];
             AddPresentAbsentUnsigned(totalPresentAbsentUnsigned, sofaMembers);
-            SocketRole role;
-            string squadMembers;
+            SocketRole? role;
+            string? squadMembers;
             List<ulong> handledMembersId = [];
             List<IEmote> squadEmotes = [];
             squadEmotes.Add(new Emoji("🟦"));
@@ -143,7 +143,7 @@ namespace FOFA_Bot.Attendance
                 .WithTitle($"No permission to interact with this signup");
             return embed;
         }
-        private static string AddMemberAndStatus(bool? status, string Username)
+        private static string? AddMemberAndStatus(bool? status, string Username)
         {
             if (status == null) return $"{new Emoji("⚫")} {Username}\n";
             else if (status == true) return $"{new Emoji("🟢")} {Username}\n";
@@ -154,7 +154,7 @@ namespace FOFA_Bot.Attendance
         {
             EventType = eventType;
         }
-        internal static string GetEventType()
+        internal static string? GetEventType()
         {
             return EventType;
         }

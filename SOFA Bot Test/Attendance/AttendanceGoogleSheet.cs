@@ -52,7 +52,8 @@ namespace FOFA_Bot.Attendance
             string sheetId = BotInfo.GetAttendanceSheetId();
             string newRange = await GetRange(currentRow, userNames.Count + 1);
             IList<IList<Object>> objNeRecords = await GenerateData(userNames);
-            await UpdateGoogleSheet(objNeRecords, sheetId, newRange, service);
+            if (service != null)
+                await UpdateGoogleSheet(objNeRecords, sheetId, newRange, service);
             Logger.LogInformation($"Finished updating attendance sheet");
             return;
         }
@@ -61,7 +62,7 @@ namespace FOFA_Bot.Attendance
             Logger.LogInformation($"Getting attendance sheet service");
             string clientId = BotInfo.GetSheetClientId();
             string clientSecret = BotInfo.GetSheetClientSecret();
-            string[] scopes = { SheetsService.Scope.Spreadsheets };
+            string[] scopes = [SheetsService.Scope.Spreadsheets];
             UserCredential? credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                 new ClientSecrets
                 {
@@ -73,7 +74,7 @@ namespace FOFA_Bot.Attendance
                 CancellationToken.None,
                 new FileDataStore("GoogleToken"))
                 .Result;
-            SheetsService? service = new SheetsService(new BaseClientService.Initializer()
+            SheetsService? service = new(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
                 ApplicationName = "FOFA Bot"
@@ -88,7 +89,7 @@ namespace FOFA_Bot.Attendance
         private static async Task<IList<IList<Object>>> GenerateData(List<string> userNames)
         {
             Logger.LogInformation($"Generating data for the attendance sheet");
-            List<IList<Object>> fullObject = new List<IList<Object>>();
+            List<IList<Object>> fullObject = [];
             IList<Object> objectLine = [];
             objectLine.Add(DateTime.Now.ToString("dd/MM/yyyy"));
             foreach (string userName in userNames)
@@ -102,7 +103,7 @@ namespace FOFA_Bot.Attendance
             var request = service.Spreadsheets.Values.Append(new ValueRange() { Values = values }, spreadsheetId, range);
             request.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
             request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
-            AppendValuesResponse? response = request.Execute();
+            request.Execute();
         }
 
     }

@@ -12,7 +12,7 @@ namespace FOFA_Bot.Nades
                 Logger.LogWarning("CurrentMessage for Nades is not null");
                 return;
             }
-            IMessageChannel nadeChannel = BotHandler.GetNadeChannel();
+            IMessageChannel? nadeChannel = BotHandler.GetNadeChannel();
             if (nadeChannel == null)
             {
                 Logger.LogWarning("NadeChannel is null");

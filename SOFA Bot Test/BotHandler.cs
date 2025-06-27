@@ -49,8 +49,24 @@ namespace FOFA_Bot
 
             _ = StartEvent();
         }
+        private static async Task StartEvent()
+        {
+            await StartAttendanceEvent(false);
+            while (true)
+            {
+                if (BotHandler.GetCurrentMessageId() != null)
+                {
+                    Task.Delay(60000).Wait();
+                }
+                Task.Delay(7200000).Wait();
+                if (BotHandler.GetCurrentMessageId() == null)
+                {
+                    await StartAttendanceEvent(false);
+                }
+            }
+        }
 
-        internal static SocketRole GetRole(string roleName)
+        internal static SocketRole? GetRole(string roleName)
         {
             if (Guild != null)
             {
@@ -69,7 +85,7 @@ namespace FOFA_Bot
                 return null;
             }
         }
-        internal static SocketGuild GetGuild()
+        internal static SocketGuild? GetGuild()
         {
             return Guild;
         }
@@ -87,23 +103,7 @@ namespace FOFA_Bot
             if (SignupsChannel == null) return null;
             else return SignupsChannel.Id;
         }
-        private static async Task StartEvent()
-        {
-            await StartAttendanceEvent(false);
-            while (true)
-            {
-                if (BotHandler.GetCurrentMessageId() != null)
-                {
-                    Task.Delay(60000).Wait();
-                }
-                Task.Delay(7200000).Wait();
-                if (BotHandler.GetCurrentMessageId() != null)
-                {
-                    await StartAttendanceEvent(false);
-                }
-            }
-        }
-        internal static async Task<SocketGuildUser> GetGuildUserByName(string userName)
+        internal static async Task<SocketGuildUser?> GetGuildUserByName(string userName)
         {
             if (Guild != null)
             {
@@ -122,6 +122,7 @@ namespace FOFA_Bot
                 return null;
             }
         }
+
         internal static async Task StartAttendanceEvent(bool isToday)
         {
             if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
@@ -217,7 +218,7 @@ namespace FOFA_Bot
                 return true;
             return false;
         }
-        internal static IMessageChannel GetNadeChannel()
+        internal static IMessageChannel? GetNadeChannel()
         {
             if (NadeChannel != null)
                 return NadeChannel;
