@@ -48,9 +48,7 @@ namespace FOFA_Bot.Attendance
                             break;
                         }
                         updatedMessage = await SignupMessage.UpdateSignupMessage();
-                        //message = await SignupMessage.CreateConfirmationMesasage("Present");
                         await component.UpdateAsync(attendanceMessage => attendanceMessage.Embed = updatedMessage.Build());
-                        //await component.FollowupAsync(embed: message.Build(), ephemeral: true);
                         BotHandler.SetCurrentMessage(component.Message);
                     }
                     else
@@ -71,9 +69,7 @@ namespace FOFA_Bot.Attendance
                             break;
                         }
                         updatedMessage = await SignupMessage.UpdateSignupMessage();
-                        //message = await SignupMessage.CreateConfirmationMesasage("Absent");
                         await component.UpdateAsync(attendanceMessage => attendanceMessage.Embed = updatedMessage.Build());
-                        //await component.FollowupAsync(embed: message.Build(), ephemeral: true);
                         BotHandler.SetCurrentMessage(component.Message);
                     }
                     else

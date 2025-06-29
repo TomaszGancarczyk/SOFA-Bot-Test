@@ -9,8 +9,7 @@ namespace FOFA_Bot.Attendance
         [
             DayOfWeek.Thursday,
             DayOfWeek.Friday,
-            DayOfWeek.Saturday,
-            DayOfWeek.Sunday
+            DayOfWeek.Saturday
         ];
         private static readonly List<DayOfWeek> BaseCaptureDays =
         [

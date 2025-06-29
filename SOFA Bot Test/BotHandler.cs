@@ -234,18 +234,12 @@ namespace FOFA_Bot
         //TODO Known Bugs
         // /create-signup when waiting for question response new message may be created
 
+        //TODO Verify
+        // absent button sometimes may not respond with leave channel reminder
+
 
         //TODO Testing
         // 
-        // check if nade poll works
-        //   check if theres no errors when closed manualy
-        //     poll gets created sucessfully
-        //     poll closes properly
-        //     data is valid
-        //     theres no errors when no votes has been cast
-        // 
         // test if base cap eventDateTime is 1 hour earlier
-        // test handle a lot of people in one tab
-        // test bot up for multiple days
     }
 }
