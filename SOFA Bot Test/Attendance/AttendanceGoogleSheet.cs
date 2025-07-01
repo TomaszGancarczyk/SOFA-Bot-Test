@@ -11,46 +11,9 @@ namespace FOFA_Bot.Attendance
     {
         internal static async Task HandleUnsignedUsers(List<string> userNames)
         {
-            Logger.LogInformation($"{userNames.Count} members didn't signed up");
-            string LastSheetRowPath = "..\\..\\..\\Attendance\\LastSheetRow.txt";
-            int? currentSheetRow = ReadAndUpdateSheetRowFile(LastSheetRowPath);
-            if (currentSheetRow == null)
-                return;
-            else
-                await SaveNamesToBotSignupsSheet(userNames, currentSheetRow);
-            return;
-        }
-        private static int? ReadAndUpdateSheetRowFile(string filePath)
-        {
-            if (!File.Exists(filePath))
-            {
-                Logger.LogError("Cannot find LastSheetRow.txt");
-                return null;
-            }
-            else
-            {
-                Logger.LogInformation("Found LastSheetRow.txt");
-                string lastSheetRowString = File.ReadAllText(filePath);
-                try
-                {
-                    int lastSheetRow = Int32.Parse(lastSheetRowString);
-                    Logger.LogInformation($"with the last row being {lastSheetRow}");
-                    File.WriteAllText(filePath, $"{lastSheetRow + 1}");
-                    return lastSheetRow + 1;
-                }
-                catch
-                {
-                    Logger.LogError("Cannot parse LastSheetRow.txt to int");
-                    return null;
-                }
-            }
-        }
-
-        private static async Task SaveNamesToBotSignupsSheet(List<string> userNames, int? currentRow)
-        {
             SheetsService? service = await GetSheetService();
             string sheetId = BotInfo.GetAttendanceSheetId();
-            string newRange = await GetRange(currentRow, userNames.Count + 1);
+            string newRange = await GetRange(userNames.Count + 1);
             IList<IList<Object>> objNeRecords = await GenerateData(userNames);
             if (service != null)
                 await UpdateGoogleSheet(objNeRecords, sheetId, newRange, service);
@@ -81,10 +44,10 @@ namespace FOFA_Bot.Attendance
             });
             return service;
         }
-        private static async Task<string> GetRange(int? currentRow, int numberOfCollumns)
+        private static async Task<string> GetRange(int numberOfCollumns)
         {
             char lastCollumnChar = (char)('A' - 1 + numberOfCollumns);
-            return ($"A{currentRow}:{lastCollumnChar}{currentRow}");
+            return ($"A{2}:{lastCollumnChar}2");
         }
         private static async Task<IList<IList<Object>>> GenerateData(List<string> userNames)
         {

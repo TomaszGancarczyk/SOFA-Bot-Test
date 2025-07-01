@@ -232,6 +232,8 @@ namespace FOFA_Bot
                 return null;
         }
         //TODO Task list
+        // remove LastSheetRow, it's probably unnecesarry
+        // move data to files to restore it when power dies
         // add people for reminder exceptions
         // handle player stats from API call
 
