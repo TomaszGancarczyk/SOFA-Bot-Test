@@ -12,7 +12,7 @@ namespace FOFA_Bot
         {
             EmbedBuilder? embed;
             string[] privilegedRoles;
-            SocketGuildUser user;
+            SocketGuildUser? user;
             bool hasPermission;
             switch (command.Data.Name)
             {
@@ -48,6 +48,7 @@ namespace FOFA_Bot
                     hasPermission = false;
                     privilegedRoles = BotInfo.GetPrivilegedRoleNames();
                     user = await BotHandler.GetGuildUserByName(command.User.Username);
+                    if (user == null) return;
                     embed = null;
                     foreach (string roleName in privilegedRoles)
                     {
@@ -85,6 +86,7 @@ namespace FOFA_Bot
                     hasPermission = false;
                     privilegedRoles = BotInfo.GetPrivilegedRoleNames();
                     user = await BotHandler.GetGuildUserByName(command.User.Username);
+                    if (user == null) return;
                     embed = null;
                     foreach (string roleName in privilegedRoles)
                     {

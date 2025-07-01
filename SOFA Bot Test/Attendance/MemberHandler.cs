@@ -6,11 +6,12 @@ namespace FOFA_Bot.Attendance
 {
     internal class MemberHandler
     {
-        private static readonly SocketGuild Guild = BotHandler.GetGuild();
+        private static readonly SocketGuild? Guild = BotHandler.GetGuild();
         private static readonly string SofaRoleName = BotInfo.GetSofaRoleName();
         private static Dictionary<SocketGuildUser, bool?>? SofaMembers;
-        internal static SocketRole GetRole(string roleName)
+        internal static SocketRole? GetRole(string roleName)
         {
+            if (Guild == null) return null;
             SocketRole? role = Guild.Roles.FirstOrDefault(role => role.Name == roleName);
             if (role != null)
                 return role;
@@ -33,6 +34,11 @@ namespace FOFA_Bot.Attendance
         internal static void SetMembers()
         {
             SofaMembers = [];
+            if (Guild == null)
+            {
+                Logger.LogError($"Connot set members due to Guild being null");
+                return;
+            }
             SocketGuildUser[] sofaMembers = [.. Guild.Users.Where(user => user.Roles.Any(role => role.Name == SofaRoleName))];
             foreach (SocketGuildUser member in sofaMembers)
             {
@@ -40,8 +46,10 @@ namespace FOFA_Bot.Attendance
                     SofaMembers.Add(member, null);
             }
         }
-        internal static async Task<EmbedBuilder> SetMemberStatus(SocketUser member, bool status)
+        internal static async Task<EmbedBuilder?> SetMemberStatus(SocketUser member, bool status)
         {
+            if (Guild == null)
+                return null;
             SocketGuildUser? guildUser = Guild.Users.FirstOrDefault(user => user.Id == member.Id);
             if (guildUser == null)
             {
@@ -66,23 +74,34 @@ namespace FOFA_Bot.Attendance
                 {
                     SofaMembers[key] = status;
                     Logger.LogInformation($"Setting status {status} for {member.Username}");
-                    if (status == false)
-                    {
-                        EmbedBuilder embed = new();
-                        embed.WithColor(Color.Red);
-                        embed.WithTitle($"Don't forget to type in leave :3\n" +
-                            $"https://discord.com/channels/710884253457711134/1170461909829566485");
-                        return embed;
-                    }
                 }
                 else
-                    Logger.LogError($"Cannot find sofa member in SofaMembers with the name {member.Username}");
+                {
+                    Logger.LogWarning($"Cannot find sofa member in SofaMembers with the name {member.Username}, adding new member with status {status}");
+                    SofaMembers.Add(guildUser, status);
+                }
+                if (status == false)
+                {
+                    EmbedBuilder embed = new();
+                    embed.WithColor(Color.Red);
+                    embed.WithTitle($"Don't forget to type in leave :3\n" +
+                        $"https://discord.com/channels/710884253457711134/1170461909829566485");
+                    return embed;
+                }
                 return null;
             }
             else
             {
                 SofaMembers.Add(guildUser, status);
-                Logger.LogInformation($"Addin {member.Username} to member list with status {status}");
+                Logger.LogInformation($"Adding {member.Username} to member list with status {status}");
+                if (status == false)
+                {
+                    EmbedBuilder embed = new();
+                    embed.WithColor(Color.Red);
+                    embed.WithTitle($"Don't forget to type in leave :3\n" +
+                        $"https://discord.com/channels/710884253457711134/1170461909829566485");
+                    return embed;
+                }
                 return null;
             }
         }

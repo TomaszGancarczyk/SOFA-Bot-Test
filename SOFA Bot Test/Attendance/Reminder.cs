@@ -18,8 +18,9 @@ namespace FOFA_Bot.Attendance
         {
             if (ReminderPermission)
             {
-                string eventType = SignupMessage.GetEventType();
+                string? eventType = SignupMessage.GetEventType();
                 List<SocketGuildUser> offMembers = [];
+                if (eventType == null) return;
                 if (eventType == "Tournament" || eventType == "Base Capture")
                 {
                     var sofaMembers = await MemberHandler.GetSofaMembers();

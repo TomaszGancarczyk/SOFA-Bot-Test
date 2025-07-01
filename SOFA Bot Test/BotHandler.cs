@@ -13,6 +13,7 @@ namespace FOFA_Bot
         private static IMessageChannel? SignupsChannel;
         private static IMessageChannel? NadeChannel;
         private static IMessage? CurrentMessage;
+        private static bool isDayOffRunning;
 
         internal static void InitializeBotHandler(DiscordSocketClient discord)
         {
@@ -49,8 +50,21 @@ namespace FOFA_Bot
 
             _ = StartEvent();
         }
+        private static async Task StartEvent()
+        {
+            await StartAttendanceEvent(false);
+            while (true)
+            {
+                while (CurrentMessage.Id != null || isDayOffRunning == true)
+                    Task.Delay(60000).Wait();
+                Logger.LogInformation("There is no active event, running cooldown for new event");
+                Task.Delay(7200000).Wait();
+                if (CurrentMessage.Id == null)
+                    await StartAttendanceEvent(false);
+            }
+        }
 
-        internal static SocketRole GetRole(string roleName)
+        internal static SocketRole? GetRole(string roleName)
         {
             if (Guild != null)
             {
@@ -69,7 +83,7 @@ namespace FOFA_Bot
                 return null;
             }
         }
-        internal static SocketGuild GetGuild()
+        internal static SocketGuild? GetGuild()
         {
             return Guild;
         }
@@ -87,23 +101,7 @@ namespace FOFA_Bot
             if (SignupsChannel == null) return null;
             else return SignupsChannel.Id;
         }
-        private static async Task StartEvent()
-        {
-            await StartAttendanceEvent(false);
-            while (true)
-            {
-                if (BotHandler.GetCurrentMessageId() != null)
-                {
-                    Task.Delay(60000).Wait();
-                }
-                Task.Delay(7200000).Wait();
-                if (BotHandler.GetCurrentMessageId() != null)
-                {
-                    await StartAttendanceEvent(false);
-                }
-            }
-        }
-        internal static async Task<SocketGuildUser> GetGuildUserByName(string userName)
+        internal static async Task<SocketGuildUser?> GetGuildUserByName(string userName)
         {
             if (Guild != null)
             {
@@ -122,6 +120,7 @@ namespace FOFA_Bot
                 return null;
             }
         }
+
         internal static async Task StartAttendanceEvent(bool isToday)
         {
             if (DateTime.Now.DayOfWeek == DayOfWeek.Monday)
@@ -137,12 +136,20 @@ namespace FOFA_Bot
                 IMessage? tempCurrentMessage = await AttendanceMessageHandler.ValidateAndCreateMesage(QuestionChannel, SignupsChannel);
                 if (tempCurrentMessage != null)
                 {
+                    await Attendance.Timer.SetEventDateTime(isToday);
+                    if (eventDateTime > DateTime.Now)
+                        Logger.LogInformation($"Event date time set for {eventDateTime}");
                     CurrentMessage = tempCurrentMessage;
                     localCurrentMessageId = CurrentMessage.Id;
                 }
                 else
                 {
-                    Logger.LogError("CurrentMessage is null");
+                    Logger.LogInformation("Handling DayOff");
+                    isDayOffRunning = true;
+                    TimeSpan reminderTimeSpan = eventDateTime - DateTime.Now;
+                    Task.Delay(reminderTimeSpan).Wait();
+                    isDayOffRunning = false;
+                    Logger.LogInformation("Finished DayOff");
                     return;
                 }
             }
@@ -217,15 +224,16 @@ namespace FOFA_Bot
                 return true;
             return false;
         }
-        internal static IMessageChannel GetNadeChannel()
+        internal static IMessageChannel? GetNadeChannel()
         {
             if (NadeChannel != null)
                 return NadeChannel;
             else
                 return null;
         }
-
         //TODO Task list
+        // remove LastSheetRow, it's probably unnecesarry
+        // move data to files to restore it when power dies
         // add people for reminder exceptions
         // handle player stats from API call
 
@@ -233,18 +241,9 @@ namespace FOFA_Bot
         //TODO Known Bugs
         // /create-signup when waiting for question response new message may be created
 
-
-        //TODO Testing
-        // 
-        // check if nade poll works
-        //   check if theres no errors when closed manualy
-        //     poll gets created sucessfully
-        //     poll closes properly
-        //     data is valid
-        //     theres no errors when no votes has been cast
-        // 
-        // test if base cap eventDateTime is 1 hour earlier
-        // test handle a lot of people in one tab
-        // test bot up for multiple days
+        //TODO Verify
+        // absent button sometimes may not respond with leave channel reminder
+        // DayOff colldown works properly
+        // base cap eventDateTime is 1 hour earlier
     }
 }

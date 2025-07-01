@@ -23,9 +23,10 @@
             if (eventDateTime > cestStartDate.ToDateTime(timeChangeTime) && eventDateTime < cetStartDate.ToDateTime(timeChangeTime))
                 eventDateTime = eventDateTime.AddHours(1);
             if (QuestionHandler.GetQuestionResponse() == "Base Capture")
+            {
+                Logger.LogInformation("Removing 1 hour for base capture");
                 eventDateTime = eventDateTime.AddHours(-1);
-            if (eventDateTime < DateTime.Now)
-                Logger.LogInformation($"Event date time set for {eventDateTime}");
+            }
             EventDateTime = eventDateTime;
         }
         private static DateOnly GetTimeChangeDateFromLastDayOfMonth(DateOnly date)
