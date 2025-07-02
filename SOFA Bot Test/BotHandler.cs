@@ -13,6 +13,7 @@ namespace FOFA_Bot
         private static IMessageChannel? SignupsChannel;
         private static IMessageChannel? NadeChannel;
         private static IMessage? CurrentMessage;
+        private static bool isDayOffRunning;
 
         internal static void InitializeBotHandler(DiscordSocketClient discord)
         {
@@ -54,15 +55,12 @@ namespace FOFA_Bot
             await StartAttendanceEvent(false);
             while (true)
             {
-                if (BotHandler.GetCurrentMessageId() != null)
-                {
+                while (CurrentMessage.Id != null || isDayOffRunning == true)
                     Task.Delay(60000).Wait();
-                }
+                Logger.LogInformation("There is no active event, running cooldown for new event");
                 Task.Delay(7200000).Wait();
-                if (BotHandler.GetCurrentMessageId() == null)
-                {
+                if (CurrentMessage.Id == null)
                     await StartAttendanceEvent(false);
-                }
             }
         }
 
@@ -138,12 +136,20 @@ namespace FOFA_Bot
                 IMessage? tempCurrentMessage = await AttendanceMessageHandler.ValidateAndCreateMesage(QuestionChannel, SignupsChannel);
                 if (tempCurrentMessage != null)
                 {
+                    await Attendance.Timer.SetEventDateTime(isToday);
+                    if (eventDateTime > DateTime.Now)
+                        Logger.LogInformation($"Event date time set for {eventDateTime}");
                     CurrentMessage = tempCurrentMessage;
                     localCurrentMessageId = CurrentMessage.Id;
                 }
                 else
                 {
-                    Logger.LogError("CurrentMessage is null");
+                    Logger.LogInformation("Handling DayOff");
+                    isDayOffRunning = true;
+                    TimeSpan reminderTimeSpan = eventDateTime - DateTime.Now;
+                    Task.Delay(reminderTimeSpan).Wait();
+                    isDayOffRunning = false;
+                    Logger.LogInformation("Finished DayOff");
                     return;
                 }
             }
@@ -225,8 +231,9 @@ namespace FOFA_Bot
             else
                 return null;
         }
-
         //TODO Task list
+        // remove LastSheetRow, it's probably unnecesarry
+        // move data to files to restore it when power dies
         // add people for reminder exceptions
         // handle player stats from API call
 
@@ -234,18 +241,9 @@ namespace FOFA_Bot
         //TODO Known Bugs
         // /create-signup when waiting for question response new message may be created
 
-
-        //TODO Testing
-        // 
-        // check if nade poll works
-        //   check if theres no errors when closed manualy
-        //     poll gets created sucessfully
-        //     poll closes properly
-        //     data is valid
-        //     theres no errors when no votes has been cast
-        // 
-        // test if base cap eventDateTime is 1 hour earlier
-        // test handle a lot of people in one tab
-        // test bot up for multiple days
+        //TODO Verify
+        // absent button sometimes may not respond with leave channel reminder
+        // DayOff colldown works properly
+        // base cap eventDateTime is 1 hour earlier
     }
 }

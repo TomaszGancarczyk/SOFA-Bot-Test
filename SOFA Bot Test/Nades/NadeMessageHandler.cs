@@ -39,8 +39,8 @@ namespace FOFA_Bot.Nades
                 Answers = [
                     new PollMediaProperties
                     {
-                        Text = "Napalm",
-                        Emoji = new Emoji("🔥")
+                        Text = "Snowstorm",
+                        Emoji = new Emoji("❄️")
                     },
                     new PollMediaProperties
                     {
