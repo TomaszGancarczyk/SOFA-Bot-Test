@@ -70,15 +70,15 @@ namespace FOFA_Bot.Attendance
             else if (SofaMembers.Keys.Where(user => user.Id == member.Id) != null)
             {
                 SocketGuildUser? key = SofaMembers.Keys.FirstOrDefault(user => user.Id == member.Id);
-                if (key != null)
-                {
-                    SofaMembers[key] = status;
-                    Logger.LogInformation($"Setting status {status} for {member.Username}");
-                }
-                else
+                if (key == null)
                 {
                     Logger.LogWarning($"Cannot find sofa member in SofaMembers with the name {member.Username}, adding new member with status {status}");
                     SofaMembers.Add(guildUser, status);
+                }
+                else
+                {
+                    SofaMembers[key] = status;
+                    Logger.LogInformation($"Setting status {status} for {member.Username}");
                 }
                 if (status == false)
                 {

@@ -18,7 +18,7 @@ namespace FOFA_Bot.Nades
             {
                 if (DateTime.Now.DayOfWeek == DayOfWeek.Wednesday && DateTime.Now.Hour == 14)
                     break;
-                Task.Delay(18000000).Wait();
+                Task.Delay(1800000).Wait();
             }
             Logger.LogInformation("Closing nade poll");
             await currentMessage.EndPollAsync(default);
