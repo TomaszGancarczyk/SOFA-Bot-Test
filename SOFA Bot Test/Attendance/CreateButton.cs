@@ -17,9 +17,7 @@ namespace FOFA_Bot.Attendance
         ];
         private static readonly List<DayOfWeek> BrawlDays =
         [
-            DayOfWeek.Monday,
-            DayOfWeek.Tuesday,
-            DayOfWeek.Wednesday,
+            DayOfWeek.Monday
         ];
         internal static ComponentBuilder CreateQuestionButtons()
         {
@@ -41,6 +39,13 @@ namespace FOFA_Bot.Attendance
                 .WithButton("Absent", "absentButton", ButtonStyle.Danger);
             Logger.LogInformation($"Created buttons");
             return button;
+        }
+        internal static async Task<bool> AreThereEventsForEventTIme()
+        {
+            DayOfWeek eventDayOfWeek = Timer.GetEventDateTime().DayOfWeek;
+            if (TournamentDays.Contains(eventDayOfWeek) || BaseCaptureDays.Contains(eventDayOfWeek) || BrawlDays.Contains(eventDayOfWeek))
+                return true;
+            return false;
         }
     }
 }

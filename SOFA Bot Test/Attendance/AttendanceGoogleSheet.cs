@@ -47,7 +47,7 @@ namespace FOFA_Bot.Attendance
         private static async Task<string> GetRange(int numberOfCollumns)
         {
             char lastCollumnChar = (char)('A' - 1 + numberOfCollumns);
-            return ($"A{2}:{lastCollumnChar}2");
+            return ($"A2:{lastCollumnChar}10000");
         }
         private static async Task<IList<IList<Object>>> GenerateData(List<string> userNames)
         {
@@ -63,10 +63,18 @@ namespace FOFA_Bot.Attendance
         private static async Task UpdateGoogleSheet(IList<IList<Object>> values, string spreadsheetId, string range, SheetsService service)
         {
             Logger.LogInformation($"Updating attendance google sheet");
-            var request = service.Spreadsheets.Values.Append(new ValueRange() { Values = values }, spreadsheetId, range);
-            request.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
-            request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
-            request.Execute();
+            try
+            {
+                var request = service.Spreadsheets.Values.Append(new ValueRange() { Values = values }, spreadsheetId, range);
+                request.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
+                request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
+                request.Execute();
+            }
+            catch (Exception e)
+            {
+                Logger.LogError($"Cannot update attendance sheet\n{e}");
+            }
+
         }
 
     }

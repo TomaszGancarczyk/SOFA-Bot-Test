@@ -232,7 +232,6 @@ namespace FOFA_Bot
                 return null;
         }
         //TODO Task list
-        // remove LastSheetRow, it's probably unnecesarry
         // move data to files to restore it when power dies
         // add people for reminder exceptions
         // handle player stats from API call
@@ -245,5 +244,6 @@ namespace FOFA_Bot
         // absent button sometimes may not respond with leave channel reminder
         // DayOff colldown works properly
         // base cap eventDateTime is 1 hour earlier
+        // remove LastSheetRow, it's probably unnecesarry
     }
 }
