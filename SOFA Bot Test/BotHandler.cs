@@ -2,6 +2,7 @@
 using Discord.WebSocket;
 using FOFA_Bot.Attendance;
 using FOFA_Bot.Nades;
+using System.ComponentModel.Design;
 
 
 namespace FOFA_Bot
@@ -53,21 +54,37 @@ namespace FOFA_Bot
         private static async Task StartEvents()
         {
             string? restoreCurrentMessageId = Attendance.Restore.Handler.CheckCurrentMessageId();
-            if (restoreCurrentMessageId == null)
-                await StartAttendanceEvent(false);
-            else
+            if (restoreCurrentMessageId != null)
             {
                 ulong CurrentMessageId = ulong.Parse(restoreCurrentMessageId);
                 await ContinueAttendanceEvent(CurrentMessageId);
-                //TODO handle restored message
+                if (CurrentMessage != null)
+                {
+                    //TODO handle restored message
+                }
+                else
+                {
+                    await StartAttendanceEvent(false);
+                }
             }
+            else
+                await StartAttendanceEvent(false);
+            ulong? currentMessageId;
             while (true)
             {
-                while (CurrentMessage.Id != null || isDayOffRunning == true)
+                if (CurrentMessage == null)
+                    currentMessageId = null;
+                else
+                    currentMessageId = CurrentMessage.Id;
+                while (currentMessageId != null || isDayOffRunning == true)
+                {
                     Task.Delay(60000).Wait();
+                    currentMessageId = ulong.Parse(Attendance.Restore.Handler.CheckCurrentMessageId());
+                }
                 Logger.LogInformation("There is no active event, running cooldown for new event");
                 Task.Delay(7200000).Wait();
-                if (CurrentMessage.Id == null)
+                currentMessageId = CurrentMessage.Id;
+                if (currentMessageId == null)
                     await StartAttendanceEvent(false);
             }
         }
@@ -231,24 +248,33 @@ namespace FOFA_Bot
         }
         private static async Task ContinueAttendanceEvent(ulong eventId)
         {
-            try
+            CurrentMessage = await SignupsChannel.GetMessageAsync(eventId);
+            if (CurrentMessage == null)
             {
-                CurrentMessage = await SignupsChannel.GetMessageAsync(eventId);
-            }
-            catch
-            {
+                await Attendance.Restore.Handler.DeleteCurrentMessageIdFile();
                 Logger.LogError("Cannot find signups channel or message by ID");
                 return;
             }
-            Logger.LogError("Found message in signups channel");
+            Logger.LogInformation("Found message in signups channel");
             IEmbed embed = CurrentMessage.Embeds.FirstOrDefault();
-            string embedDescription = embed.Description;
-            List<string> embedFields = new();
-            foreach (var field in embed.Fields)
+            long embedRemainingTime = (long.Parse(embed.Description.Split(":D")[0].Substring(3)))*1000;
+            DateTime embedDateTime = DateTimeOffset.FromUnixTimeMilliseconds(embedRemainingTime).AddHours(2).DateTime;
+            if (embedDateTime <= DateTime.Now)
             {
-                embedFields.Add(field.Value);
+                Logger.LogError("Event already elapsed");
+                CurrentMessage = null;
+                await Attendance.Restore.Handler.DeleteCurrentMessageIdFile();
+                return;
             }
-            // Validate time of the message
+            List<string> embedMembers = new();
+            MemberHandler.SetMembers();
+            Dictionary<SocketGuildUser, bool?> sofaMembers = await MemberHandler.GetSofaMembers();
+            //TODO continue
+            foreach (EmbedField field in embed.Fields)
+            {
+                foreach (string member in field.Value.Split("\n"))
+                    embedMembers.Add(member);
+            }
             // Update squad data based on fields if the time is right
             Console.WriteLine("e");
         }
