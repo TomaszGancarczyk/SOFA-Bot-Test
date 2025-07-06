@@ -23,7 +23,7 @@ namespace FOFA_Bot.Attendance
         internal static async Task<string?> HandleEventQuestion(IMessageChannel questionChannel)
         {
             CurrentQuestionMessage = null;
-            if (await CreateButton.AreThereEventsForEventTIme())
+            if (!await CreateButton.AreThereEventsForEventTIme())
             {
                 Logger.LogInformation("There are no events for event time");
                 return "Day Off";

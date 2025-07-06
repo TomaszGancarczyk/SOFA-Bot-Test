@@ -40,7 +40,7 @@ namespace FOFA_Bot.Attendance
         {
             if (eventType == "Day Off")
             {
-                Logger.LogInformation($"We don't play tomorrow");
+                Logger.LogInformation($"We don't play");
                 return null;
             }
             else

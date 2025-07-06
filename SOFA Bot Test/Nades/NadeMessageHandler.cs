@@ -71,12 +71,12 @@ namespace FOFA_Bot.Nades
         private static async Task<List<List<string>>> ConvertPollChoicesToList(IUserMessage message)
         {
             Logger.LogInformation("Reading data from nade poll");
-            List<List<string>> result = new();
+            List<List<string>> result = [];
             var pollAnswears = message.Poll.Value.Answers;
             foreach (var answerType in pollAnswears)
             {
                 var voters = await message.GetPollAnswerVotersAsync(answerType.AnswerId).FlattenAsync();
-                List<string> votersList = new();
+                List<string> votersList = [];
                 foreach (IUser voter in voters)
                 {
                     votersList.Add(voter.Username);
