@@ -6,7 +6,7 @@ namespace FOFA_Bot.Attendance
     internal class AttendanceMessageHandler
     {
         private static DateTime? ResponseTime = null;
-        internal static async Task<IMessage?> ValidateAndCreateMesage(IMessageChannel questionChannel, IMessageChannel clanWarChannel)
+        internal static async Task<IMessage?> ValidateAndCreateMesage(IMessageChannel questionChannel, IMessageChannel clanWarChannel, bool isToday)
         {
             Logger.LogInformation($"Starting message creation");
             string? eventType = await QuestionHandler.HandleEventQuestion(questionChannel);
@@ -14,6 +14,7 @@ namespace FOFA_Bot.Attendance
                 SignupMessage.SetEventType(eventType);
             else
                 return null;
+            await Timer.SetEventDateTime(isToday);
             IMessage? response;
             if (ResponseTime == null)
             {
