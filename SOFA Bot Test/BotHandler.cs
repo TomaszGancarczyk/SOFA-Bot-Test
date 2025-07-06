@@ -48,11 +48,19 @@ namespace FOFA_Bot
             }
             Logger.LogInformation($"Found Nade Channel: {NadeChannel.Name}");
 
-            _ = StartEvent();
+            _ = StartEvents();
         }
-        private static async Task StartEvent()
+        private static async Task StartEvents()
         {
-            await StartAttendanceEvent(false);
+            string? restoreCurrentMessageId = Attendance.Restore.Handler.CheckCurrentMessageId();
+            if (restoreCurrentMessageId == null)
+                await StartAttendanceEvent(false);
+            else
+            {
+                ulong CurrentMessageId = ulong.Parse(restoreCurrentMessageId);
+                await ContinueAttendanceEvent(CurrentMessageId);
+                //TODO handle restored message
+            }
             while (true)
             {
                 while (CurrentMessage.Id != null || isDayOffRunning == true)
@@ -127,10 +135,12 @@ namespace FOFA_Bot
                 _ = NadeHandler.StartNadeEvent();
             Logger.LogInformation($"/ Starting event");
             CurrentMessage = null;
+            await Attendance.Restore.Handler.DeleteCurrentMessageIdFile();
             ulong? localCurrentMessageId = null;
             Logger.LogInformation($"Setting and getting event date time");
             await Attendance.Timer.SetEventDateTime(isToday);
             DateTime eventDateTime = Attendance.Timer.GetEventDateTime();
+            Logger.LogInformation($"Event date time set for {eventDateTime}");
             if (QuestionChannel != null && SignupsChannel != null)
             {
                 IMessage? tempCurrentMessage = await AttendanceMessageHandler.ValidateAndCreateMesage(QuestionChannel, SignupsChannel, isToday);
@@ -139,6 +149,7 @@ namespace FOFA_Bot
                     if (eventDateTime > DateTime.Now)
                         Logger.LogInformation($"Event date time set for {eventDateTime}");
                     CurrentMessage = tempCurrentMessage;
+                    await Attendance.Restore.Handler.CreateCurrentMessageIdFile(CurrentMessage.Id);
                     localCurrentMessageId = CurrentMessage.Id;
                 }
                 else
@@ -196,6 +207,7 @@ namespace FOFA_Bot
             if (ValidateCurrentMessage(localCurrentMessageId))
             {
                 CurrentMessage = null;
+                await Attendance.Restore.Handler.DeleteCurrentMessageIdFile();
                 Dictionary<SocketGuildUser, bool?> sofaMembersDict = await MemberHandler.GetSofaMembers();
                 List<string>? sofaUnassignedMembers = [];
                 foreach (var member in sofaMembersDict)
@@ -216,7 +228,29 @@ namespace FOFA_Bot
             else return;
             Logger.LogInformation("\\ Signup event finished");
         }
-
+        private static async Task ContinueAttendanceEvent(ulong eventId)
+        {
+            try
+            {
+                CurrentMessage = await SignupsChannel.GetMessageAsync(eventId);
+            }
+            catch
+            {
+                Logger.LogError("Cannot find signups channel or message by ID");
+                return;
+            }
+            Logger.LogError("Found message in signups channel");
+            IEmbed embed = CurrentMessage.Embeds.FirstOrDefault();
+            string embedDescription = embed.Description;
+            List<string> embedFields = new();
+            foreach (var field in embed.Fields)
+            {
+                embedFields.Add(field.Value);
+            }
+            // Validate time of the message
+            // Update squad data based on fields if the time is right
+            Console.WriteLine("e");
+        }
         private static bool ValidateCurrentMessage(ulong? localCurrentMessageId)
         {
             if (localCurrentMessageId != null && CurrentMessage != null && CurrentMessage.Id == localCurrentMessageId)
@@ -230,19 +264,19 @@ namespace FOFA_Bot
             else
                 return null;
         }
+
         //TODO Task list
         // move data to files to restore it when power dies
+        //   create and delete backup message id file
+        //   continue message validation
         // add people for reminder exceptions
         // handle player stats from API call
-
 
         //TODO Known Bugs
         // /create-signup when waiting for question response new message may be created
 
         //TODO Verify
-        // absent button sometimes may not respond with leave channel reminder
         // DayOff colldown works properly
-        // base cap eventDateTime is 1 hour earlier
         // remove LastSheetRow, it's probably unnecesarry
     }
 }
