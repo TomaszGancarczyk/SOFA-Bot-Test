@@ -133,10 +133,9 @@ namespace FOFA_Bot
             DateTime eventDateTime = Attendance.Timer.GetEventDateTime();
             if (QuestionChannel != null && SignupsChannel != null)
             {
-                IMessage? tempCurrentMessage = await AttendanceMessageHandler.ValidateAndCreateMesage(QuestionChannel, SignupsChannel);
+                IMessage? tempCurrentMessage = await AttendanceMessageHandler.ValidateAndCreateMesage(QuestionChannel, SignupsChannel, isToday);
                 if (tempCurrentMessage != null)
                 {
-                    await Attendance.Timer.SetEventDateTime(isToday);
                     if (eventDateTime > DateTime.Now)
                         Logger.LogInformation($"Event date time set for {eventDateTime}");
                     CurrentMessage = tempCurrentMessage;
