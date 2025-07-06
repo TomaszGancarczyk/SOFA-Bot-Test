@@ -18,7 +18,7 @@ namespace FOFA_Bot
 
         internal Program()
         {
-            DiscordSocketConfig? config = new DiscordSocketConfig
+            DiscordSocketConfig? config = new()
             {
                 AlwaysDownloadUsers = true,
                 MessageCacheSize = 100,

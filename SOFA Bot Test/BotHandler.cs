@@ -155,6 +155,7 @@ namespace FOFA_Bot
                 else
                 {
                     Logger.LogInformation("Handling DayOff");
+                    CurrentMessage = null;
                     isDayOffRunning = true;
                     TimeSpan reminderTimeSpan = eventDateTime - DateTime.Now;
                     Task.Delay(reminderTimeSpan).Wait();
