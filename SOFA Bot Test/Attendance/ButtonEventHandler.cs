@@ -45,8 +45,6 @@ namespace FOFA_Bot.Attendance
                         updatedMessage = await SignupMessage.UpdateSignupMessage();
                         await component.UpdateAsync(attendanceMessage => attendanceMessage.Embed = updatedMessage.Build());
                         BotHandler.SetCurrentMessage(component.Message);
-                        if (message != null)
-                            await component.RespondAsync(embed: message.Build(), ephemeral: true);
                     }
                     else
                         RespondWithOldSignupError(component);
@@ -64,7 +62,7 @@ namespace FOFA_Bot.Attendance
                         await component.UpdateAsync(attendanceMessage => attendanceMessage.Embed = updatedMessage.Build());
                         BotHandler.SetCurrentMessage(component.Message);
                         if (message != null)
-                            await component.RespondAsync(embed: message.Build(), ephemeral: true);
+                            await component.FollowupAsync(embed: message.Build(), ephemeral: true);
                     }
                     else
                         RespondWithOldSignupError(component);

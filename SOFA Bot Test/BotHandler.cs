@@ -241,9 +241,7 @@ namespace FOFA_Bot
         // /create-signup when waiting for question response new message may be created
 
         //TODO Verify
-        // absent button sometimes may not respond with leave channel reminder
         // DayOff colldown works properly
-        // base cap eventDateTime is 1 hour earlier
         // remove LastSheetRow, it's probably unnecesarry
     }
 }
